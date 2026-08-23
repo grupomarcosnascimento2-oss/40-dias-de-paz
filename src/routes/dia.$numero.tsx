@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
-import { useJornada, useConcluirDia, diaLiberado } from "@/hooks/useJornada";
+import { useJornadaDev, diaLiberado } from "@/hooks/useJornadaDev";
 import { getDia, getAreaDoDia, TOTAL_DIAS } from "@/lib/devocional";
 import { PlayerOracao } from "@/components/PlayerOracao";
 import { Ornamento, Cruz } from "@/components/Ornamento";
+
+// MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
+// as melhorias do app. Ver nota em src/hooks/useJornadaDev.ts.
 
 export const Route = createFileRoute("/dia/$numero")({
   head: ({ params }) => {
@@ -33,17 +35,11 @@ function DiaOracional() {
   const dia = getDia(numeroDoDia);
   const area = getAreaDoDia(numeroDoDia);
 
-  const { user, carregando } = useAuth();
   const navigate = useNavigate();
-  const { data: jornada, isLoading } = useJornada(user?.id);
-  const concluirDia = useConcluirDia(user?.id);
+  const { diasConcluidos, carregado, concluirDia } = useJornadaDev();
   const [concluindo, setConcluindo] = useState(false);
 
-  useEffect(() => {
-    if (!carregando && !user) navigate({ to: "/entrar" });
-  }, [carregando, user, navigate]);
-
-  if (carregando || isLoading || !jornada || !dia) {
+  if (!carregado || !dia) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando o dia de oração…</p>
@@ -51,12 +47,6 @@ function DiaOracional() {
     );
   }
 
-  if (!jornada.tem_acesso) {
-    navigate({ to: "/jornada" });
-    return null;
-  }
-
-  const diasConcluidos = jornada.dias_concluidos ?? 0;
   const liberado = diaLiberado(numeroDoDia, diasConcluidos);
   const jaConcluido = numeroDoDia <= diasConcluidos;
   const proximoNumero = Math.min(numeroDoDia + 1, TOTAL_DIAS);
@@ -81,16 +71,16 @@ function DiaOracional() {
     );
   }
 
-  const concluir = async () => {
+  const concluir = () => {
     setConcluindo(true);
-    await concluirDia.mutateAsync(numeroDoDia);
-    setConcluindo(false);
+    concluirDia(numeroDoDia);
     toast.success("Que a paz de Deus fique com você hoje.");
     if (numeroDoDia < TOTAL_DIAS) {
       navigate({ to: "/dia/$numero", params: { numero: String(proximoNumero) } });
     } else {
       navigate({ to: "/jornada" });
     }
+    setConcluindo(false);
   };
 
   return (

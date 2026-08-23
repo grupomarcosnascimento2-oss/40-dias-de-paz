@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useAuth, sair } from "@/hooks/useAuth";
-import { useJornada, useLiberarAcesso, diaLiberado } from "@/hooks/useJornada";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useJornadaDev, diaLiberado } from "@/hooks/useJornadaDev";
 import { areas, TOTAL_DIAS } from "@/lib/devocional";
 import { Ornamento, Cruz } from "@/components/Ornamento";
+
+// MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
+// as melhorias do app. Ver nota em src/hooks/useJornadaDev.ts.
 
 export const Route = createFileRoute("/jornada")({
   head: () => ({
@@ -19,17 +20,9 @@ export const Route = createFileRoute("/jornada")({
 });
 
 function Jornada() {
-  const { user, carregando } = useAuth();
-  const navigate = useNavigate();
-  const { data: jornada, isLoading } = useJornada(user?.id);
-  const liberarAcesso = useLiberarAcesso(user?.id);
-  const [processandoAcesso, setProcessandoAcesso] = useState(false);
+  const { diasConcluidos, carregado, reiniciarProgresso } = useJornadaDev();
 
-  useEffect(() => {
-    if (!carregando && !user) navigate({ to: "/entrar" });
-  }, [carregando, user, navigate]);
-
-  if (carregando || isLoading || !jornada) {
+  if (!carregado) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando sua caminhada…</p>
@@ -37,39 +30,7 @@ function Jornada() {
     );
   }
 
-  const diasConcluidos = jornada.dias_concluidos ?? 0;
   const proximoDia = Math.min(diasConcluidos + 1, TOTAL_DIAS);
-
-  if (!jornada.tem_acesso) {
-    return (
-      <main className="flex min-h-screen items-center justify-center px-6 py-16">
-        <div className="paper w-full max-w-md rounded-2xl border border-accent/35 p-8 text-center shadow-[var(--shadow-sacred)] sm:p-10">
-          <Cruz className="mx-auto h-5 w-5 text-accent" />
-          <h1 className="mt-4 text-3xl">Sua conta está pronta</h1>
-          <p className="mt-2 text-foreground/80">
-            Falta apenas liberar seu acesso à jornada completa dos 40 dias.
-          </p>
-          <Ornamento className="my-7" />
-          <button
-            type="button"
-            disabled={processandoAcesso}
-            onClick={async () => {
-              setProcessandoAcesso(true);
-              await liberarAcesso.mutateAsync();
-              setProcessandoAcesso(false);
-            }}
-            className="w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
-          >
-            {processandoAcesso ? "Liberando…" : "Liberar minha jornada de 40 dias"}
-          </button>
-          <p className="mt-5 text-xs text-muted-foreground">
-            (Nesta fase do projeto, o acesso é liberado diretamente aqui. O fluxo de pagamento será
-            conectado nesta mesma etapa.)
-          </p>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <div className="min-h-screen">
@@ -80,13 +41,10 @@ function Jornada() {
         </div>
         <button
           type="button"
-          onClick={async () => {
-            await sair();
-            navigate({ to: "/" });
-          }}
+          onClick={reiniciarProgresso}
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
-          Sair
+          Reiniciar progresso (dev)
         </button>
       </header>
 
