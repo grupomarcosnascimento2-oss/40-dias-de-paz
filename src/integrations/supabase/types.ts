@@ -14,7 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      jornadas: {
+        Row: {
+          created_at: string
+          dias_concluidos: number
+          tem_acesso: boolean
+          ultima_conclusao: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dias_concluidos?: number
+          tem_acesso?: boolean
+          ultima_conclusao?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dias_concluidos?: number
+          tem_acesso?: boolean
+          ultima_conclusao?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
