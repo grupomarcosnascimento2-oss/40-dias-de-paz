@@ -10,8 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComoViverRouteImport } from './routes/como-viver'
 import { Route as EntrarRouteImport } from './routes/entrar'
+import { Route as ForcaDaOracaoRouteImport } from './routes/forca-da-oracao'
+import { Route as IntroducaoRouteImport } from './routes/introducao'
 import { Route as JornadaRouteImport } from './routes/jornada'
+import { Route as PalavraAoLeitorRouteImport } from './routes/palavra-ao-leitor'
+import { Route as PorQue40DiasRouteImport } from './routes/por-que-40-dias'
+import { Route as ApresentacaoIndexRouteImport } from './routes/apresentacao.index'
+import { Route as ApresentacaoCaminhadaRouteImport } from './routes/apresentacao.caminhada'
+import { Route as ApresentacaoFamiliaRouteImport } from './routes/apresentacao.familia'
 import { Route as DiaNumeroRouteImport } from './routes/dia.$numero'
 
 const IndexRoute = IndexRouteImport.update({
@@ -19,14 +27,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComoViverRoute = ComoViverRouteImport.update({
+  id: '/como-viver',
+  path: '/como-viver',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EntrarRoute = EntrarRouteImport.update({
   id: '/entrar',
   path: '/entrar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForcaDaOracaoRoute = ForcaDaOracaoRouteImport.update({
+  id: '/forca-da-oracao',
+  path: '/forca-da-oracao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntroducaoRoute = IntroducaoRouteImport.update({
+  id: '/introducao',
+  path: '/introducao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JornadaRoute = JornadaRouteImport.update({
   id: '/jornada',
   path: '/jornada',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PalavraAoLeitorRoute = PalavraAoLeitorRouteImport.update({
+  id: '/palavra-ao-leitor',
+  path: '/palavra-ao-leitor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PorQue40DiasRoute = PorQue40DiasRouteImport.update({
+  id: '/por-que-40-dias',
+  path: '/por-que-40-dias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApresentacaoIndexRoute = ApresentacaoIndexRouteImport.update({
+  id: '/apresentacao/',
+  path: '/apresentacao/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApresentacaoCaminhadaRoute = ApresentacaoCaminhadaRouteImport.update({
+  id: '/apresentacao/caminhada',
+  path: '/apresentacao/caminhada',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApresentacaoFamiliaRoute = ApresentacaoFamiliaRouteImport.update({
+  id: '/apresentacao/familia',
+  path: '/apresentacao/familia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiaNumeroRoute = DiaNumeroRouteImport.update({
@@ -37,36 +85,105 @@ const DiaNumeroRoute = DiaNumeroRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
+  '/forca-da-oracao': typeof ForcaDaOracaoRoute
+  '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
+  '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
+  '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
+  '/apresentacao/': typeof ApresentacaoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
+  '/forca-da-oracao': typeof ForcaDaOracaoRoute
+  '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
+  '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
+  '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
+  '/apresentacao': typeof ApresentacaoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
+  '/forca-da-oracao': typeof ForcaDaOracaoRoute
+  '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
+  '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
+  '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
+  '/apresentacao/': typeof ApresentacaoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entrar' | '/jornada' | '/dia/$numero'
+  fullPaths:
+    | '/'
+    | '/como-viver'
+    | '/entrar'
+    | '/forca-da-oracao'
+    | '/introducao'
+    | '/jornada'
+    | '/palavra-ao-leitor'
+    | '/por-que-40-dias'
+    | '/apresentacao/caminhada'
+    | '/apresentacao/familia'
+    | '/dia/$numero'
+    | '/apresentacao/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/entrar' | '/jornada' | '/dia/$numero'
-  id: '__root__' | '/' | '/entrar' | '/jornada' | '/dia/$numero'
+  to:
+    | '/'
+    | '/como-viver'
+    | '/entrar'
+    | '/forca-da-oracao'
+    | '/introducao'
+    | '/jornada'
+    | '/palavra-ao-leitor'
+    | '/por-que-40-dias'
+    | '/apresentacao/caminhada'
+    | '/apresentacao/familia'
+    | '/dia/$numero'
+    | '/apresentacao'
+  id:
+    | '__root__'
+    | '/'
+    | '/como-viver'
+    | '/entrar'
+    | '/forca-da-oracao'
+    | '/introducao'
+    | '/jornada'
+    | '/palavra-ao-leitor'
+    | '/por-que-40-dias'
+    | '/apresentacao/caminhada'
+    | '/apresentacao/familia'
+    | '/dia/$numero'
+    | '/apresentacao/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ComoViverRoute: typeof ComoViverRoute
   EntrarRoute: typeof EntrarRoute
+  ForcaDaOracaoRoute: typeof ForcaDaOracaoRoute
+  IntroducaoRoute: typeof IntroducaoRoute
   JornadaRoute: typeof JornadaRoute
+  PalavraAoLeitorRoute: typeof PalavraAoLeitorRoute
+  PorQue40DiasRoute: typeof PorQue40DiasRoute
+  ApresentacaoCaminhadaRoute: typeof ApresentacaoCaminhadaRoute
+  ApresentacaoFamiliaRoute: typeof ApresentacaoFamiliaRoute
   DiaNumeroRoute: typeof DiaNumeroRoute
+  ApresentacaoIndexRoute: typeof ApresentacaoIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/como-viver': {
+      id: '/como-viver'
+      path: '/como-viver'
+      fullPath: '/como-viver'
+      preLoaderRoute: typeof ComoViverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/entrar': {
       id: '/entrar'
       path: '/entrar'
@@ -85,11 +209,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forca-da-oracao': {
+      id: '/forca-da-oracao'
+      path: '/forca-da-oracao'
+      fullPath: '/forca-da-oracao'
+      preLoaderRoute: typeof ForcaDaOracaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/introducao': {
+      id: '/introducao'
+      path: '/introducao'
+      fullPath: '/introducao'
+      preLoaderRoute: typeof IntroducaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jornada': {
       id: '/jornada'
       path: '/jornada'
       fullPath: '/jornada'
       preLoaderRoute: typeof JornadaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/palavra-ao-leitor': {
+      id: '/palavra-ao-leitor'
+      path: '/palavra-ao-leitor'
+      fullPath: '/palavra-ao-leitor'
+      preLoaderRoute: typeof PalavraAoLeitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/por-que-40-dias': {
+      id: '/por-que-40-dias'
+      path: '/por-que-40-dias'
+      fullPath: '/por-que-40-dias'
+      preLoaderRoute: typeof PorQue40DiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apresentacao/': {
+      id: '/apresentacao/'
+      path: '/apresentacao'
+      fullPath: '/apresentacao/'
+      preLoaderRoute: typeof ApresentacaoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apresentacao/caminhada': {
+      id: '/apresentacao/caminhada'
+      path: '/apresentacao/caminhada'
+      fullPath: '/apresentacao/caminhada'
+      preLoaderRoute: typeof ApresentacaoCaminhadaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apresentacao/familia': {
+      id: '/apresentacao/familia'
+      path: '/apresentacao/familia'
+      fullPath: '/apresentacao/familia'
+      preLoaderRoute: typeof ApresentacaoFamiliaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dia/$numero': {
@@ -104,9 +277,17 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ComoViverRoute: ComoViverRoute,
   EntrarRoute: EntrarRoute,
+  ForcaDaOracaoRoute: ForcaDaOracaoRoute,
+  IntroducaoRoute: IntroducaoRoute,
   JornadaRoute: JornadaRoute,
+  PalavraAoLeitorRoute: PalavraAoLeitorRoute,
+  PorQue40DiasRoute: PorQue40DiasRoute,
+  ApresentacaoCaminhadaRoute: ApresentacaoCaminhadaRoute,
+  ApresentacaoFamiliaRoute: ApresentacaoFamiliaRoute,
   DiaNumeroRoute: DiaNumeroRoute,
+  ApresentacaoIndexRoute: ApresentacaoIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
