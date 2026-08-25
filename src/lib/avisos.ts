@@ -12,12 +12,4 @@ export type Aviso = {
   mensagem: string;
 };
 
-export const avisos: Aviso[] = [
-  {
-    id: "boas-vindas-2026-08",
-    tipo: "comunicado",
-    titulo: "Seja bem-vindo à sua jornada",
-    mensagem:
-      "Este é um ambiente em construção. Novidades como vídeo do dia e testemunhos chegam em breve.",
-  },
-];
+export const avisos: Aviso[] = [];

@@ -5,7 +5,6 @@ import { useJornadaDev, diaLiberado } from "@/hooks/useJornadaDev";
 import { areas, TOTAL_DIAS } from "@/lib/devocional";
 import { sombra3d, sombra3dAberto } from "@/lib/estilo3d";
 import { AppShell } from "@/components/AppShell";
-import { PainelInformativo } from "@/components/PainelInformativo";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 // MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
@@ -72,8 +71,6 @@ function Jornada() {
             Reiniciar progresso (dev)
           </button>
         </header>
-
-        <PainelInformativo />
 
         <section className="mx-auto max-w-3xl px-6 pt-8">
           <div
