@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronsLeft, ChevronsRight, Menu, X } from "lucide-react";
 import { Cruz } from "./Ornamento";
+import { PainelAvisos } from "./PainelAvisos";
 import { sombra3d } from "@/lib/estilo3d";
 
 type ItemMenu = {
@@ -230,6 +231,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           expandido ? "md:ml-72" : "md:ml-[4.5rem]"
         }`}
       >
+        <PainelAvisos />
         {children}
       </div>
     </div>
