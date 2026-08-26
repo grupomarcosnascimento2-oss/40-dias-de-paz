@@ -60,8 +60,6 @@ function Jornada() {
   return (
     <AppShell>
       <div className="min-h-screen">
-        <AtalhosRapidos />
-
         <TabsPrimitive.Root defaultValue="caminhada" className="mt-6">
           <TabsPrimitive.List className="mx-auto flex max-w-3xl items-end gap-1.5 border-b border-accent/25 px-6">
             <TabsPrimitive.Trigger
@@ -79,6 +77,8 @@ function Jornada() {
           </TabsPrimitive.List>
 
           <TabsPrimitive.Content value="caminhada">
+            <AtalhosRapidos />
+
             <header className="mx-auto flex max-w-3xl items-center justify-between px-6 pt-6">
               <div>
                 <p className="script text-2xl text-accent">Sua caminhada</p>

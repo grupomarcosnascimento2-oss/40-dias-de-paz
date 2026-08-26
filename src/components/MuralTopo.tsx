@@ -12,11 +12,11 @@ export function MuralTopo() {
     <div
       className="fixed inset-x-0 top-0 z-20 flex h-11 items-center justify-center px-16 md:static md:inset-auto md:top-auto md:z-auto md:px-4"
       style={{
-        background: "linear-gradient(to right, #9c7a52, #b3956a, #9c7a52)",
-        boxShadow: "0 2px 10px -6px color-mix(in oklab, var(--navy) 55%, transparent)",
+        background: "linear-gradient(to right, #cbb08a, #d9c3a1, #cbb08a)",
+        boxShadow: "0 2px 10px -6px color-mix(in oklab, var(--navy) 40%, transparent)",
       }}
     >
-      <p className="truncate text-center text-xs font-medium tracking-wide text-primary sm:text-sm">
+      <p className="truncate text-center text-sm font-medium tracking-wide text-primary sm:text-base">
         {fraseMural}
       </p>
     </div>
