@@ -4,4 +4,4 @@
 // de WhatsApp e nas notificações push. Deixe como string vazia ("") para
 // esconder o mural quando não houver recado ativo.
 
-export const fraseMural: string = "Que a paz do Senhor esteja com você hoje.";
+export const fraseMural: string = "Que a paz de Cristo esteja com você hoje!";

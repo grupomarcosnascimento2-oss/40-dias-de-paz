@@ -19,7 +19,7 @@ export function MuralTopo() {
       }}
     >
       <p
-        className="absolute top-1/2 animate-[mural-letreiro_16s_linear_infinite] whitespace-nowrap text-sm font-medium tracking-wide text-primary sm:text-base"
+        className="absolute top-1/2 animate-[mural-letreiro_26s_linear_infinite] whitespace-nowrap text-sm font-medium tracking-wide text-primary sm:text-base"
         style={{ left: "100%", transform: "translate(0%, -50%)" }}
       >
         {fraseMural}
