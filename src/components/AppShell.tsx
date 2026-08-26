@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronsLeft, ChevronsRight, Menu, X } from "lucide-react";
 import { Cruz } from "./Ornamento";
+import { MuralTopo } from "./MuralTopo";
 import { PainelAvisos } from "./PainelAvisos";
 import { sombra3d } from "@/lib/estilo3d";
 
@@ -146,7 +147,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         type="button"
         onClick={() => setAbertoMobile(true)}
         aria-label="Abrir menu"
-        className="fixed left-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-accent/50 md:hidden"
+        className="fixed left-4 top-0 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-accent/50 md:hidden"
         style={sombra3d}
       >
         <Menu className="h-5 w-5" />
@@ -227,10 +228,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div
-        className={`min-h-screen pt-16 transition-[margin] duration-300 md:pt-0 ${
+        className={`min-h-screen pt-11 transition-[margin] duration-300 md:pt-0 ${
           expandido ? "md:ml-72" : "md:ml-[4.5rem]"
         }`}
       >
+        <MuralTopo />
         <PainelAvisos />
         {children}
       </div>

@@ -7,7 +7,6 @@ import { areas, TOTAL_DIAS } from "@/lib/devocional";
 import { sombra3d, sombra3dAberto } from "@/lib/estilo3d";
 import { AppShell } from "@/components/AppShell";
 import { AtalhosRapidos } from "@/components/AtalhosRapidos";
-import { MuralTopo } from "@/components/MuralTopo";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 // MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
@@ -61,8 +60,6 @@ function Jornada() {
   return (
     <AppShell>
       <div className="min-h-screen">
-        <MuralTopo />
-
         <AtalhosRapidos />
 
         <TabsPrimitive.Root defaultValue="caminhada" className="mt-6">
