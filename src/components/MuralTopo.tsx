@@ -9,8 +9,9 @@ export function MuralTopo() {
 
   return (
     <div
-      className="w-full bg-gradient-to-r from-primary via-navy-soft to-primary py-1.5"
+      className="w-full py-1.5"
       style={{
+        background: "linear-gradient(to right, #6b4a30, #7d5a3d, #6b4a30)",
         boxShadow: "0 2px 10px -6px color-mix(in oklab, var(--navy) 70%, transparent)",
       }}
     >
