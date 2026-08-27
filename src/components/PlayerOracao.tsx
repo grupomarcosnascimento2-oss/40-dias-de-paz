@@ -34,6 +34,25 @@ export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; or
 
   const progresso = duracao > 0 ? (atual / duracao) * 100 : 0;
 
+  // Marca qual parágrafo está "no ar" agora. Como a gravação não tem
+  // marcação de tempo por palavra, a divisão é estimada proporcionalmente
+  // ao tamanho de cada parágrafo em relação ao texto todo — um
+  // acompanhamento aproximado, não uma sincronia exata palavra a palavra.
+  let indiceAtivo = -1;
+  if (oracao && oracao.length > 0 && duracao > 0) {
+    const totalCaracteres = oracao.reduce((soma, p) => soma + p.length, 0) || 1;
+    const fracaoAtual = atual / duracao;
+    let acumulado = 0;
+    for (let i = 0; i < oracao.length; i++) {
+      acumulado += oracao[i]!.length;
+      if (fracaoAtual < acumulado / totalCaracteres) {
+        indiceAtivo = i;
+        break;
+      }
+    }
+    if (indiceAtivo === -1) indiceAtivo = oracao.length - 1;
+  }
+
   return (
     <section className="paper relative rounded-2xl border border-accent/35 p-6 shadow-[var(--shadow-sacred)] sm:p-8">
       <div className="flex items-start justify-between gap-4">
@@ -62,7 +81,12 @@ export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; or
       {oracao && oracao.length > 0 && (
         <div className="mt-4 space-y-3 text-foreground/90">
           {oracao.map((paragrafo, i) => (
-            <p key={i} className="leading-relaxed">
+            <p
+              key={i}
+              className={`-mx-2 rounded-md px-2 leading-relaxed transition-colors duration-500 ${
+                i === indiceAtivo ? "bg-accent/15 font-medium text-primary" : ""
+              }`}
+            >
               {paragrafo}
             </p>
           ))}
