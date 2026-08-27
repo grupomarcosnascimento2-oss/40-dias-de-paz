@@ -17,7 +17,7 @@ export function InterruptorSom() {
       aria-pressed={ativo}
       aria-label={ativo ? "Desativar som" : "Ativar som"}
       title={ativo ? "Som ativado" : "Som desativado"}
-      className="fixed right-3 top-0 z-40 flex h-11 items-center gap-1.5 rounded-full px-2"
+      className="flex h-9 items-center gap-1.5 rounded-full px-2"
     >
       <span
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${

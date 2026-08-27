@@ -3,7 +3,6 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronsLeft, ChevronsRight, Menu, X } from "lucide-react";
 import { Cruz } from "./Ornamento";
 import { MuralTopo } from "./MuralTopo";
-import { InterruptorSom } from "./InterruptorSom";
 import { PainelAvisos } from "./PainelAvisos";
 import { sombra3d } from "@/lib/estilo3d";
 
@@ -153,8 +152,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       >
         <Menu className="h-5 w-5" />
       </button>
-
-      <InterruptorSom />
 
       {/* Fundo escurecido atrás do menu, só no celular */}
       {abertoMobile && (
