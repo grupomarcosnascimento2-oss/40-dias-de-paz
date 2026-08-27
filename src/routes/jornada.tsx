@@ -81,7 +81,6 @@ function Jornada() {
 
             <header className="mx-auto flex max-w-3xl items-center justify-between px-6 pt-6">
               <div>
-                <p className="script text-2xl text-accent">Sua caminhada</p>
                 <h1 className="text-2xl sm:text-3xl">40 Dias Rezando com Marcos Nascimento</h1>
               </div>
               <button
