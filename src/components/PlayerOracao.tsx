@@ -39,14 +39,24 @@ export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; or
       <div className="flex items-start justify-between gap-4">
         <p className="text-xs uppercase tracking-[0.2em] text-accent">Oração do Dia</p>
 
-        <div className="flex shrink-0 flex-col items-center gap-1">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-accent/50">
-            <Play className="ml-0.5 h-4 w-4" fill="currentColor" />
+        <button
+          type="button"
+          onClick={alternar}
+          disabled={!src}
+          aria-label={tocando ? "Pausar a oração" : "Ouvir a oração"}
+          className="flex shrink-0 flex-col items-center gap-1 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-accent/50 transition-transform hover:scale-105">
+            {tocando ? (
+              <Pause className="h-4 w-4" fill="currentColor" />
+            ) : (
+              <Play className="ml-0.5 h-4 w-4" fill="currentColor" />
+            )}
           </span>
           <span className="text-center text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
             Oração em áudio
           </span>
-        </div>
+        </button>
       </div>
 
       {oracao && oracao.length > 0 && (
