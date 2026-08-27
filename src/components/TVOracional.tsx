@@ -20,8 +20,8 @@ export function TVOracional() {
 
         {/* Corpo / bezel da TV */}
         <div
-          className="relative rounded-[2rem] border border-accent/30 bg-gradient-to-b from-primary to-navy-soft p-3 sm:p-4"
-          style={sombra3d}
+          className="relative rounded-[2rem] border-2 bg-gradient-to-b from-card to-secondary/60 p-3 sm:p-4"
+          style={{ ...sombra3d, borderColor: "#cbb08a" }}
         >
           {/* Tela */}
           <div
@@ -61,7 +61,7 @@ export function TVOracional() {
 
           {/* Rodapé do bezel */}
           <div className="mt-3 flex items-center justify-between px-1">
-            <div className="flex items-center gap-1.5 text-primary-foreground/60">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
               <Radio className="h-3.5 w-3.5" />
               <span className="text-[10px] uppercase tracking-[0.14em]">Áudio oracional</span>
             </div>
