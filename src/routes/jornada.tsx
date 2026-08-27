@@ -64,18 +64,30 @@ function Jornada() {
         <TVOracional />
 
         <TabsPrimitive.Root defaultValue="caminhada" className="mt-6">
-          <TabsPrimitive.List className="mx-auto flex max-w-3xl items-end gap-1.5 border-b border-accent/25 px-6">
+          <TabsPrimitive.List className="mx-auto flex max-w-3xl items-end gap-1.5 overflow-x-auto border-b border-accent/25 px-6">
             <TabsPrimitive.Trigger
               value="caminhada"
-              className="script relative -mb-px translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+              className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
             >
               Sua caminhada
             </TabsPrimitive.Trigger>
             <TabsPrimitive.Trigger
               value="comunidade"
-              className="script relative -mb-px translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+              className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
             >
               Comunidade de Oração
+            </TabsPrimitive.Trigger>
+            <TabsPrimitive.Trigger
+              value="acompanhamento"
+              className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+            >
+              Acompanhamento espiritual
+            </TabsPrimitive.Trigger>
+            <TabsPrimitive.Trigger
+              value="agenda"
+              className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+            >
+              Agenda de eventos
             </TabsPrimitive.Trigger>
           </TabsPrimitive.List>
 
@@ -244,6 +256,28 @@ function Jornada() {
               <p className="mx-auto mt-3 max-w-md text-foreground/75">
                 Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui a
                 comunidade de oração.
+              </p>
+            </section>
+          </TabsPrimitive.Content>
+
+          <TabsPrimitive.Content value="acompanhamento">
+            <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+              <Cruz className="mx-auto h-6 w-6 text-accent" />
+              <h2 className="script mt-4 text-3xl text-primary">Acompanhamento espiritual</h2>
+              <p className="mx-auto mt-3 max-w-md text-foreground/75">
+                Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui o
+                acompanhamento espiritual.
+              </p>
+            </section>
+          </TabsPrimitive.Content>
+
+          <TabsPrimitive.Content value="agenda">
+            <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+              <Cruz className="mx-auto h-6 w-6 text-accent" />
+              <h2 className="script mt-4 text-3xl text-primary">Agenda de eventos</h2>
+              <p className="mx-auto mt-3 max-w-md text-foreground/75">
+                Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui a agenda
+                de eventos.
               </p>
             </section>
           </TabsPrimitive.Content>
