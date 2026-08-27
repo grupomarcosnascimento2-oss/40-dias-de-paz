@@ -8,7 +8,16 @@ function tempo(segundos: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; oracao?: string[] }) {
+export function PlayerOracao({
+  src,
+  oracao,
+  oracaoTempos,
+}: {
+  src?: string;
+  titulo: string;
+  oracao?: string[];
+  oracaoTempos?: number[];
+}) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [tocando, setTocando] = useState(false);
   const [atual, setAtual] = useState(0);
@@ -34,23 +43,28 @@ export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; or
 
   const progresso = duracao > 0 ? (atual / duracao) * 100 : 0;
 
-  // Marca qual parágrafo está "no ar" agora. Como a gravação não tem
-  // marcação de tempo por palavra, a divisão é estimada proporcionalmente
-  // ao tamanho de cada parágrafo em relação ao texto todo — um
-  // acompanhamento aproximado, não uma sincronia exata palavra a palavra.
+  // Marca qual parágrafo está "no ar" agora. Quando existem tempos reais
+  // (detectados a partir das pausas de fala no áudio), usa-os — são bem
+  // mais precisos do que estimar apenas pelo tamanho do texto.
   let indiceAtivo = -1;
   if (oracao && oracao.length > 0 && duracao > 0) {
-    const totalCaracteres = oracao.reduce((soma, p) => soma + p.length, 0) || 1;
-    const fracaoAtual = atual / duracao;
-    let acumulado = 0;
-    for (let i = 0; i < oracao.length; i++) {
-      acumulado += oracao[i]!.length;
-      if (fracaoAtual < acumulado / totalCaracteres) {
-        indiceAtivo = i;
-        break;
+    if (oracaoTempos && oracaoTempos.length === oracao.length) {
+      for (let i = 0; i < oracaoTempos.length; i++) {
+        if (atual >= oracaoTempos[i]!) indiceAtivo = i;
       }
+    } else {
+      const totalCaracteres = oracao.reduce((soma, p) => soma + p.length, 0) || 1;
+      const fracaoAtual = atual / duracao;
+      let acumulado = 0;
+      for (let i = 0; i < oracao.length; i++) {
+        acumulado += oracao[i]!.length;
+        if (fracaoAtual < acumulado / totalCaracteres) {
+          indiceAtivo = i;
+          break;
+        }
+      }
+      if (indiceAtivo === -1) indiceAtivo = oracao.length - 1;
     }
-    if (indiceAtivo === -1) indiceAtivo = oracao.length - 1;
   }
 
   return (

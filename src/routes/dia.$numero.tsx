@@ -117,6 +117,7 @@ function DiaOracional() {
             {...(dia.audioUrl ? { src: dia.audioUrl } : {})}
             titulo={dia.titulo}
             {...(dia.oracao ? { oracao: dia.oracao } : {})}
+            {...(dia.oracaoTempos ? { oracaoTempos: dia.oracaoTempos } : {})}
           />
 
           <section className="paper rounded-2xl border border-border/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
