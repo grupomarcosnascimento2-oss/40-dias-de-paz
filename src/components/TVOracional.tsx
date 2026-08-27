@@ -1,5 +1,6 @@
 import { Play, Radio } from "lucide-react";
 import { Cruz } from "./Ornamento";
+import { InterruptorSom } from "./InterruptorSom";
 import { sombra3d } from "@/lib/estilo3d";
 
 // TV Oracional — vitrine visual no formato de uma TV moderna, para
@@ -65,10 +66,7 @@ export function TVOracional() {
               <Radio className="h-3.5 w-3.5" />
               <span className="text-[10px] uppercase tracking-[0.14em]">Áudio oracional</span>
             </div>
-            <span
-              className="h-2 w-2 rounded-full bg-accent"
-              style={{ boxShadow: "0 0 6px 2px color-mix(in oklab, var(--gold) 60%, transparent)" }}
-            />
+            <InterruptorSom />
           </div>
         </div>
       </div>
