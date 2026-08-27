@@ -430,6 +430,21 @@ if (dia2) {
   ];
 }
 
+// Conteúdo real do Dia 3, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia3 = todosOsDias.find((dia) => dia.numero === 3);
+if (dia3) {
+  dia3.titulo = "Ensina-me a confiar na Tua Providência";
+  dia3.audioUrl = "/audio/dia-03.ogg";
+  dia3.oracaoTempos = [0, 33.66, 110.48, 143.0];
+  dia3.oracao = [
+    "Senhor, ensina-me a confiar na Tua providência. A providência que verdadeiramente provê, que verdadeiramente apresenta, que verdadeiramente traz. Senhor, em muitas situações eu não consigo entender o que Tu estás a fazer na minha vida, porque a minha mente, a minha limitação é humana, é limitada, é tendenciosa ao mal.",
+    "Então ensina-me, Senhor, a confiar na Tua providência, de que nada vai faltar na minha vida, de que no auge da escassez, talvez do amor, talvez da esperança, talvez da alegria, no auge do desespero, da solidão, no auge da falta de esperança, que me assola o coração em tantos momentos. Eu saiba esperar, eu saiba confiar de que Tu has de agir no derradeiro momento, quando as forças humanas se acabam, Senhor, quando as forças humanas vão-se embora e fica apenas a esperança de que Deus está agindo com a Tua providência. Dessa forma eu quero a Deus, nesse oração, enxergar esse caminho e continuar acreditando no Teu cuidado, dia após dia, noite após noite, hora após hora, minuto após minuto, segundo após segundo.",
+    "Ensina-me a confiar na Tua providência, que has de agir, que has de providenciar. Providência Santíssima do Eterno, Onipotente, Misericordiosíssimo Deus, que tudo Tens providenciado e providenciareis para o nosso bem. Providenciar em todas as nossas necessidades, assim creio, assim espero, seja sempre feita a Tua vontade.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
