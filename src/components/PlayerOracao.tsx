@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
-import { Cruz } from "./Ornamento";
 
 function tempo(segundos: number) {
   if (!Number.isFinite(segundos)) return "--:--";
@@ -9,7 +8,7 @@ function tempo(segundos: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function PlayerOracao({ src, titulo }: { src?: string; titulo: string }) {
+export function PlayerOracao({ src, oracao }: { src?: string; titulo: string; oracao?: string[] }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [tocando, setTocando] = useState(false);
   const [atual, setAtual] = useState(0);
@@ -36,19 +35,29 @@ export function PlayerOracao({ src, titulo }: { src?: string; titulo: string }) 
   const progresso = duracao > 0 ? (atual / duracao) * 100 : 0;
 
   return (
-    <section className="paper rounded-2xl border border-accent/35 p-6 shadow-[var(--shadow-sacred)] sm:p-8">
-      <div className="flex items-center justify-center gap-2 text-accent">
-        <Cruz className="h-3 w-3" />
-        <span className="text-xs uppercase tracking-[0.28em]">Oração em áudio</span>
-        <Cruz className="h-3 w-3" />
+    <section className="paper relative rounded-2xl border border-accent/35 p-6 shadow-[var(--shadow-sacred)] sm:p-8">
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-xs uppercase tracking-[0.2em] text-accent">Oração do Dia</p>
+
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-accent/50">
+            <Play className="ml-0.5 h-4 w-4" fill="currentColor" />
+          </span>
+          <span className="text-center text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            Oração em áudio
+          </span>
+        </div>
       </div>
 
-      <p className="mt-3 text-center font-[family-name:var(--font-display)] text-2xl text-primary">
-        {titulo}
-      </p>
-      <p className="mt-1 text-center text-sm text-muted-foreground">
-        Reflexão e oração na voz de Marcos Nascimento
-      </p>
+      {oracao && oracao.length > 0 && (
+        <div className="mt-4 space-y-3 text-foreground/90">
+          {oracao.map((paragrafo, i) => (
+            <p key={i} className="leading-relaxed">
+              {paragrafo}
+            </p>
+          ))}
+        </div>
+      )}
 
       {src ? (
         <>

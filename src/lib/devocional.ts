@@ -6,6 +6,7 @@ export type Dia = {
   proposito: string;
   frase: string;
   audioUrl?: string;
+  oracao?: string[];
 };
 
 export type Area = {
@@ -395,6 +396,20 @@ export const areas: Area[] = [
 ];
 
 export const todosOsDias: Dia[] = areas.flatMap((a) => a.dias);
+
+// Conteúdo real do Dia 1, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia1 = todosOsDias.find((dia) => dia.numero === 1);
+if (dia1) {
+  dia1.titulo = "Senhor, hoje eu entrego minha vida em Tuas mãos";
+  dia1.oracao = [
+    "Eu quero, neste momento, meu Deus, meu Senhor, meu Pai, meu Criador, meu Amigo, meu Amado, fazer um lançamento, fazer uma entrega completa do meu ser, da minha alma, do meu corpo e do meu espírito na Tua presença. Meus pensamentos, meus desejos, minhas vontades, tudo entrego a Ti nas Tuas mãos neste momento.",
+    "Para que, a partir desta entrega, você estenda seus braços, acolha, receba, Senhor, o que está em mim, o meu corpo, o meu físico, meus órgãos internos e externos, a minha alma, os meus sentimentos, minhas vontades, minhas alegrias e tristezas, ó Deus. Eu entrego tudo nas Tuas mãos, Senhor. O meu trabalho, a minha casa, a minha família, meus filhos, minha esposa.",
+    "Eu entrego o meu futuro, o meu presente. Eu entrego verdadeiramente, ó Deus, pois Tu és um Deus que recebe e jamais rejeita Seus filhos amados. Por isso, agradeço, Pai.",
+    "Agradeço pela Tua misericórdia. Entrego o meu futuro, os passos que serão dados. Entrego o dia a dia e o passado.",
+    "Entrego tudo o que há de me entregar, de me dar de presente e, principalmente, o dom da vida. Eu Te entrego a minha vida em Tuas mãos.",
+  ];
+}
 
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
