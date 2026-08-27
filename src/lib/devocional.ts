@@ -445,6 +445,27 @@ if (dia3) {
   ];
 }
 
+// Conteúdo real do Dia 4, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia4 = todosOsDias.find((dia) => dia.numero === 4);
+if (dia4) {
+  dia4.titulo = "Senhor, fica comigo quando eu tiver medo";
+  dia4.audioUrl = "/audio/dia-04.ogg";
+  dia4.oracaoTempos = [0, 21.07, 35.55, 56.08, 61.39, 88.28, 100.93, 117.52, 132.73, 142.42];
+  dia4.oracao = [
+    "Senhor, quantas e quantas vezes eu fui assolado pelo medo. E neste momento, em meio ao medo que toma conta de mim, em meio à insegurança diante de tantas situações e preocupações que assolam o meu coração. Fica comigo, Senhor, quando tiver medo.",
+    "Quando eu estiver com medo, fica comigo. Porque eu tenho certeza, Deus, que a Tua presença permanece. Fica comigo, Pai.",
+    "Fica ao meu lado, me segura, meu Pai, quando o medo vier me assolar. Quando o medo bater a porta, quando o medo falar mais alto. Quando o medo disser que eu não vou conseguir.",
+    "Quando o medo disser que eu vou perder. Quando o medo disser que eu vou morrer. Fica comigo.",
+    "Porque no momento em que Tu estiver comigo, Pai, o medo cairá por terra, o medo não produzirá efeito. No momento em que estiver comigo, como agora, Senhor, eu estou com o coração medroso, inseguro e preocupado. Fica comigo.",
+    "A minha súplica neste momento é essa. Eu não quero ouro, nem prata, nem coisas superiores a mim. Mas eu quero manter em calma e sossegada a minha alma.",
+    "E o meu suspiro é esse, Senhor. Fica comigo quando eu tiver medo. Medo que constantemente me acompanha ao deitar, ao levantar, ao caminhar durante o dia.",
+    "O medo que muitas vezes parece um monstro, parece um bicho, parece um pânico. Acima de tudo isso, Senhor, terei paz, terei segurança. Fica comigo, Senhor.",
+    "Senhor, esteja do meu lado. Essa é a minha súplica deste momento. Senhor, fica comigo quando eu tiver medo.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
