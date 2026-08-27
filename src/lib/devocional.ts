@@ -402,6 +402,7 @@ export const todosOsDias: Dia[] = areas.flatMap((a) => a.dias);
 const dia1 = todosOsDias.find((dia) => dia.numero === 1);
 if (dia1) {
   dia1.titulo = "Senhor, hoje eu entrego minha vida em Tuas mãos";
+  dia1.audioUrl = "/audio/dia-01.ogg";
   dia1.oracao = [
     "Eu quero, neste momento, meu Deus, meu Senhor, meu Pai, meu Criador, meu Amigo, meu Amado, fazer um lançamento, fazer uma entrega completa do meu ser, da minha alma, do meu corpo e do meu espírito na Tua presença. Meus pensamentos, meus desejos, minhas vontades, tudo entrego a Ti nas Tuas mãos neste momento.",
     "Para que, a partir desta entrega, você estenda seus braços, acolha, receba, Senhor, o que está em mim, o meu corpo, o meu físico, meus órgãos internos e externos, a minha alma, os meus sentimentos, minhas vontades, minhas alegrias e tristezas, ó Deus. Eu entrego tudo nas Tuas mãos, Senhor. O meu trabalho, a minha casa, a minha família, meus filhos, minha esposa.",
