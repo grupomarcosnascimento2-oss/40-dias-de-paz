@@ -417,6 +417,19 @@ if (dia1) {
   ];
 }
 
+// Conteúdo real do Dia 2, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia2 = todosOsDias.find((dia) => dia.numero === 2);
+if (dia2) {
+  dia2.titulo = "Aumenta a minha fé, Senhor";
+  dia2.audioUrl = "/audio/dia-02.ogg";
+  dia2.oracaoTempos = [0, 81.76];
+  dia2.oracao = [
+    "Senhor, mais uma vez eu entro na Tua presença para trazer em todos os momentos em que a minha fé foi fraca, em que por muitos momentos difíceis eu fraquejei, eu achei que estava sozinho, eu achei que estava abandonado e não lembrei daquele momento que Tu me carregava pelo colo. Ao longo desses anos de caminhada, eu acredito e aqui rezo, meu Deus, mesmo quando não percebo respostas diante da minha oração, quando não percebo respostas diante do meu pedido, mas eu não desisto, eu continuo firme na minha experiência que tem me fortalecido na oração e na Tua presença. Quando as respostas não vêm, quando nós não vemos os frutos da nossa oração, quando achamos até que Tu não estás ouvindo a nossa voz, não estás ouvindo a nossa súplica, que bate a tristeza, o vazio, a solidão, a fé fica como fumaça, a fé fica como areia que facilmente se vai com o vento.",
+    "Mesmo assim, meu Deus, aqui eu estou para aclamar, aumenta a minha fé, Senhor. A fé, a certeza naquilo que não se vê, aumenta a minha fé na Tua providência, aumenta a minha fé na Tua presença na minha vida, aumenta a minha fé de que Tu é o meu Pai, que eu sou verdadeiramente o Teu Filho e devido a essa presença maravilhosa eu posso descansar na Tua graça, por isso aumenta a minha fé, faz com que a minha fé seja firme, forte, madura, para que a fé me traga paz, segurança, serenidade, Senhor. Aumenta a minha fé.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
