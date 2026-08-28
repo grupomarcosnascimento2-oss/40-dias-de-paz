@@ -466,6 +466,25 @@ if (dia4) {
   ];
 }
 
+// Conteúdo real do Dia 5, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia5 = todosOsDias.find((dia) => dia.numero === 5);
+if (dia5) {
+  dia5.titulo = "Quero aprender a caminhar Contigo";
+  dia5.audioUrl = "/audio/dia-05.ogg";
+  dia5.oracaoTempos = [0, 12.6, 35.8, 64.74, 83.11, 108.93, 121.76, 130.87];
+  dia5.oracao = [
+    "Quero aprender a caminhar contigo, Senhor. Senhor, nesse momento, eu busco intimidade contigo. Eu busco relacionamento contigo.",
+    "Quantas vezes, meu Deus, eu procurei apenas quando precisava de alguma coisa. Quando tinha alguma intenção, eu procurava e depois desaparecia da Tua presença. Mas, hoje, meu Deus, eu quero aprender a caminhar contigo.",
+    "Eu quero aprender a criar um relacionamento verdadeiro, uma amizade pura, uma amizade profunda contigo, meu Pai. Através da oração, essa comunhão, essa presença unida a Ti. Esse estar juntos, unidos com a Tua palavra e unidos com essa vida do dia-a-dia, meu Deus, eu procuro agora.",
+    "Eu quero caminhar, eu quero dar passos, seguindo Teus passos. Eu quero, de verdade, eu quero estar unido, ter um pensamento contigo, Pai. Caminhar, o caminho se faz caminhando, Senhor.",
+    "E eu quero que segure na minha mão para eu aprender, me ensina a caminhar contigo, a aprimorar, a amadurecer essa intimidade e esse relacionamento contigo, meu Pai. Para que eu esteja cada vez mais próximo, como Tu nos ensinaste, o Pai e eu somos um. Quem me vê, vê o Pai.",
+    "Quem vê o Pai, me vê. Eu quero viver, Senhor, essa experiência, caminhando dia após dia contigo. Ensina-me, Senhor.",
+    "Eu quero aprender, Pai. Eu me abro para esse aprendizado. Senhor, quero aprender a caminhar contigo.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
