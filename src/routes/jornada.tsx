@@ -315,7 +315,8 @@ function Jornada() {
               <h2 className="script mt-4 text-3xl text-primary">Jornada de Oração</h2>
               <p className="mx-auto mt-3 max-w-md text-foreground/75">
                 Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui uma
-                experiência para conhecer o devocional antes de entrar para a caminhada dos 40 dias.
+                experiência de oração profunda com Deus que vai transformar sua vida completamente!
+                🙏
               </p>
             </section>
           </TabsPrimitive.Content>
