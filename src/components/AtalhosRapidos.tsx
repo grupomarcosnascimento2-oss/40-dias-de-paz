@@ -6,7 +6,7 @@ import { BookOpen, UserRound, CalendarHeart } from "lucide-react";
 
 const atalhos = [
   { icone: BookOpen, legenda: "Introdução", to: "/introducao" },
-  { icone: UserRound, legenda: "Marcos Nascimento", to: "/apresentacao" },
+  { icone: UserRound, legenda: "Apresentação", to: "/apresentacao" },
   { icone: CalendarHeart, legenda: "Por que 40 dias?", to: "/por-que-40-dias" },
 ] as const;
 
