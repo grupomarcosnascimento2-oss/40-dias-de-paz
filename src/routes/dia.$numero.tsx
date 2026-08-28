@@ -90,7 +90,7 @@ function DiaOracional() {
         <header className="mx-auto max-w-3xl px-6 pt-10">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <Link to="/jornada" className="hover:underline">
-              ← Minha jornada
+              ← Início
             </Link>
             <span>
               Dia {dia.numero} de {TOTAL_DIAS}
@@ -155,7 +155,10 @@ function DiaOracional() {
             </p>
           </section>
 
-          <div className="pt-2 text-center">
+          <div className="flex flex-col items-center gap-4 pt-2 sm:flex-row sm:justify-between">
+            <Link to="/jornada" className="text-sm text-muted-foreground hover:underline">
+              ← Início
+            </Link>
             {jaConcluido ? (
               <Link
                 to="/jornada"

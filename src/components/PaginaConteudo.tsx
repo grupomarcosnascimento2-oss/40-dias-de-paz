@@ -36,14 +36,17 @@ export function PaginaConteudo({
           {children}
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-          {anterior ? (
-            <Link to={anterior.to} className="text-sm text-muted-foreground hover:underline">
-              ← {anterior.rotulo}
+        <div className="mt-8 flex flex-wrap items-end justify-between gap-3">
+          <div className="flex flex-col gap-1.5">
+            <Link to="/jornada" className="text-sm text-muted-foreground hover:underline">
+              ← Início
             </Link>
-          ) : (
-            <span />
-          )}
+            {anterior && (
+              <Link to={anterior.to} className="text-sm text-muted-foreground hover:underline">
+                ← {anterior.rotulo}
+              </Link>
+            )}
+          </div>
           {proximo && (
             <Link
               to={proximo.to}
