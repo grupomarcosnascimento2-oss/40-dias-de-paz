@@ -1,14 +1,42 @@
-import { Play, Radio } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Cruz } from "./Ornamento";
 import { InterruptorSom } from "./InterruptorSom";
+import { useSom } from "@/hooks/useSom";
 import { sombra3d } from "@/lib/estilo3d";
 
-// TV Oracional — vitrine visual no formato de uma TV moderna, para
-// futuramente exibir vídeos gravados e transmitir áudios de oração.
-// Mais adiante, vai abrigar também transmissões ao vivo (streaming).
-// Por enquanto é só a vitrine: o conteúdo real ainda não está pronto.
+// TV Oracional — vitrine visual no formato de uma TV moderna, exibindo
+// um vídeo do YouTube. O som é controlado pelo mesmo interruptor global
+// usado no resto do app (useSom): quando ligado, o vídeo toca com áudio;
+// quando desligado, fica mudo.
+//
+// O vídeo começa em autoplay silencioso (garantido em qualquer
+// navegador) e, assim que a página do player carrega, tentamos ativar o
+// som automaticamente se o interruptor estiver ligado — a abordagem mais
+// confiável para autoplay com áudio.
+//
+// Como este componente só existe dentro da aba "Devocional" da jornada,
+// ele é desmontado automaticamente (e o vídeo para sozinho) sempre que o
+// usuário sai desta tela: navega para outra página (dia de oração,
+// páginas de conteúdo) ou troca para a aba "Jornada de Oração". Ao
+// voltar para cá, o componente remonta e o vídeo recomeça.
+
+const VIDEO_ID = "lEjwi2SkJnM";
+
+function enviarComando(iframe: HTMLIFrameElement | null, func: "playVideo" | "mute" | "unMute") {
+  iframe?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*");
+}
 
 export function TVOracional() {
+  const { ativo, alternar, carregado } = useSom();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [pronto, setPronto] = useState(false);
+
+  useEffect(() => {
+    if (!pronto || !carregado) return;
+    enviarComando(iframeRef.current, ativo ? "unMute" : "mute");
+    enviarComando(iframeRef.current, "playVideo");
+  }, [ativo, pronto, carregado]);
+
   return (
     <div className="mx-auto max-w-3xl px-6 pt-8">
       <div className="relative mx-auto max-w-xl pt-6">
@@ -25,48 +53,32 @@ export function TVOracional() {
           style={{ ...sombra3d, borderColor: "#cbb08a" }}
         >
           {/* Tela */}
-          <div
-            className="relative aspect-video overflow-hidden rounded-2xl"
-            style={{
-              background: "radial-gradient(ellipse at center, #1c2848 0%, #0d1326 78%)",
-            }}
-          >
-            {/* Linhas sutis, efeito de tela antiga */}
-            <div
-              className="pointer-events-none absolute inset-0 opacity-15"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(255,255,255,0.5) 4px)",
-              }}
+          <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
+            <iframe
+              ref={iframeRef}
+              className="absolute inset-0 h-full w-full"
+              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1`}
+              title="TV Oracional"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              onLoad={() => setPronto(true)}
             />
 
-            {/* Selo de canal */}
-            <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 backdrop-blur-sm">
+            {/* Selo de canal — não bloqueia os controles do player */}
+            <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-accent">
                 TV Oracional
               </span>
             </div>
-
-            {/* Conteúdo central */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-              <span className="flex h-14 w-14 animate-pulse items-center justify-center rounded-full bg-accent/15 ring-1 ring-accent/50">
-                <Play className="h-6 w-6 translate-x-0.5 text-accent" fill="currentColor" />
-              </span>
-              <p className="script text-xl text-accent sm:text-2xl">Em breve</p>
-              <p className="max-w-xs text-xs text-primary-foreground/70 sm:text-sm">
-                Vídeos e transmissões de oração — e, no futuro, também ao vivo.
-              </p>
-            </div>
           </div>
 
           {/* Rodapé do bezel */}
           <div className="mt-3 flex items-center justify-between px-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Radio className="h-3.5 w-3.5" />
-              <span className="text-[10px] uppercase tracking-[0.14em]">Áudio oracional</span>
-            </div>
-            <InterruptorSom />
+            <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              Áudio oracional
+            </span>
+            <InterruptorSom ativo={ativo} alternar={alternar} />
           </div>
         </div>
       </div>

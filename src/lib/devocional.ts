@@ -613,6 +613,27 @@ if (dia12) {
   ];
 }
 
+// Conteúdo real do Dia 13, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia13 = todosOsDias.find((dia) => dia.numero === 13);
+if (dia13) {
+  dia13.titulo = "Senhor, escuta o meu pedido";
+  dia13.audioUrl = "/audio/dia-13.ogg";
+  dia13.oracaoTempos = [0, 2.56, 18.12, 31.05, 53.73, 73.91, 93.1, 108.55, 121.17, 123.49];
+  dia13.oracao = [
+    "Senhor, escuta o meu pedido.",
+    'Ó Pai, na Tua Palavra me ensinas a pedir: "Pedi e recebereis; buscai e encontrareis; batei e abrir-se-vos-á. Porque todo aquele que pede, recebe; e quem busca, encontra; e a quem bate, abrir-se-á."',
+    "Este gesto, Senhor, eu aqui concretizo. Porque não vou murmurar, não quero murmurar diante da Tua presença. Não quero reclamar diante da Tua presença.",
+    "Que a minha oração, que o meu pedido, que a minha súplica, Pai, seja gesto de pequenez, que demonstre a minha necessidade, que demonstre o tanto que eu preciso de Ti, que demonstre este reconhecimento de que sem Ti, Senhor, eu não sou nada. E isso é pura verdade, meu Pai.",
+    "Sem Ti, meu Deus, sem o Senhor, eu não sou quem eu sou, eu não terei o que tenho, eu não consigo fazer nada, porque Tu és a origem, meu Pai. És a origem de tudo, és a origem da minha força, do meu respirar, da minha vida, de tudo o que eu sei.",
+    "E a Tua Palavra me convida a buscar, e buscar em primeiro lugar, de todo o coração. E aqui estou, Senhor, nesta súplica e entrega, com o meu desejo profundo de colocar-Te em primeiro lugar, Pai. Em primeira circunstância, meu Deus.",
+    "Aqui eu estou clamando, Senhor, que a minha oração chegue até Vós. Senhor, escuta o meu pedido, Pai. Que suba pela intercessão da Virgem Maria, Nossa Mãe Santíssima, pela intercessão de todos os santos e anjos.",
+    "Eu clamo agora por isso, Pai: pela Tua bondade e misericórdia. Usa desta misericórdia comigo, que sou misericórdia diante de Ti.",
+    "Senhor, escuta o meu pedido.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }

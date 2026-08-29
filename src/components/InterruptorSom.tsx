@@ -4,11 +4,23 @@ import { useSom } from "@/hooks/useSom";
 // Interruptor de som — discreto, no canto superior direito, na mesma
 // linha do botão de menu e do mural. "Ligado" reproduz conteúdo
 // (orações, TV Oracional); "Desligado" silencia.
+//
+// Aceita "ativo"/"alternar" por fora (controlado) para compartilhar o
+// mesmo estado com quem precisar reagir a ele (ex: a TV Oracional). Sem
+// esses props, ele mesmo busca o estado global via useSom.
 
-export function InterruptorSom() {
-  const { ativo, alternar, carregado } = useSom();
+export function InterruptorSom({
+  ativo: ativoControlado,
+  alternar: alternarControlado,
+}: {
+  ativo?: boolean;
+  alternar?: () => void;
+} = {}) {
+  const proprio = useSom();
+  const ativo = ativoControlado ?? proprio.ativo;
+  const alternar = alternarControlado ?? proprio.alternar;
 
-  if (!carregado) return null;
+  if (ativoControlado === undefined && !proprio.carregado) return null;
 
   return (
     <button
