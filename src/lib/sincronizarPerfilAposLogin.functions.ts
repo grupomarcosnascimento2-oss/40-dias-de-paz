@@ -3,7 +3,7 @@ import { consultarPagamentoPorEmail } from "@/lib/appsScriptPagamento.server";
 
 // Depois do login, verifica se o e-mail do usuário está com pagamento
 // confirmado na planilha e, se estiver, promove o perfil dele para
-// "pagante" no banco de dados. Se não estiver confirmado, o perfil
+// "membro" no banco de dados. Se não estiver confirmado, o perfil
 // permanece como "visitante" (papel padrão criado no primeiro acesso).
 //
 // AINDA NÃO É CHAMADA POR NENHUMA ROTA — faz parte do controle de perfil
@@ -14,7 +14,7 @@ import { consultarPagamentoPorEmail } from "@/lib/appsScriptPagamento.server";
 // Nunca promove ninguém a "administrador" — essa promoção é sempre manual,
 // feita diretamente no banco de dados por quem já é administrador.
 
-type ResultadoSincronizacao = { papel: "pagante" } | { papel: "visitante"; motivo?: string };
+type ResultadoSincronizacao = { papel: "membro" } | { papel: "visitante"; motivo?: string };
 
 export const sincronizarPerfilAposLogin = createServerFn({ method: "POST" })
   .validator((data: { userId: string; email: string }) => data)
@@ -32,7 +32,7 @@ export const sincronizarPerfilAposLogin = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("perfis")
-      .update({ papel: "pagante" })
+      .update({ papel: "membro" })
       .eq("user_id", data.userId);
 
     if (error) {
@@ -40,5 +40,5 @@ export const sincronizarPerfilAposLogin = createServerFn({ method: "POST" })
       return { papel: "visitante", motivo: "falha_ao_atualizar" };
     }
 
-    return { papel: "pagante" };
+    return { papel: "membro" };
   });

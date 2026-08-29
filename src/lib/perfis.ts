@@ -13,14 +13,14 @@
 // atual (useJornadaDev) — essa reconexão é um passo separado, ainda não
 // feito.
 
-export type Papel = "administrador" | "pagante" | "visitante";
+export type Papel = "administrador" | "membro" | "visitante";
 
 export const CONTROLE_DE_PERFIL_HABILITADO = false;
 
 export const PAPEL_PADRAO: Papel = "visitante";
 
 export function papelPermiteAcessoCompleto(papel: Papel | undefined): boolean {
-  return papel === "administrador" || papel === "pagante";
+  return papel === "administrador" || papel === "membro";
 }
 
 export function ehAdministrador(papel: Papel | undefined): boolean {

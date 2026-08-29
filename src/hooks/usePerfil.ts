@@ -19,7 +19,7 @@ async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
 
   // Primeiro acesso: cria o perfil como "visitante" — o papel mínimo,
   // que o próprio usuário tem permissão de criar (ver RLS na migration).
-  // Uma promoção a "pagante" ou "administrador" só acontece por fora,
+  // Uma promoção a "membro" ou "administrador" só acontece por fora,
   // com privilégio de servidor — ver sincronizarPerfilAposLogin.functions.ts
   // ou uma ação manual do administrador.
   const { data: criado, error: erroCriacao } = await supabase
