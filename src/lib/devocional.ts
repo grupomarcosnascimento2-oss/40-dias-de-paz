@@ -567,6 +567,31 @@ if (dia10) {
   ];
 }
 
+// Conteúdo real do Dia 11, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia11 = todosOsDias.find((dia) => dia.numero === 11);
+if (dia11) {
+  dia11.titulo = "Senhor, ensina-me a rezar";
+  dia11.audioUrl = "/audio/dia-11.ogg";
+  dia11.oracaoTempos = [
+    0, 18.95, 39.56, 58.46, 65.36, 82.56, 95.21, 109.17, 126.63, 136.68, 146.49, 157.95,
+  ];
+  dia11.oracao = [
+    "Senhor, ensina-me a rezar. Em quantos momentos, meu Deus, meu Pai, meu amigo, meu Senhor, eu paro para entrar em comunhão contigo e a única intenção é pedir, pedir e pedir. E eu ainda peço mal, Senhor, às coisas.",
+    "Eu peço em prol do meu orgulho, a verdade é essa. Eu peço em prol do meu ego. Eu peço graças muitas vezes na Tua presença por causa da minha vaidade, benefício próprio e muito egoísmo.",
+    "Ensina-me a rezar, Senhor. Ensina-me verdadeiramente a usufruir dessa conversa que é uma oportunidade única da minha alma entrar em comunhão contigo. Ensina-me a ouvir, Senhor, a Tua palavra em meio à oração que é um diálogo.",
+    "A oração que é um diálogo, é uma conversa entre duas pessoas. Enquanto um fala, o outro escuta. Enquanto um escuta, o outro fala.",
+    "E eu só falo e não ouço. E mais do que ouvir, colocar em prática a Tua palavra, Senhor. Mais do que ouvir, colocar em prática.",
+    "Ensina-me a rezar, Senhor. Ensina-me que nessa oração eu entrego, eu preciso entregar, meu Deus. Então ensina-me.",
+    "Manda o Teu Espírito Santo sobre mim e ensina-me a entregar. Entregar as minhas preocupações, entregar o meu egoísmo, a minha autossuficiência. Entregar a minha vaidade, o orgulho, a inveja, a mentira.",
+    "Entregar os podres da minha vida, entregar as misérias do meu viver. Entregar os maus pensamentos, entregar. E principalmente, meu Senhor, um espírito de agradecimento.",
+    "O agradecer por tanto que eu tenho recebido. Que não é por merecimento, é por graça. É de graça e por graça.",
+    "E o principal, meu Pai, permanecer na Tua presença nessa oração. Ensina-me. Ensina-me como os discípulos disseram ao Pai.",
+    "Senhor, ensina-nos a rezar. E Tu ensinastes, Pai nosso que estás no céu. Eis-me aqui, Senhor.",
+    "Ensina-me a rezar. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
