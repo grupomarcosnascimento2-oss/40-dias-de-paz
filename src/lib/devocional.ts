@@ -485,6 +485,23 @@ if (dia5) {
   ];
 }
 
+// Conteúdo real do Dia 6, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia6 = todosOsDias.find((dia) => dia.numero === 6);
+if (dia6) {
+  dia6.titulo = "Senhor, eu não aguento mais sozinho";
+  dia6.audioUrl = "/audio/dia-06.ogg";
+  dia6.oracaoTempos = [0, 28.6, 69.44, 87.04, 91.35, 110.45];
+  dia6.oracao = [
+    "Senhor, eu não aguento mais sozinho. Eu quero, nessa oração em comunhão Contigo, nessa oportunidade da Tua presença, Senhor, eu quero entregar todas as cargas que existem na minha vida para Ti, meu Pai. Eu quero, nesse momento, dizer que eu não estou mais aguentando.",
+    "Eu quero dizer de coração ao Senhor que eu quero aprender a colocar os problemas, os fardos, os pesos, nas Tuas mãos. Em vez de carregar tudo sozinho, eu quero ceder a Ti, Pai, e deixar que Tu possa realizar a Tua obra e realizar a Tua graça, meu Senhor e meu Deus, porque eu não aguento mais caminhar sozinho. Eu quero, Senhor, de todo o meu coração, me lançar verdadeiramente, me apresentar diante de Ti, Senhor.",
+    "E dessa forma, oh Pai, eu quero dizer que eu não aguento mais caminhar sozinho. Eu quero ser o controlador de tudo. Eu quero ser o controlador das pessoas.",
+    "Eu quero controlar as situações. Eu quero estar acima de tudo. Mas eu não aguento mais, Senhor, sozinho.",
+    "E não quero mais caminhar sozinho. Caminha comigo, oh Deus. Caminha comigo, meu Senhor e meu Pai, porque eu não estou mais aguentando, mas aqui estou eu, mesmo cansado, mesmo aflito.",
+    "Eu vou suplicar e clamar a Ti, Senhor. Eu não aguento mais, sozinho. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
