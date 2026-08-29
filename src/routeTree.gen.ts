@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ComoViverRouteImport } from './routes/como-viver'
 import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as ForcaDaOracaoRouteImport } from './routes/forca-da-oracao'
@@ -25,6 +26,11 @@ import { Route as DiaNumeroRouteImport } from './routes/dia.$numero'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComoViverRoute = ComoViverRouteImport.update({
@@ -85,6 +91,7 @@ const DiaNumeroRoute = DiaNumeroRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/como-viver'
     | '/entrar'
     | '/forca-da-oracao'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/como-viver'
     | '/entrar'
     | '/forca-da-oracao'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/como-viver'
     | '/entrar'
     | '/forca-da-oracao'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ComoViverRoute: typeof ComoViverRoute
   EntrarRoute: typeof EntrarRoute
   ForcaDaOracaoRoute: typeof ForcaDaOracaoRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/como-viver': {
@@ -277,6 +297,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ComoViverRoute: ComoViverRoute,
   EntrarRoute: EntrarRoute,
   ForcaDaOracaoRoute: ForcaDaOracaoRoute,

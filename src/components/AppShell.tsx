@@ -5,6 +5,9 @@ import { Cruz } from "./Ornamento";
 import { MuralTopo } from "./MuralTopo";
 import { PainelAvisos } from "./PainelAvisos";
 import { sombra3d } from "@/lib/estilo3d";
+import { CONTROLE_DE_PERFIL_HABILITADO, type Papel } from "@/lib/perfis";
+import { useAuth } from "@/hooks/useAuth";
+import { usePerfil } from "@/hooks/usePerfil";
 
 type ItemMenu = {
   numero: string;
@@ -12,6 +15,11 @@ type ItemMenu = {
   subtitulo?: string;
   to: string;
   filhos?: ItemMenu[];
+  // Quando ausente, o item é visível para qualquer perfil. Só passa a
+  // valer de fato quando CONTROLE_DE_PERFIL_HABILITADO for true — até lá,
+  // qualquer item restrito simplesmente não aparece para ninguém, para
+  // não mudar o comportamento atual do app.
+  papeis?: Papel[];
 };
 
 const menu: ItemMenu[] = [
@@ -64,6 +72,12 @@ const menu: ItemMenu[] = [
     numero: "7",
     titulo: "Os 40 Dias de Oração",
     to: "/jornada",
+  },
+  {
+    numero: "8",
+    titulo: "Painel administrativo",
+    to: "/admin",
+    papeis: ["administrador"],
   },
 ];
 
@@ -124,6 +138,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const [expandido, setExpandido] = useState(true);
   const [abertoMobile, setAbertoMobile] = useState(false);
+
+  // Perfil do usuário — só é buscado de fato quando o controle de perfil
+  // estiver habilitado. Enquanto estiver desligado, "papel" fica undefined
+  // e o menu mostra só os itens sem restrição (ou seja, o menu de hoje,
+  // sem nenhuma mudança).
+  const { user } = useAuth();
+  const { data: perfil } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
+  const papel: Papel | undefined = CONTROLE_DE_PERFIL_HABILITADO ? perfil?.papel : undefined;
+
+  const menuVisivel = menu.filter((item) => !item.papeis || (papel && item.papeis.includes(papel)));
 
   useEffect(() => {
     const salvo = window.localStorage.getItem(CHAVE_EXPANDIDO);
@@ -200,7 +224,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 space-y-1 px-2 pb-6">
-          {menu.map((item) => (
+          {menuVisivel.map((item) => (
             <div key={item.numero}>
               <ItemLink
                 item={item}
