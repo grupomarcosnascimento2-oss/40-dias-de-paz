@@ -550,6 +550,23 @@ if (dia9) {
   ];
 }
 
+// Conteúdo real do Dia 10, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia10 = todosOsDias.find((dia) => dia.numero === 10);
+if (dia10) {
+  dia10.titulo = "Não permitas que eu desista";
+  dia10.audioUrl = "/audio/dia-10.ogg";
+  dia10.oracaoTempos = [0, 19.62, 45.06, 75.81, 91.61, 119.8];
+  dia10.oracao = [
+    "Senhor, não permita que eu desista. São muitas dificuldades vividas, Senhor, que eu estou passando por esse vale, estou passando por esse deserto. Eu não vejo água, eu não vejo comida, eu não vejo sombra, eu não vejo arejo, Senhor, eu não vejo nada.",
+    "Eu estou hoje sem esperança, meu Deus, em meio às dificuldades. Por isso eu estou aqui, Pai, clamando nessa oração, do fundo do meu coração, porque verdadeiramente eu rezo e entro em comunhão contigo nessa oração. Diante de tudo, Senhor, a vontade de desistir ainda me acompanha.",
+    "Em muitos momentos, durante o dia da minha semana, eu penso em abandonar essa caminhada de fé, essa caminhada de esperança, meu Deus. Mas como tantas pessoas te seguiram, quantos, tantos clamaram a Ti e tiveram respostas. Quando a mulher de um fluxo sanguíneo que tocou em Ti, ela estava a desesperar, 12 anos, Senhor, clamando por uma cura, por um milagre, por uma transformação de vida, pois ela olhou, tocou na sua veste e foi curada.",
+    "Ela foi apanhada pela falta de esperança por muitas vezes durante esses 12 anos. Não deixa que eu desista, Pai. Não deixa que eu desista.",
+    "Não deixa que essa esperança, Senhor, venha sair da minha vida, venha sair do meu coração, porque a esperança é a fé. A esperança nada mais é do que a fé, Senhor, que ainda continua viva em meio ao pedregulho, as dificuldades, o deserto, ó Deus. Eu confio, Senhor, e quero renovar a minha esperança na Tua presença, na Tua misericórdia, Senhor.",
+    "Escuta a minha voz do fundo do meu interior, Pai, na divisão do meu corpo, da minha alma e do meu espírito, Senhor. Não permita que eu desista. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
