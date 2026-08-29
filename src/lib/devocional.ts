@@ -592,6 +592,27 @@ if (dia11) {
   ];
 }
 
+// Conteúdo real do Dia 12, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia12 = todosOsDias.find((dia) => dia.numero === 12);
+if (dia12) {
+  dia12.titulo = "Quero colocar minha família em Tuas mãos";
+  dia12.audioUrl = "/audio/dia-12.ogg";
+  dia12.oracaoTempos = [0, 6.14, 12.58, 35.46, 62.57, 78.58, 103.86, 121.15, 141.09, 148.3];
+  dia12.oracao = [
+    "Senhor, quero colocar minha família em Tuas mãos.",
+    "Meu Deus, meu Senhor, meu Pai, meu Amigo, meu Rei, meu Mestre.",
+    "Eu quero, nesta oração, colocar a minha família nas Tuas mãos. Uma vez que a família é projeto de Deus, uma vez que do coração de Deus surge a família, eu coloco filho, filha, esposa, pais, irmãos, irmãs e pessoas queridas nas Tuas mãos, meu Deus.",
+    "Quantas vezes eu tento mudar as pessoas, sendo que eu que tenho que mudar. Eu que tenho que dar essa reviravolta dentro de mim: mudança de pensamento, Senhor; mudança de atitude; mudança de comportamento. E, em vez de exigir das pessoas a mudança, eu quero, Pai, que Tu me ajude a eu mudar.",
+    'Por isso eu peço: abençoa e consagra a minha família e tudo, porque a Palavra nos diz, como Paulo falou: "Crê no Senhor Jesus e serás salvo, tu e a tua casa."',
+    "Essa palavra conforta, Senhor, o meu coração. Creio que a minha fé é capaz de salvar a minha família, é capaz de salvar o meu casamento, é capaz de salvar o meu filho de desastres, de problemas, de uma vida desregrada, Pai.",
+    "É a fé que salva e nos leva ao céu em família. E por isso eu entrego, Senhor, toda a minha família nas Tuas mãos: os desafios familiares, as lutas familiares, meu Pai, a cada dia, a cada oração.",
+    "Eu confio, Senhor, que estou aqui com a força da oração, na possibilidade de minha família ser salva pelo poder e a força da oração, porque a oração é a força mais poderosa da terra.",
+    "Eu rezo pela minha família, Senhor. Eu quero colocar minha família em Tuas mãos.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
