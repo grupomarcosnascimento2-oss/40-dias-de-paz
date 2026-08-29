@@ -56,11 +56,10 @@ export function TVOracional() {
           <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
             <iframe
               ref={iframeRef}
-              className="absolute inset-0 h-full w-full"
-              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1`}
+              className="pointer-events-none absolute inset-0 h-full w-full"
+              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&controls=0&disablekb=1&fs=0&iv_load_policy=3`}
               title="TV Oracional"
               allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
               onLoad={() => setPronto(true)}
             />
 
