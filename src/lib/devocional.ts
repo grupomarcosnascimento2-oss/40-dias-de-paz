@@ -517,6 +517,23 @@ if (dia7) {
   ];
 }
 
+// Conteúdo real do Dia 8, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia8 = todosOsDias.find((dia) => dia.numero === 8);
+if (dia8) {
+  dia8.titulo = "Quando eu não entender, ajuda-me a confiar";
+  dia8.audioUrl = "/audio/dia-08.ogg";
+  dia8.oracaoTempos = [0, 17.06, 52.69, 94.27, 126.58, 144.27];
+  dia8.oracao = [
+    "Senhor, quando eu não entender, ajuda-me a confiar. As dúvidas, neste momento, meu pai, estão me assolando, estão judiando de mim. Principalmente porque a minha mente humana quer entender as coisas.",
+    "A minha mente quer usar a razão em coisas sagradas, em coisas que a razão não tem espaço, porque ela excede a razão humana e entra a fé quando Deus age. Por isso, quando eu não entender, e são muitas situações da minha vida que trago agora e recordo da minha mente que eu não consegui entender. Foram muitas situações que fiquei sem resposta, sem entendimento.",
+    "E eu clamo que, diante disso, Deus, como não entendo hoje tantas situações que eu vivo, ajuda-me a confiar, Senhor. Estende Sua mão poderosa sobre mim, ajuda-me a confiar, porque assim, pai, eu não preciso entender para saber que estás agindo, para saber que permite determinadas situações quando não temos respostas, porque Tu és o Senhor de tudo e o maior planejador, estrategista que já existiu. Todos os Teus afazeres, Senhor, são perfeitos.",
+    "As Tuas obras, como diz o Salmo, são maravilhosas. O Teu agir é inexplicável, Senhor, mesmo que eu não entenda, mesmo que os apóstolos não entenderam, os profetas não entenderam. Mas ajuda-me a confiar, mesmo diante de tantas situações que agora eu lembro, que tragam o meu recordo do meu coração, situações que eu não consigo explicar.",
+    "Ajuda-me a confiar, meu Senhor e meu pai, porque o filho muitas vezes não entende o pai, mas ele confia. Ele não entende, mas ele confia. A criança não entende muitas vezes, mas ela confia no pai.",
+    "É que estou eu, Senhor, quando eu não entender, ajuda-me a confiar. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
