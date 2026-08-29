@@ -502,6 +502,21 @@ if (dia6) {
   ];
 }
 
+// Conteúdo real do Dia 7, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia7 = todosOsDias.find((dia) => dia.numero === 7);
+if (dia7) {
+  dia7.titulo = "Dá-me forças para continuar";
+  dia7.audioUrl = "/audio/dia-07.ogg";
+  dia7.oracaoTempos = [0, 57.14, 93.37, 127.23];
+  dia7.oracao = [
+    "Senhor, humanamente, nossas forças se esgotam, as nossas forças diminuem diante das lutas e dificuldades que vivemos, por isso o meu pedido é dar-me forças para continuar. Eu acredito e espero em Ti, que receberei o dom da perseverança, aqui clamo pela perseverança, para que a desistência não tome conta do meu coração, a desistência à família, a desistência à igreja, a desistência da fé, a desistência a perseverar na Tua presença. Quantas e quantas vezes, meu Deus, eu pensei em parar essa jornada de oração, esse devocional na Tua presença, mas eu não parei.",
+    "Em meio ao barulho, em meio às provações, em meio às tribulações, eu clamo hoje a Deus, dá-me forças, porque é vão, como diz a Tua palavra, é vão qualquer esforço humano se Deus não agir. O projeto do homem, o homem faz muitos projetos, mas só Deus é capaz de produzir êxito neles. Por isso, eu entrego a minha falta de força, o meu desânimo, o meu cansaço.",
+    "Eu entrego a fraqueza da minha alma, a fraqueza do meu corpo, a fraqueza do meu espírito. Eu entrego ao Pai, porque Tu és o meu Deus, o meu Senhor. E aqui eu entrego, porque eu sei que hás de converter, como diz na Tua palavra, os que confiam no Senhor renovam, o salmista disse, os que confiam no Senhor renovam as suas forças.",
+    "Dá-me forças, Senhor, para continuar, para não desistir. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
