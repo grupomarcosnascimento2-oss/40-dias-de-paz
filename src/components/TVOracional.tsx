@@ -9,32 +9,109 @@ import { sombra3d } from "@/lib/estilo3d";
 // usado no resto do app (useSom): quando ligado, o vídeo toca com áudio;
 // quando desligado, fica mudo.
 //
-// O vídeo começa em autoplay silencioso (garantido em qualquer
-// navegador) e, assim que a página do player carrega, tentamos ativar o
-// som automaticamente se o interruptor estiver ligado — a abordagem mais
-// confiável para autoplay com áudio.
+// Usa a API oficial do YouTube (não o postMessage cru) porque ela avisa
+// de verdade quando o player está pronto (onReady), em vez de depender
+// do onLoad do iframe — que pode disparar antes do player estar
+// realmente pronto para receber comandos, causando instabilidade
+// (principalmente em recarregamentos de página).
 //
 // Como este componente só existe dentro da aba "Devocional" da jornada,
-// ele é desmontado automaticamente (e o vídeo para sozinho) sempre que o
-// usuário sai desta tela: navega para outra página (dia de oração,
-// páginas de conteúdo) ou troca para a aba "Jornada de Oração". Ao
-// voltar para cá, o componente remonta e o vídeo recomeça.
+// ele é desmontado automaticamente sempre que o usuário sai desta tela:
+// navega para outra página ou troca para a aba "Jornada de Oração". O
+// player é destruído nesse momento (parando o áudio), e recriado do
+// zero ao voltar.
 
 const VIDEO_ID = "lEjwi2SkJnM";
 
-function enviarComando(iframe: HTMLIFrameElement | null, func: "playVideo" | "mute" | "unMute") {
-  iframe?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*");
+type PlayerYouTube = {
+  destroy: () => void;
+  mute: () => void;
+  unMute: () => void;
+  playVideo: () => void;
+};
+
+declare global {
+  interface Window {
+    YT?: {
+      Player: new (
+        elementId: string,
+        opcoes: {
+          videoId: string;
+          playerVars: Record<string, number>;
+          events: {
+            onReady: (evento: { target: PlayerYouTube }) => void;
+          };
+        },
+      ) => PlayerYouTube;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+let carregandoApi: Promise<void> | undefined;
+
+function carregarApiYouTube(): Promise<void> {
+  if (window.YT?.Player) return Promise.resolve();
+  if (carregandoApi) return carregandoApi;
+
+  carregandoApi = new Promise((resolve) => {
+    const anterior = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      anterior?.();
+      resolve();
+    };
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(script);
+  });
+
+  return carregandoApi;
 }
 
 export function TVOracional() {
   const { ativo, alternar, carregado } = useSom();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<PlayerYouTube | null>(null);
   const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
+    let cancelado = false;
+
+    carregarApiYouTube().then(() => {
+      if (cancelado || !window.YT) return;
+      playerRef.current = new window.YT.Player("tv-oracional-player", {
+        videoId: VIDEO_ID,
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          playsinline: 1,
+          rel: 0,
+          modestbranding: 1,
+        },
+        events: {
+          onReady: () => setPronto(true),
+        },
+      });
+    });
+
+    return () => {
+      cancelado = true;
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!pronto || !carregado) return;
-    enviarComando(iframeRef.current, ativo ? "unMute" : "mute");
-    enviarComando(iframeRef.current, "playVideo");
+    if (ativo) {
+      playerRef.current?.unMute();
+    } else {
+      playerRef.current?.mute();
+    }
+    playerRef.current?.playVideo();
   }, [ativo, pronto, carregado]);
 
   return (
@@ -54,20 +131,16 @@ export function TVOracional() {
         >
           {/* Tela */}
           <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
-            <iframe
-              ref={iframeRef}
+            <div
+              id="tv-oracional-player"
               className="pointer-events-none absolute inset-0 h-full w-full"
-              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&controls=0&disablekb=1&fs=0&iv_load_policy=3`}
-              title="TV Oracional"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              onLoad={() => setPronto(true)}
             />
 
-            {/* Selo de canal — não bloqueia os controles do player */}
+            {/* Selo de canal — não bloqueia o player */}
             <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-accent">
-                TV Oracional
+                Ao vivo
               </span>
             </div>
           </div>
@@ -75,7 +148,7 @@ export function TVOracional() {
           {/* Rodapé do bezel */}
           <div className="mt-3 flex items-center justify-between px-1">
             <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              Áudio oracional
+              TV e Rádio Devocional
             </span>
             <InterruptorSom ativo={ativo} alternar={alternar} />
           </div>
