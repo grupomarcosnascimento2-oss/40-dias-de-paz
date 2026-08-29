@@ -534,6 +534,22 @@ if (dia8) {
   ];
 }
 
+// Conteúdo real do Dia 9, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia9 = todosOsDias.find((dia) => dia.numero === 9);
+if (dia9) {
+  dia9.titulo = "Cura, Senhor, aquilo que ainda dói em mim";
+  dia9.audioUrl = "/audio/dia-09.ogg";
+  dia9.oracaoTempos = [0, 20.15, 56.59, 85.52, 118.69];
+  dia9.oracao = [
+    "Cura, Senhor, aquilo que ainda dói em mim. São feridas, meu Pai, que ainda existem dentro de mim, provocadas por palavras que eu recebi, palavras ouvidas que foram negativas dentro do meu interior, que geraram essas dores e feridas. Perdas.",
+    "Perdas de N coisas, pessoas, cargos, bens, que vão gerando feridas, com sentimento de perda, de inferioridade, decepções, alinhado com as palavras de perdas, meu Pai. Mágoas que ainda tomam conta do meu coração, pessoas que eu não consegui perdoar do fundo, verdadeiramente do íntimo da minha alma. Eu aguardo o ressentimento mágoa, a falta do perdão, por diversos motivos que me feriram, Pai, principalmente acontecimentos do passado.",
+    "Esses acontecimentos que ainda não foram encerrados, essa história, meu Pai. São tantos acontecimentos que humilharam, que diminuíram a minha pessoa, que mexeu com o meu ego, que mexeu com o meu orgulho. Por isso eu estou na Tua presença e suplico como aquele cego de Jericó diante de Ti, que dizia, Jesus, Filho de Davi, tem compaixão de mim.",
+    "Jesus, Filho de Davi, tem compaixão de mim. Jesus, Filho de Davi, tem compaixão de mim. Eu me prosto diante de Ti, cura, Senhor, todas as dores e feridas que ainda existem em mim, que ainda me fazem sofrer, que ainda estão ao redor dessa ferida, Senhor, dolorindo, que ainda estão ao redor dessa ferida sensível e que me fazem sofrer a cada dia, meu Deus.",
+    "Eu coloco todas essas feridas de dentro de mim para que com Tua mão poderosa, oh Pai, você me cura verdadeiramente. Cura, Senhor, aquilo que ainda dói em mim. Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
