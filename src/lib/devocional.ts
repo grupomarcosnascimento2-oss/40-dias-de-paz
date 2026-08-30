@@ -698,6 +698,47 @@ if (dia16) {
   ];
 }
 
+// Conteúdo real do Dia 17, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia17 = todosOsDias.find((dia) => dia.numero === 17);
+if (dia17) {
+  dia17.titulo = "Tu conheces minhas necessidades";
+  dia17.audioUrl = "/audio/dia-17.ogg";
+  dia17.oracaoTempos = [0, 2.33, 19.1, 41.02, 69.3, 88.8, 102.71, 137.42, 141.58];
+  dia17.oracao = [
+    "Senhor, Tu conheces minhas necessidades.",
+    "Antes, meu Senhor e meu Deus, que a palavra chegue aos meus lábios, Tu já conheces todas as minhas palavras. Tu me perscrutas, ou seja, sondas o meu coração; conheces o meu interior.",
+    "Leva-me, Senhor, então por esse caminho. E o que tiver de mal em mim, Senhor, que Tu conheces por completo, retira, meu Deus. Tira todo o caminho mau, tudo o que não Te pertence, Senhor. E guia-me, como me conheces por completo. Guia-me, Senhor, por esse caminho: o caminho da verdade, o caminho da eternidade.",
+    "Por isso, como o Salmo diz: Tu me sondas e me conheces por dentro, Senhor. E eu aqui clamo e entrego, porque mais do que eu peça situações, mais do que eu peça as coisas, mais do que eu peça graças e mais graças, só Tu conheces o meu coração, só Tu conheces a minha necessidade, Senhor, porque Tu me perscrutas.",
+    "Como o profeta Jeremias: Tu me conheces desde o ventre materno, Tu me chamaste desde o ventre materno. Então, Senhor, é nesse conhecimento que Tu sabes as minhas fraquezas, que Tu sabes os meus pontos fortes, mas também Tu sabes os meus pontos fracos.",
+    "E aqui, Senhor Jesus, Senhor amado, meu Senhor e meu Deus, Tu conheces as minhas necessidades. E eu apresento todas as necessidades que eu tenho, que são inúmeras.",
+    "É difícil até falar: eu tenho necessidade de cura, eu tenho necessidade de paz, eu tenho necessidade de crescer na Tua presença, eu tenho necessidade de mudar de vida, eu tenho necessidade de pensar diferente, eu tenho necessidade de abandonar o orgulho, eu tenho necessidade de estar diante de Ti de noite e de dia, prostrando-me, Senhor, na Tua presença. Eu tenho necessidade disso tudo, Pai.",
+    "E Tu conheces todo o meu interior, Senhor. Tu conheces minhas necessidades.",
+    "Amém.",
+  ];
+}
+
+// Conteúdo real do Dia 18, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia18 = todosOsDias.find((dia) => dia.numero === 18);
+if (dia18) {
+  dia18.titulo = "Protege minha casa e minha família";
+  dia18.audioUrl = "/audio/dia-18.ogg";
+  dia18.oracaoTempos = [0, 2.23, 15.31, 22.25, 53.58, 61.0, 93.1, 121.63, 129.89, 135.12];
+  dia18.oracao = [
+    "Senhor, protege minha casa e minha família.",
+    "Como diz o Salmo, Senhor: os malvados lançam olhares pecaminosos sobre mim, mas o meu refúgio está em Deus. Eu e minha casa serviremos ao Senhor.",
+    "Mais uma vez, meu Deus, na Tua presença, quero suplicar a Tua proteção, ó Pai. Protege minha casa e minha família, Senhor.",
+    "Estamos sujeitos, Senhor, a tantos episódios negativos, a acontecimentos malditos, meu Deus: tragédias, roubo, furto, acidente. Protege minha casa, Senhor. Protege minha família, livrando-nos de toda perseguição material, de todas as pessoas que não gostam de mim, da minha casa e da minha família, das pessoas que têm inveja de mim, da minha casa e da minha família, meu Deus.",
+    "E além disso, Senhor, de toda perseguição espiritual. Protege, Senhor, a minha casa de toda perseguição espiritual, Pai.",
+    "Eu clamo e suplico neste momento, Senhor Jesus, Deus amado e querido: vem proteger. Tu és o Guarda de Israel. Tu és o Selador de Israel. Eu sou esse Israel, minha família é esse Israel: meu pai, minha mãe, meus irmãos, minha esposa, meus filhos, parentes e todos que estiverem ao meu redor e fizerem parte da minha linhagem. Eu clamo neste momento, Senhor, pela intercessão de Nossa Senhora.",
+    "Para que, através desta oração, chegue ao Teu coração o pedido de súplica de proteção contra todos os males, contra tudo aquilo que não Te pertence, meu Deus: toda perseguição, toda batalha espiritual, toda batalha física, tudo o que for espírito de destruição, tudo o que não Te pertencer, meu Deus, e que venha a afligir a minha casa e a minha família.",
+    "Meu Senhor, eu clamo agora que Tu venhas ao meu encontro, que Tu venhas ouvir a minha oração, que a minha oração chegue até o Teu coração.",
+    "Senhor, protege a minha casa e a minha família.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
