@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      pedidos_oracao: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          texto: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          texto: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          texto?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       perfis: {
         Row: {
           created_at: string
