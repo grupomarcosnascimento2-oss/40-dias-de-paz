@@ -9,7 +9,6 @@ import {
   useRemoverPedido,
   type PedidoOracao,
 } from "@/hooks/usePedidosOracao";
-import { Cruz } from "./Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
 
 // Mural da Comunidade de Oração — membros logados publicam pedidos de
@@ -58,17 +57,13 @@ export function MuralPedidosOracao() {
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-12">
-      <div className="text-center">
-        <Cruz className="mx-auto h-6 w-6 text-accent" />
-        <h2 className="script mt-4 text-3xl text-primary">Comunidade de Oração</h2>
-        <p className="mx-auto mt-3 max-w-md text-foreground/75">
-          Nossa equipe está intercedendo em oração por cada pedido compartilhado aqui.
-        </p>
-      </div>
+      <p className="mx-auto max-w-md text-center text-foreground/75">
+        Nossa equipe está intercedendo em oração por cada pedido compartilhado aqui.
+      </p>
 
       {user && (
         <div
-          className="mx-auto mt-8 rounded-2xl border border-accent/30 bg-card p-4 sm:p-5"
+          className="sticky top-11 z-10 mx-auto mt-6 rounded-2xl border border-accent/30 bg-card p-4 shadow-md sm:p-5 md:top-0"
           style={sombra3d}
         >
           <textarea
