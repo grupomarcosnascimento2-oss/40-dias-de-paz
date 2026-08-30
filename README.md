@@ -73,24 +73,20 @@ supabase/migrations/ — migrations SQL (ver seção 7 — aplicação NÃO é a
 
 O destaque de texto sincronizado (`PlayerOracao.tsx`) usa `oracaoTempos` quando presente; sem isso, cai para uma estimativa proporcional por tamanho de texto (menos precisa).
 
-## 6. Controle de perfil — implementado, ainda desligado
+## 6. Controle de perfil — LIGADO em 30/08/2026
 
-Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`, hoje em `false`. Enquanto ela for `false`, o app se comporta como hoje: **sem login, acesso livre** (modo criado deliberadamente para agilizar os ajustes visuais).
-
-Toda a infraestrutura já está construída, esperando ser ligada:
+Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`, agora em `true`. Login com Google/Apple está ativo; `jornada.tsx` e `dia.$numero.tsx` usam `useAuth` + `useJornada` (Supabase) em vez do antigo modo sem login (`useJornadaDev`, mantido no repositório só como referência histórica).
 
 - **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `membro` | `visitante`). RLS: o usuário só cria a si mesmo como `visitante`; promoção a `membro`/`administrador` exige `service_role`.
-- **`sincronizarPerfilAposLogin.functions.ts`**: depois do login, consulta o Apps Script (planilha de pagamentos) e promove automaticamente para `membro` se o pagamento estiver confirmado.
-- **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — precisa ser promovido **manualmente** no banco na primeira vez (nunca automático, por segurança).
-- **Menu lateral já preparado**: item "Painel administrativo" (rota `/admin`, placeholder) só aparece se `papel === 'administrador'` — mas como a chave está desligada, esse item nunca aparece hoje.
+- **`sincronizarPerfilAposLogin.functions.ts`**: existe e funciona, mas **ainda não é chamada automaticamente** após o login — a promoção para `membro` via pagamento confirmado no Apps Script ainda precisa ser conectada ao fluxo de login.
+- **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — promovido manualmente via SQL (ver histórico de commits/conversas para o comando exato).
+- **Menu lateral**: item "Painel administrativo" (rota `/admin`, ainda placeholder) só aparece se `papel === 'administrador'`.
 
-### Para "ligar" de verdade, falta:
+### Ainda pendente
 
-1. Reconectar o login (`entrar.tsx` já existe e funciona, só não está no fluxo ativo — `index.tsx` hoje redireciona direto para `/jornada`)
-2. Trocar `useJornadaDev` (progresso local, `localStorage`) por `useJornada` (Supabase, já existe e já funciona) nas páginas `jornada.tsx` e `dia.$numero.tsx`
-3. Mudar `CONTROLE_DE_PERFIL_HABILITADO` para `true`
-4. Decidir e implementar as regras específicas do Visitante (ainda não definidas — hoje, se a chave for ligada sem mais nada, o Visitante herdaria o mesmo menu do Membro)
-5. Promover manualmente a conta do administrador (ver acima)
+1. Conectar `sincronizarPerfilAposLogin` ao fluxo de login (hoje ela existe mas não é chamada)
+2. Definir e implementar as regras específicas do Visitante (ainda não definidas — hoje ele herda o mesmo menu do Membro)
+3. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
 
 ## 7. Banco de dados (Supabase) — atenção especial
 
