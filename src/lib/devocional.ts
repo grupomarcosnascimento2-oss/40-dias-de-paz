@@ -656,6 +656,27 @@ if (dia14) {
   ];
 }
 
+// Conteúdo real do Dia 15, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia15 = todosOsDias.find((dia) => dia.numero === 15);
+if (dia15) {
+  dia15.titulo = "Mesmo sem ver, eu continuarei rezando";
+  dia15.audioUrl = "/audio/dia-15.ogg";
+  dia15.oracaoTempos = [0, 3.37, 27.26, 39.35, 47.99, 74.02, 93.35, 117.59, 136.98, 143.49];
+  dia15.oracao = [
+    "Senhor, mesmo sem ver, eu continuarei rezando.",
+    "Meu Deus, nesta oração de agora, Senhor, eu quero fazer uma grande súplica para professar a Jesus. Nesta oração, as circunstâncias que eu vivo, Pai, as circunstâncias em que eu estou no meu presente, meu Deus, nas quais eu não estou vendo nada.",
+    "Eu não estou enxergando nada. Não estou vendo o Teu agir, ó Pai. Eu não estou vendo as coisas acontecerem conforme o meu coração pede. Eu não vejo.",
+    "A minha visão é limitada, extremamente curta e humana, medíocre e egoísta, meu Deus, autossuficiente, Pai.",
+    "Mesmo sem ver, eu não vou parar de rezar. Eu não vou cessar o meu clamor, eu não vou cessar o meu pedido na Tua presença, meu Deus, de bênção, de graça, Senhor, porque a Tua Palavra me convida a fazer esse clamor, para que chegue a Deus no íntimo do Seu coração.",
+    "Nesta experiência de oração, neste caminhar de oração, nestes quarenta dias de oração, Pai, eu quero viver essa graça de continuar rezando, porque através da força da perseverança, meu Deus, a Tua graça acontece na nossa vida.",
+    'A Tua graça, Senhor, se manifesta poderosamente, gloriosamente. Ó Senhor, eu continuarei rezando porque Tu estavas com os Teus discípulos e Tomé disse: "Se eu não vir as marcas dos pregos nas Suas mãos e não puser o dedo no lugar dos pregos, e não puser a mão no Seu lado, não crerei."',
+    'Tu te colocaste no meio deles, mostraste-lhe as chagas e o lado e disseste: "Feliz és tu porque viste e creste, Tomé." E acrescentaste: "Felizes os que creram sem ter visto. Bem-aventurados aqueles que creem sem ter visto."',
+    "Por isso, meu Senhor: mesmo sem ver, eu continuarei rezando.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
