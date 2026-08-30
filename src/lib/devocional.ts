@@ -677,6 +677,27 @@ if (dia15) {
   ];
 }
 
+// Conteúdo real do Dia 16, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia16 = todosOsDias.find((dia) => dia.numero === 16);
+if (dia16) {
+  dia16.titulo = "Senhor, cuida de mim";
+  dia16.audioUrl = "/audio/dia-16.ogg";
+  dia16.oracaoTempos = [0, 2.36, 12.48, 32.86, 46.03, 68.56, 88.63, 107.44, 131.12, 135.96];
+  dia16.oracao = [
+    "Senhor, cuida de mim.",
+    "Ó meu Deus, a palavra é tão forte, Senhor, que chega ao meu coração neste momento.",
+    "Cuida de mim como o pai que cuida do seu filho recém-nascido: o filho que ainda não sabe viver, que ainda não sabe andar como deveria, que ainda não sabe falar como deveria, que ainda não tem ideia do que está ao seu redor.",
+    "Eu hoje, Senhor, nesta oração, quero de verdade me colocar como essa criança, como esse recém-nascido, totalmente dependente do seu pai.",
+    "Para comer, para o banho, para dormir, em tudo esse recém-nascido precisa do pai, precisa do cuidado do pai, precisa do cuidado da mãe. Eu quero hoje, ó Deus, me colocar como esse recém-nascido, meu Senhor, e depender de Ti em tudo.",
+    "Do mais íntimo da minha alma eu clamo, eu suplico: dependo de Ti. Cuida de mim com o cuidado de pai, com o cuidado de mãe, que nada me falte, com o cuidado que o filho recém-nascido requer.",
+    "São horas de cuidado, são noites e noites de cuidado para o bem-estar dessa criança. Ó Senhor, vem cuidar, vem me limpar, vem enxugar-me, vem me alimentar, Senhor, como esse pai que alimenta o seu filho.",
+    "Vem ao meu encontro, Senhor. Cuida de mim, das minhas feridas. Cuida de mim, das minhas necessidades, ó Pai. Cuida de tudo o que há em mim, Senhor: o que há de necessidade dentro de mim, no meu coração, na minha história de vida, em todo o meu ser.",
+    "Cuida de mim. Vem, Senhor. Senhor, cuida de mim.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
