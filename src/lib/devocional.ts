@@ -759,6 +759,63 @@ if (dia19) {
   ];
 }
 
+// Conteúdo real do Dia 20, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia20 = todosOsDias.find((dia) => dia.numero === 20);
+if (dia20) {
+  dia20.titulo = "Quero confiar mais e reclamar menos";
+  dia20.audioUrl = "/audio/dia-20.ogg";
+  dia20.oracaoTempos = [0, 4.31, 29.37, 56.21, 80.76, 105.22, 131.1, 134.72];
+  dia20.oracao = [
+    "Senhor, quero confiar mais e reclamar menos.",
+    "A murmuração ainda existe em mim, Senhor. Retira de mim toda essa murmuração, toda reclamação e insatisfação pessoal diante da vida, diante das coisas e das pessoas, porque tem predominado na minha vida, Senhor, essa reclamação e murmuração.",
+    "Ao invés de agradecer e confiar mais, eu ainda dou espaço para a reclamação. Mas hoje, Senhor, eu tomei consciência disso. Eu busquei o entendimento disso, meu Deus, e na Tua presença eu me lanço com toda a confiança, Pai, porque Tu és o Senhor dos Senhores, o Rei dos Reis, o Criador de todas as coisas.",
+    "Por isso eu agradeço, quero agradecer muito, Pai. Não sou digno de ter recebido tanto de Ti. Eu sei que não é pelo meu merecimento, mas é pela graça que me foi concedida através de Jesus Cristo e pela intercessão de Nossa Senhora, a mediadora das graças que vêm de Jesus e que constantemente estou recebendo.",
+    "Com tudo isso eu tenho que agradecer e parar de murmurar e reclamar, porque é uma ingratidão, é uma incompreensão da minha parte, ó Pai. A minha murmuração e a minha reclamação são uma tentação que hoje eu vivi.",
+    "A reclamação e a murmuração negam a ação de Deus. Por isso, em oração, meu Senhor, eu renuncio, em nome de Jesus e pela intercessão de Nossa Senhora, a todo espírito de reclamação, a tudo o que não Te pertence, a toda murmuração que me acompanha. Senhor, Te entrego neste momento.",
+    "Senhor, quero confiar mais e reclamar menos.",
+    "Amém.",
+  ];
+}
+
+// Conteúdo real do Dia 21, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia21 = todosOsDias.find((dia) => dia.numero === 21);
+if (dia21) {
+  dia21.titulo = "Senhor, perdoa os meus erros";
+  dia21.audioUrl = "/audio/dia-21.ogg";
+  dia21.oracaoTempos = [0, 2.28, 24.0, 36.39, 61.27, 77.43, 86.27, 89.23];
+  dia21.oracao = [
+    "Senhor, perdoa os meus pecados.",
+    "Meu Pai, neste dia, meu Deus, meu Senhor, meu Criador, eu quero pedir perdão pelos meus pecados, pelas minhas faltas, pelas minhas transgressões, pelas minhas revoltas e pela minha desobediência diante da Tua Palavra. São muitas as falhas, meu Deus, que durante o dia eu cometi e cometo.",
+    "A Bíblia nos ensina, Senhor, que o justo peca sete vezes ao dia e se arrepende, esperando de Ti a misericórdia, ó Deus de Israel.",
+    "Pois eu aqui, Senhor, quero de verdade reconhecer a minha falta, reconhecer o meu erro, reconhecer as minhas necessidades e pedir perdão com o propósito de não mais pecar, de não mais errar e de buscar novos caminhos para não me levar às quedas que o meu coração já conhece, que já sabe quais são as situações que me levam a pecar.",
+    "Prontamente, Senhor, eu me coloco aqui, humildemente, pedindo perdão pelas minhas faltas, ó Pai. Tu és Deus rico em misericórdia, justo Juiz e rico em misericórdia, meu Deus.",
+    "Perdão pelos meus pecados, pelas minhas faltas. E quero progredir, sem mais pecar, meu Deus, na Tua presença.",
+    "Senhor, perdoa os meus erros.",
+    "Amém.",
+  ];
+}
+
+// Conteúdo real do Dia 22, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia22 = todosOsDias.find((dia) => dia.numero === 22);
+if (dia22) {
+  dia22.titulo = "Ensina-me a perdoar";
+  dia22.audioUrl = "/audio/dia-22.ogg";
+  dia22.oracaoTempos = [0, 1.22, 20.75, 57.71, 85.39, 98.21, 108.22, 110.14];
+  dia22.oracao = [
+    "Senhor, ensina-me a perdoar.",
+    "Ó meu Deus, meu Pai, pela intercessão de Nossa Senhora, Mãe Santíssima, que intercede por todos nós, nesta oração, meu Pai, eu quero fazer este clamor: eu quero perdoar. Eu sei que eu preciso perdoar, é necessário o perdão.",
+    "Eu tenho essa boa intenção, mas o meu coração não consegue, porque eu não sei perdoar. São muitas as pessoas que me ofenderam, me feriram, me magoaram, Senhor, em diversos momentos da minha vida. Mas eu não quero que isso se transforme numa ferida, numa mágoa, num ódio, meu Deus, que não combina comigo, nem com o Teu plano, nem com o Teu processo de salvação, nem com a Tua Palavra, Senhor. A falta de perdão não combina.",
+    'Por isso eu quero ser ensinado, eu quero ser aprendiz do perdão. E Tu, meu Pai, meu Senhor, que durante o Teu ministério nesta terra nos ensinaste a perdoar os que Te ofenderam: no alto da cruz dizias: "Pai, perdoa-lhes, porque não sabem o que fazem", meu Senhor e meu Deus.',
+    "Eu quero chegar nesse ponto para que o meu coração seja leve e que eu possa seguir nesta vida com suavidade espiritual, libertando-me dessa mágoa, daquilo que precisa do perdão, Pai.",
+    "Por isso, Senhor, eu quero aprender a perdoar, porque Tu nos ensinaste a cada dia, meu Senhor e meu Deus.",
+    "Senhor, ensina-me a perdoar.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
