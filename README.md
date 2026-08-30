@@ -1,186 +1,157 @@
-# 40 Dias de Paz
+# 40 Dias Rezando com Marcos Nascimento
 
-SCRIPT PARA O LOVABLE — "40 Dias Rezando com Marcos Nascimento" (Web App)
+Devocional católico digital de 40 dias, autoral, escrito e narrado por **Marcos Nascimento**. Web app construído em React + TanStack Start, hospedado via Lovable (Cloudflare Workers) com banco de dados Supabase.
 
-Copie e cole este texto diretamente no prompt inicial do Lovable.
+> Este README foi escrito para que qualquer pessoa (programador ou agente de IA) que pegue este projeto entenda rapidamente o que já existe, o que está pendente e por quê. Se você é um agente de IA dando continuidade a este projeto, leia também o `AGENTS.md`, que tem instruções mais operacionais.
 
-CONTEXTO DO PROJETO
+---
 
-Crie um web app devocional católico chamado "40 Dias Rezando com Marcos Nascimento", com o subtítulo "Um devocional para fortalecer a fé em todas as circunstâncias da vida".
+## 1. Contexto e propósito do produto
 
-Público-alvo: católicos de 18 a 70 anos que enfrentam dificuldades emocionais, espirituais, familiares, de saúde ou financeiras — pessoas ansiosas, tristes, sobrecarregadas, que buscam acolhimento, paz e um espaço diário de conexão com Deus. O produto deve soar como um convite gentil, nunca como uma cobrança ou tarefa.
+- **Autor**: Marcos Nascimento, profissional de TI (Scrum Master) e autor católico, com 25+ anos de experiência. Este é um projeto pessoal/autoral dele, não institucional.
+- **Público-alvo**: católicos de 18 a 70 anos enfrentando dificuldades emocionais, espirituais, familiares, de saúde ou financeiras — pessoas ansiosas, cansadas, sobrecarregadas, buscando acolhimento e um espaço diário de oração.
+- **Proposta central**: uma jornada de 40 dias, um dia de cada vez — Palavra de Deus (curta), oração em áudio (a voz do próprio Marcos), propósito prático, e uma frase para guardar no coração. Deliberadamente **rápido e leve** — não deve parecer tarefa ou trabalho.
+- **Frase-chave do projeto**: *"entrar para o devocional significa mudança de vida"* — orienta o tom de tudo: nunca cobrança, sempre convite.
+- Este app é o **produto principal** (a experiência dos 40 dias). Existe também uma **landing page separada** (`rezandocomesperanca40dias.lovable.app`, repositório próprio) que vende o acesso e redireciona para cá após pagamento confirmado via Pix (Mercado Pago).
 
-Este é um MVP (produto mínimo viável) — pagamento único de acesso, sem recursos avançados por enquanto (vídeo e testemunhos aparecem apenas como "em breve").
+## 2. Modelo de negócio
 
-IDENTIDADE VISUAL (baseada na capa oficial do livro)
+- **Pagamento único** por acesso completo aos 40 dias (não é assinatura). Futuramente pode virar a porta de entrada para um "ecossistema oracional" maior (outros devocionais, assinatura) — mas isso é fase 2, não implementado.
+- **Três perfis de usuário** estão desenhados (ver seção 6): Administrador, Membro, Visitante. Só o Administrador e o Membro têm acesso pleno; o Visitante (ainda não implementado de fato) teria uma amostra/teaser.
 
-A capa de referência tem esta composição: fundo em papel/pergaminho bege-claro com leve textura envelhecida, título "40" em azul-marinho profundo, "Dias" em dourado/mostarda, "Rezando" em azul-marinho num script cursivo elegante, "Marcos Nascimento" em dourado cursivo, pequenos ornamentos (linha decorativa, cruz pequena) separando os blocos de texto, e uma foto do autor em oração, mãos postas, camisa azul-marinho, ambiente com luz suave e uma cruz dourada ao fundo desfocado.
+## 3. Stack técnica
 
-Aplique esta paleta e clima em todo o app:
+- **Framework**: TanStack Start (React 19, SSR) + TanStack Router (rotas em arquivo, `src/routes/`)
+- **Estilo**: Tailwind CSS v4 + componentes shadcn/ui (`src/components/ui/`)
+- **Backend**: Supabase (Postgres + Auth + Realtime), acessado via `src/integrations/supabase/`
+- **Hospedagem**: Lovable → Cloudflare Workers (build gera `wrangler.json`/`.output` automaticamente)
+- **Gerenciador de pacotes**: bun (há `bun.lock`); `npm install` também funciona para desenvolvimento local
+- Rodar localmente: `npm install && npm run dev` (ou `bun install && bun dev`)
+- Build de produção: `npm run build` (gera `.output/`)
 
-Paleta de cores:
+## 4. Estrutura de pastas relevante
 
-Fundo principal: tom pergaminho/creme quente (#F5EFE0 ou similar), nunca branco puro — deve parecer papel, não tela de app genérico
-
-Azul-marinho profundo (#1F2A52 ou similar) — títulos principais, textos de destaque, ícones
-
-Dourado/mostarda (#B8892B ou similar) — subtítulos, detalhes decorativos, botões de destaque, linhas divisórias
-
-Marrom-escuro/quase preto para textos de corpo, com boa legibilidade
-
-Evitar cores vivas, neon ou tons "tech" (nada de azul elétrico, roxo vibrante, verde SaaS) — o app deve parecer um objeto sagrado, não um produto de startup
-
-Tipografia:
-
-Títulos e números (ex: "Dia 12"): fonte serifada clássica, elegante, com peso forte — remetendo a livros e Bíblias
-
-Nome do autor e frases de destaque: fonte script/cursiva elegante (como no logotipo da capa), usada com moderação, só em elementos-chave (nunca em textos longos)
-
-Corpo de texto (Palavra de Deus, propósito do dia): fonte serifada ou humanista de leitura confortável, tamanho generoso, espaçamento entre linhas confortável para leitura calma
-
-Elementos gráficos recorrentes:
-
-Pequenas cruzes decorativas simples como divisores de seção
-
-Linhas finas com ornamento central (como na capa) separando blocos de conteúdo
-
-Textura sutil de papel/pergaminho em fundos de card ou seção (não pesada, discreta)
-
-Cantos levemente arredondados nos cards, transmitindo acolhimento (evitar visual "quadrado e corporativo")
-
-Tom geral do design: acolhedor, sagrado, atemporal, silencioso — como abrir um livro antigo de orações, não como abrir um app de produtividade. Espaçamento generoso, poucos elementos por tela, nada de poluição visual. Cada tela deve transmitir calma antes mesmo de o usuário ler qualquer palavra.
-
-ESTRUTURA DE PÁGINAS
-
-1. Página inicial (Landing / Apresentação)
-
-Antes do login, o visitante vê:
-
-Imagem de capa do devocional (usar a arte anexada como referência de composição — pode adaptar para formato web, mantendo a mesma paleta e clima)
-
-Título "40 Dias Rezando com Marcos Nascimento" + subtítulo
-
-Breve texto de apresentação (2-3 frases, tom acolhedor, convidando à jornada — não vender agressivamente, e sim acolher)
-
-Botão de destaque: "Iniciar minha jornada de 40 dias" (leva para pagamento/cadastro)
-
-Rodapé simples, discreto
-
-2. Cadastro / Login
-
-Login social: Google e Apple (não usar formulário de e-mail/senha tradicional)
-
-Tela simples, com a mesma identidade visual (fundo pergaminho, botões elegantes)
-
-Mensagem breve acima dos botões, ex: "Entre para começar sua caminhada de 40 dias com Deus"
-
-3. Pagamento (acesso único)
-
-Modelo: pagamento único que libera o devocional completo (os 40 dias) — não é assinatura recorrente neste momento
-
-Tela deve comunicar valor com serenidade, não como oferta comercial agressiva: reforçar que é um investimento numa jornada espiritual, não uma "compra"
-
-Estrutura simples: valor, botão de pagamento, breve reforço do que está incluso (os 40 dias completos, texto + áudio de cada dia)
-
-Sem menção a assinatura, ecossistema ou outros produtos nesta tela — isso é para o futuro
-
-4. Trilha dos 40 dias (Home do usuário logado)
-
-Visão geral da jornada organizada pelas 8 Áreas Devocionais:
-
-Caminhando com Deus (Dias 1-5)
-
-Quando a vida aperta (Dias 6-10)
-
-O poder da oração (Dias 11-15)
-
-Deus cuida de mim (Dias 16-20)
-
-Perdão e recomeço (Dias 21-25)
-
-Fé para viver (Dias 26-30)
-
-Quando Deus age no impossível (Dias 31-35)
-
-Uma nova vida com Deus (Dias 36-40)
-
-Cada área é um bloco/seção com os 5 dias correspondentes listados dentro
-
-Indicar visualmente o progresso do usuário (dia atual, dias concluídos, dias ainda bloqueados/futuros)
-
-O usuário só avança dia a dia (não pode pular dias à frente) — reforça o conceito de caminhada, um dia de cada vez
-
-5. Página do Dia (a tela mais importante do app)
-
-Estrutura enxuta, rápida e prática — o usuário deve conseguir viver o momento de oração em poucos minutos, sem sensação de tarefa longa:
-
-Cabeçalho do dia: número do dia, título da oração daquele dia, tema (ex: "Dia 12 — Quero colocar minha família em Tuas mãos")
-
-Palavra de Deus: texto bíblico curto e simples, diretamente relacionado ao tema do dia
-
-Player de áudio da Oração: elemento central da tela, visualmente em destaque — este áudio já traz reflexão e oração juntas, na voz de Marcos. Player com visual elegante (não um player genérico de sistema — criar um player customizado com a identidade visual do app)
-
-Propósito do dia: uma frase curta de ação prática, em destaque visual (card com leve textura, borda dourada fina)
-
-Botão "Vídeo do dia": bloqueado, com texto "Em breve disponível" — visualmente presente mas desabilitado, para gerar expectativa
-
-Botão "Testemunhos": bloqueado, com texto "Em breve disponível" — mesmo tratamento visual do item acima
-
-Frase para guardar no coração: frase-síntese do dia, em destaque tipográfico forte (fonte script ou serifada grande), como se fosse a "citação" central da página
-
-Botão "Concluí a oração de hoje": ao clicar, marca o dia como concluído e libera o próximo dia na trilha
-
-Importante: não incluir texto de reflexão escrito — a reflexão só existe em áudio (junto com a oração). O texto da página deve ser mínimo: só a Palavra de Deus (curta) e o propósito (curto).
-
-6. Tela de conclusão do dia
-
-Pequena tela ou modal de transição ao concluir o dia, reforçando sensação de paz e conquista (ex: "Você concluiu mais um dia da sua caminhada. Volte amanhã para continuar.") — tom emocional, acolhedor, nunca gamificado ou "corporativo"
-
-REGRAS DE COMPORTAMENTO DO APP (para o Lovable configurar a lógica)
-
-Modelo de acesso: pagamento único libera todos os 40 dias (não é freemium, não é assinatura neste momento)
-
-Progresso do usuário deve ser salvo vinculado à conta (login social), não ao navegador
-
-Os dias são liberados sequencialmente — o usuário não pode acessar dias futuros antes de concluir os anteriores
-
-Botões de vídeo e testemunho existem em todas as páginas de dia, sempre bloqueados com "Em breve disponível" — este é um recurso deliberado para gerar expectativa, não remover nem esconder
-
-Não implementar ainda: notificações (push, e-mail ou WhatsApp) — ficam para uma fase posterior
-
-Não implementar ainda: vídeo diário e espaço de testemunhos — apenas os botões de teaser
-
-TOM DE VOZ DE TODOS OS TEXTOS DA INTERFACE
-
-Todo o microcopy do app (botões, mensagens, títulos de tela) deve soar humano, caloroso e espiritual — nunca corporativo, nunca "gamificado" com linguagem de app de produtividade. Prefira:
-
-"Continuar minha caminhada" em vez de "Próximo"
-
-"Concluí a oração de hoje" em vez de "Marcar como concluído"
-
-"Em breve disponível" em vez de "Bloqueado" ou "Locked"
-
-RESUMO RÁPIDO PARA O LOVABLE (se precisar de uma versão condensada)
-
-Web app devocional católico "40 Dias Rezando com Marcos Nascimento". Paleta pergaminho + azul-marinho + dourado, tipografia serifada clássica com toques em script, visual de livro sagrado (baseado na capa anexada). Fluxo: landing → login social (Google/Apple) → pagamento único → trilha de 40 dias organizada em 8 áreas devocionais de 5 dias cada → página do dia com Palavra de Deus curta, player de áudio de oração, propósito do dia curto, botões de "vídeo" e "testemunhos" bloqueados como "em breve", frase para guardar no coração, e botão de conclusão que libera o próximo dia. Tom acolhedor, sereno, nunca corporativo.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/cb40e28d-3d7a-4021-9a7b-30f49dbb433a).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
 ```
+src/
+  routes/            — uma rota por arquivo (TanStack Router). Ex: jornada.tsx é a tela principal.
+  components/        — componentes de UI específicos do devocional (não confundir com components/ui/, que é shadcn)
+  hooks/             — hooks de dados (useAuth, usePerfil, useJornada, usePedidosOracao, useSom...)
+  lib/
+    devocional.ts    — TODO o conteúdo dos 40 dias (título, Palavra de Deus, oração, propósito, frase, áudio, sincronia)
+    perfis.ts        — tipo Papel e a chave CONTROLE_DE_PERFIL_HABILITADO
+    *.functions.ts   — server functions (TanStack Start), rodam no servidor mas são chamáveis do cliente
+    *.server.ts      — módulos só-servidor (nunca importar diretamente de um arquivo de rota/componente)
+  integrations/supabase/ — clientes Supabase (cliente browser, cliente server com service role, middleware de auth)
+public/audio/        — os arquivos .ogg de cada dia (dia-01.ogg, dia-02.ogg, ...)
+supabase/migrations/ — migrations SQL (ver seção 7 — aplicação NÃO é automática neste ambiente de trabalho)
+```
+
+## 5. Status atual do conteúdo (os 40 dias)
+
+**22 de 40 dias completos** (título oficial, texto real da oração transcrito, áudio e sincronia do destaque com o áudio). Ver `src/lib/devocional.ts` — cada dia pronto tem um bloco `const diaN = ...; if (diaN) { ... }` logo após a definição do array `areas`, sobrescrevendo o conteúdo placeholder original.
+
+| Área | Dias | Status |
+|---|---|---|
+| 1 — Caminhando com Deus | 1-5 | completa |
+| 2 — Quando a vida aperta | 6-10 | completa |
+| 3 — O poder da oração | 11-15 | completa |
+| 4 — Deus cuida de mim | 16-20 | completa |
+| 5 — Perdão e recomeço | 21-25 | 21 e 22 prontos; faltam 23-25 |
+| 6 — Fé para viver | 26-30 | placeholder |
+| 7 — Quando Deus age no impossível | 31-35 | placeholder |
+| 8 — Uma nova vida com Deus | 36-40 | placeholder |
+
+### Como um novo dia é processado (fluxo usado até aqui)
+
+1. Recebe-se o áudio (`.ogg`, gravação espontânea de Marcos) e o texto transcrito (`.docx`, via TurboScribe)
+2. Copia-se o áudio para `public/audio/dia-NN.ogg`
+3. Roda-se `ffprobe` (duração) e `ffmpeg -af silencedetect=noise=-30dB:d=0.4` (detecta pausas de fala reais)
+4. Calcula-se a fronteira proporcional de cada parágrafo (por tamanho de texto) e casa-se com a pausa detectada mais próxima → gera `oracaoTempos` (array de segundos de início de cada parágrafo)
+5. Adiciona-se o bloco `if (diaN) {...}` em `devocional.ts` com `titulo`, `audioUrl`, `oracaoTempos`, `oracao` (array de parágrafos)
+6. Build + typecheck (`tsc --noEmit`) + lint (`eslint --fix`) antes de todo commit
+7. Commit + push direto para o branch `main`
+
+O destaque de texto sincronizado (`PlayerOracao.tsx`) usa `oracaoTempos` quando presente; sem isso, cai para uma estimativa proporcional por tamanho de texto (menos precisa).
+
+## 6. Controle de perfil — implementado, ainda desligado
+
+Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`, hoje em `false`. Enquanto ela for `false`, o app se comporta como hoje: **sem login, acesso livre** (modo criado deliberadamente para agilizar os ajustes visuais).
+
+Toda a infraestrutura já está construída, esperando ser ligada:
+
+- **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `membro` | `visitante`). RLS: o usuário só cria a si mesmo como `visitante`; promoção a `membro`/`administrador` exige `service_role`.
+- **`sincronizarPerfilAposLogin.functions.ts`**: depois do login, consulta o Apps Script (planilha de pagamentos) e promove automaticamente para `membro` se o pagamento estiver confirmado.
+- **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — precisa ser promovido **manualmente** no banco na primeira vez (nunca automático, por segurança).
+- **Menu lateral já preparado**: item "Painel administrativo" (rota `/admin`, placeholder) só aparece se `papel === 'administrador'` — mas como a chave está desligada, esse item nunca aparece hoje.
+
+### Para "ligar" de verdade, falta:
+
+1. Reconectar o login (`entrar.tsx` já existe e funciona, só não está no fluxo ativo — `index.tsx` hoje redireciona direto para `/jornada`)
+2. Trocar `useJornadaDev` (progresso local, `localStorage`) por `useJornada` (Supabase, já existe e já funciona) nas páginas `jornada.tsx` e `dia.$numero.tsx`
+3. Mudar `CONTROLE_DE_PERFIL_HABILITADO` para `true`
+4. Decidir e implementar as regras específicas do Visitante (ainda não definidas — hoje, se a chave for ligada sem mais nada, o Visitante herdaria o mesmo menu do Membro)
+5. Promover manualmente a conta do administrador (ver acima)
+
+## 7. Banco de dados (Supabase) — atenção especial
+
+Este ambiente de trabalho (onde o código é editado) não tem acesso de rede ao Supabase real do projeto. Toda migration em `supabase/migrations/` é só o arquivo SQL — ele só passa a valer no banco de verdade quando:
+
+- O Lovable sincroniza automaticamente (nem sempre imediato), **ou**
+- Alguém cola o SQL manualmente no **SQL Editor** do painel do Supabase
+
+**Isso já causou pelo menos um bug real**: a tabela `pedidos_oracao` foi criada no código mas ainda não existia no banco ao vivo, gerando erro `PGRST205 - Could not find the table`. Sempre que uma migration nova for adicionada, avisar o usuário que ela precisa ser aplicada manualmente se o sintoma aparecer.
+
+### Tabelas existentes
+
+| Tabela | Propósito | Migration |
+|---|---|---|
+| `jornadas` | Progresso do usuário nos 40 dias (dias concluídos, acesso liberado) | `20260823173838_...sql` |
+| `perfis` | Papel do usuário (administrador/membro/visitante) | `20260828120000_perfis.sql` |
+| `pedidos_oracao` | Mural de pedidos de oração da Comunidade de Oração (Realtime habilitado) | `20260830140000_pedidos_oracao.sql` |
+
+## 8. Variáveis de ambiente / secrets
+
+Configuradas nas configurações do projeto no Lovable (Cloud tab), nunca commitadas:
+
+| Variável | Uso |
+|---|---|
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Cliente Supabase (browser e server) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Cliente admin server-side (`client.server.ts`), usado por `sincronizarPerfilAposLogin` |
+| `APPS_SCRIPT_URL`, `APPS_SCRIPT_CHAVE` | Consulta ao Apps Script (planilha de pagamentos) — ver `appsScriptPagamento.server.ts` |
+| `MP_ACCESS_TOKEN` | Usado pela landing page separada (não este repositório), para gerar Pix dinâmico via Mercado Pago |
+
+## 9. Funcionalidades já construídas na tela principal (`jornada.tsx`)
+
+- **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada (Introdução, Apresentação com 2 subitens, Força da oração, Palavra ao leitor, Por que 40 dias, Como viver, Os 40 Dias de Oração, + Painel administrativo restrito a admin)
+- **Mural do topo** (`MuralTopo.tsx`): faixa fina com frases curtas em letreiro animado (direita → esquerda), alterna entre frases automaticamente
+- **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado) — hoje vazio (`src/lib/avisos.ts`)
+- **TV Oracional** (`TVOracional.tsx`): vídeo do YouTube embutido (API oficial `window.YT.Player`, não postMessage cru — isso corrigiu um bug real de instabilidade), sem controles do YouTube visíveis, som controlado pelo mesmo interruptor global (`useSom`)
+- **Duas camadas de abas**: externa ("Devocional" / "Jornada de Oração" — esta última reservada para visitantes/não-membros, ainda placeholder) e interna ("40 Dias de Oração" / "Comunidade de Oração" / "Acompanhamento espiritual" / "Agenda de eventos" — só a primeira e a Comunidade estão implementadas de verdade, as outras duas são placeholder "em breve")
+- **Comunidade de Oração** (`MuralPedidosOracao.tsx`): mural de pedidos de oração com publicação, atualização em tempo real (Supabase Realtime) e moderação (autor ou administrador podem remover) — assume que quem acessa já está logado, sem prompt de login inline (isso será resolvido pelo controle de acesso do item 6)
+- **Player de oração** (`PlayerOracao.tsx`): áudio com destaque de texto sincronizado por parágrafo
+
+## 10. Decisões de UX deliberadas (não mexer sem entender o porquê)
+
+- **Nunca usar barra de menu fixa no topo** — o menu é lateral; qualquer elemento fixo no topo (mural, botão de menu mobile) deve ser fino e discreto
+- **Página do dia deve ser rápida** — sem textos de reflexão longos, só Palavra de Deus curta + áudio + propósito sucinto + frase final
+- **Tom de voz sempre acolhedor, nunca de cobrança** — inclusive em textos de sistema/erro
+- **Botões "Vídeo do dia" e "Testemunhos"** aparecem desde já em cada dia, mas sempre desabilitados ("Em breve disponível") — intencional, para gerar expectativa
+
+## 11. O que fica combinado mas não deve ser feito sem pedido explícito
+
+- Não habilitar `CONTROLE_DE_PERFIL_HABILITADO`
+- Não reconectar o login por conta própria
+- Não aplicar migrations diretamente no banco (não há acesso de rede para isso de qualquer forma)
+- Não decidir sozinho as regras de acesso do Visitante — ainda em aberto
+
+## 12. Processo de trabalho neste repositório
+
+Este projeto foi (e continua sendo) desenvolvido em parceria com um assistente de IA, operando num ambiente sem acesso de rede ao Supabase/GitHub por padrão, exceto por domínios específicos liberados (github.com, npm). O fluxo padrão para qualquer mudança:
+
+1. Editar os arquivos
+2. `npx vite build` (garante que compila, incluindo geração de rotas)
+3. `npx tsc --noEmit` (checagem de tipos)
+4. `npx eslint --fix <arquivos>` seguido de `npx eslint <arquivos>` (lint limpo, zero avisos)
+5. Commit com mensagem descritiva + push direto para `main`
+
+Veja `AGENTS.md` para instruções mais diretas caso você seja um agente de IA continuando este trabalho.
