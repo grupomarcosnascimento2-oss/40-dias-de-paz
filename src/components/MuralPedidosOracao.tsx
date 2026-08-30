@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import {
@@ -32,26 +31,14 @@ function tempoRelativo(dataIso: string): string {
 }
 
 export function MuralPedidosOracao() {
-  const { user, carregando } = useAuth();
+  const { user } = useAuth();
   const { data: perfil } = usePerfil(user?.id);
   const { data: pedidos, isLoading } = usePedidosOracao();
   const { publicar, publicando } = usePublicarPedido();
   const remover = useRemoverPedido();
   const [texto, setTexto] = useState("");
-  const [entrando, setEntrando] = useState(false);
 
   const souAdministrador = perfil?.papel === "administrador";
-
-  const entrarComGoogle = async () => {
-    setEntrando(true);
-    const resultado = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (resultado.error) {
-      setEntrando(false);
-      toast.error("Não conseguimos entrar agora. Tente novamente em instantes.");
-    }
-  };
 
   const enviarPedido = async () => {
     if (!user) return;
@@ -78,25 +65,6 @@ export function MuralPedidosOracao() {
           Nossa equipe está intercedendo em oração por cada pedido compartilhado aqui.
         </p>
       </div>
-
-      {!carregando && !user && (
-        <div
-          className="mx-auto mt-8 max-w-sm rounded-2xl border border-accent/30 bg-card p-6 text-center"
-          style={sombra3d}
-        >
-          <p className="text-sm text-foreground/80">
-            Entre para publicar e ver os pedidos de oração da comunidade.
-          </p>
-          <button
-            type="button"
-            disabled={entrando}
-            onClick={entrarComGoogle}
-            className="mt-4 w-full rounded-full border border-accent/50 bg-card px-6 py-3 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
-          >
-            {entrando ? "Abrindo…" : "Continuar com Google"}
-          </button>
-        </div>
-      )}
 
       {user && (
         <div
