@@ -8,6 +8,7 @@ import { sombra3d, sombra3dAberto } from "@/lib/estilo3d";
 import { AppShell } from "@/components/AppShell";
 import { AtalhosRapidos } from "@/components/AtalhosRapidos";
 import { TVOracional } from "@/components/TVOracional";
+import { MuralPedidosOracao } from "@/components/MuralPedidosOracao";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 // MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
@@ -275,14 +276,7 @@ function Jornada() {
               </TabsPrimitive.Content>
 
               <TabsPrimitive.Content value="comunidade">
-                <section className="mx-auto max-w-3xl px-6 py-16 text-center">
-                  <Cruz className="mx-auto h-6 w-6 text-accent" />
-                  <h2 className="script mt-4 text-3xl text-primary">Comunidade de Oração</h2>
-                  <p className="mx-auto mt-3 max-w-md text-foreground/75">
-                    Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui a
-                    comunidade de oração.
-                  </p>
-                </section>
+                <MuralPedidosOracao />
               </TabsPrimitive.Content>
 
               <TabsPrimitive.Content value="acompanhamento">
