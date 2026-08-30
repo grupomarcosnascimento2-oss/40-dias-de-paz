@@ -63,7 +63,7 @@ export function MuralPedidosOracao() {
 
       {user && (
         <div
-          className="sticky top-11 z-10 mx-auto mt-6 rounded-2xl border border-accent/30 bg-card p-4 shadow-md sm:p-5 md:top-0"
+          className="mx-auto mt-6 rounded-2xl border border-accent/30 bg-card p-4 sm:p-5"
           style={sombra3d}
         >
           <textarea
@@ -86,7 +86,7 @@ export function MuralPedidosOracao() {
         </div>
       )}
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-8 max-h-[26rem] space-y-3 overflow-y-auto rounded-2xl border border-border/50 bg-background/40 p-3 sm:max-h-[30rem]">
         {isLoading && <p className="text-center text-sm text-muted-foreground">Carregando…</p>}
 
         {!isLoading && pedidos?.length === 0 && (
