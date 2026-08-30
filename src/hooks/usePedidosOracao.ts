@@ -19,7 +19,10 @@ async function buscarPedidos(): Promise<PedidoOracao[]> {
     .order("created_at", { ascending: false })
     .limit(100);
 
-  if (error) throw error;
+  if (error) {
+    console.error("[usePedidosOracao] Falha ao buscar pedidos:", error);
+    throw error;
+  }
   return data as PedidoOracao[];
 }
 
@@ -59,7 +62,10 @@ export function usePublicarPedido() {
       .insert({ user_id: userId, nome, texto: textoLimpo });
     setPublicando(false);
 
-    if (error) return { erro: "falha_ao_publicar" as const };
+    if (error) {
+      console.error("[usePublicarPedido] Falha ao publicar:", error);
+      return { erro: "falha_ao_publicar" as const };
+    }
 
     void queryClient.invalidateQueries({ queryKey: CHAVE });
     return {};
@@ -73,6 +79,7 @@ export function useRemoverPedido() {
 
   return async (id: string) => {
     const { error } = await supabase.from("pedidos_oracao").delete().eq("id", id);
+    if (error) console.error("[useRemoverPedido] Falha ao remover:", error);
     if (!error) void queryClient.invalidateQueries({ queryKey: CHAVE });
     return { erro: error ? ("falha_ao_remover" as const) : undefined };
   };
