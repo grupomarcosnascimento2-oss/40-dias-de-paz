@@ -739,6 +739,26 @@ if (dia18) {
   ];
 }
 
+// Conteúdo real do Dia 19, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia19 = todosOsDias.find((dia) => dia.numero === 19);
+if (dia19) {
+  dia19.titulo = "Obrigado, Senhor, por aquilo que muitas vezes não percebo";
+  dia19.audioUrl = "/audio/dia-19.ogg";
+  dia19.oracaoTempos = [0, 3.4, 32.08, 54.24, 78.18, 103.64, 121.15, 132.8, 143.13];
+  dia19.oracao = [
+    "Obrigado, Senhor, por aquilo que muitas vezes não percebo.",
+    "Senhor amado, meu Deus querido, o meu foco está tão voltado às minhas necessidades. Eu tenho hoje em mente tantas questões a pedir que esqueço de agradecer. Eu esqueço muitas vezes, meu Senhor, de agradecer e de perceber as pequenas coisas que são obra da Tua graça e que estão ao meu redor.",
+    "Eu preciso hoje estar sensível para enxergar na natureza, para enxergar o dom da vida, o acordar de manhã, o pão de cada dia, a Tua proteção, a Tua graça, o meu sustento, o meu trabalho, a minha oportunidade de ir à santa Missa, a oportunidade de comungar, a oportunidade de entrar em oração e comunhão Contigo.",
+    "É no meu vestir, no meu olhar, no meu falar, no meu corpo, na minha mente, na minha alma: são detalhes, são coisas que eu não percebo, as graças que estão ao meu redor, são situações que eu não enxergo e pelas quais não sou grato. Mas hoje eu estou aqui para agradecer.",
+    "Diante daquilo que eu não percebo, mas já agradeço: o pão de cada dia, a minha saúde, as minhas pernas, as minhas mãos, os meus cinco sentidos — o meu olhar, o meu ouvir, o meu falar, o meu sentir. Todos os sentidos que tenho no meu corpo eu Te agradeço imensamente: por poder andar, por poder falar, por poder enxergar, por poder ouvir.",
+    "Obrigado, Senhor, porque eu tenho uma casa para morar, tenho teto que me cobre. Obrigado, Senhor, porque eu tenho pessoas que me querem bem. Obrigado pela minha família, pela minha esposa, pelos meus filhos.",
+    "Muito obrigado, Senhor, pela cama em que eu durmo, por todos os paramentos que existem na minha cama. Obrigado, Senhor, pelo alimento.",
+    "Obrigado, obrigado, Senhor, por tudo. Eu Te agradeço de coração. Obrigado, Senhor, por aquilo que muitas vezes não percebo.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
