@@ -1,8 +1,10 @@
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { ChevronDown } from "lucide-react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useJornadaDev, diaLiberado } from "@/hooks/useJornadaDev";
+import { useEffect } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { useJornada, diaLiberado } from "@/hooks/useJornada";
 import { areas, TOTAL_DIAS } from "@/lib/devocional";
 import { sombra3d, sombra3dAberto } from "@/lib/estilo3d";
 import { AppShell } from "@/components/AppShell";
@@ -10,9 +12,6 @@ import { AtalhosRapidos } from "@/components/AtalhosRapidos";
 import { TVOracional } from "@/components/TVOracional";
 import { MuralPedidosOracao } from "@/components/MuralPedidosOracao";
 import { Ornamento, Cruz } from "@/components/Ornamento";
-
-// MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
-// as melhorias do app. Ver nota em src/hooks/useJornadaDev.ts.
 
 export const Route = createFileRoute("/jornada")({
   head: () => ({
@@ -46,15 +45,23 @@ function AnelProgresso({ concluidos, total }: { concluidos: number; total: numbe
 }
 
 function Jornada() {
-  const { diasConcluidos, carregado, reiniciarProgresso } = useJornadaDev();
+  const { user, carregando: carregandoAuth } = useAuth();
+  const navigate = useNavigate();
+  const { data: jornada, isLoading: carregandoJornada } = useJornada(user?.id);
 
-  if (!carregado) {
+  useEffect(() => {
+    if (!carregandoAuth && !user) navigate({ to: "/entrar", replace: true });
+  }, [carregandoAuth, user, navigate]);
+
+  if (carregandoAuth || !user || carregandoJornada) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando sua caminhada…</p>
       </main>
     );
   }
+
+  const diasConcluidos = jornada?.dias_concluidos ?? 0;
 
   const proximoDia = Math.min(diasConcluidos + 1, TOTAL_DIAS);
   const areaDoProximoDia = Math.ceil(proximoDia / 5) - 1;
@@ -116,13 +123,6 @@ function Jornada() {
                   <div>
                     <h1 className="text-2xl sm:text-3xl">40 Dias Rezando com Marcos Nascimento</h1>
                   </div>
-                  <button
-                    type="button"
-                    onClick={reiniciarProgresso}
-                    className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-                  >
-                    Reiniciar progresso (dev)
-                  </button>
                 </header>
 
                 <section className="mx-auto max-w-3xl px-6 pt-8">

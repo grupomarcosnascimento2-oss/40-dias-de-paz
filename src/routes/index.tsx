@@ -1,12 +1,26 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
 
-// MODO DE DESENVOLVIMENTO — landing page e login desativados por enquanto para
-// agilizar as melhorias do app. A rota inicial cai direto na jornada.
-// Para religar a landing + login, restaurar o conteúdo anterior deste arquivo
-// (ver histórico do git) e trocar o alvo do botão de volta para "/entrar".
+// Rota inicial: quem já está logado vai direto para a jornada; quem
+// ainda não entrou vai para a tela de login.
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    throw redirect({ to: "/jornada" });
-  },
+  component: Index,
 });
+
+function Index() {
+  const { user, carregando } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (carregando) return;
+    navigate({ to: user ? "/jornada" : "/entrar", replace: true });
+  }, [carregando, user, navigate]);
+
+  return (
+    <main className="flex min-h-screen items-center justify-center">
+      <p className="text-muted-foreground">Preparando…</p>
+    </main>
+  );
+}

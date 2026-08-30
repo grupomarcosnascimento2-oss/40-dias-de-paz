@@ -1,21 +1,13 @@
 // Papéis de usuário do devocional e a chave geral que liga/desliga o
 // controle de acesso por perfil.
 //
-// Enquanto CONTROLE_DE_PERFIL_HABILITADO for false, nenhuma tela aplica
-// restrição — o app continua se comportando como hoje (modo de
-// desenvolvimento, acesso livre, sem login). Essa chave existe para que
-// toda a estrutura (banco de dados, hooks, verificação de acesso) possa
-// ser construída e testada antes de qualquer coisa mudar de fato na
-// experiência do usuário.
-//
-// Para "ligar" de verdade, além de mudar esta chave para true, é preciso
-// voltar a usar as páginas com login (useAuth) em vez do modo sem login
-// atual (useJornadaDev) — essa reconexão é um passo separado, ainda não
-// feito.
+// LIGADO em 30/08/2026: login com Google/Apple reconectado, e as páginas
+// da jornada agora exigem sessão ativa (useAuth) em vez do modo sem
+// login (useJornadaDev, mantido no repositório só como referência).
 
 export type Papel = "administrador" | "membro" | "visitante";
 
-export const CONTROLE_DE_PERFIL_HABILITADO = false;
+export const CONTROLE_DE_PERFIL_HABILITADO = true;
 
 export const PAPEL_PADRAO: Papel = "visitante";
 

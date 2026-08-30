@@ -1,14 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { useJornadaDev, diaLiberado } from "@/hooks/useJornadaDev";
+import { useAuth } from "@/hooks/useAuth";
+import { useJornada, useConcluirDia, diaLiberado } from "@/hooks/useJornada";
 import { getDia, getAreaDoDia, TOTAL_DIAS } from "@/lib/devocional";
 import { PlayerOracao } from "@/components/PlayerOracao";
 import { AppShell } from "@/components/AppShell";
 import { Ornamento, Cruz } from "@/components/Ornamento";
-
-// MODO DE DESENVOLVIMENTO — sem login e sem gate de pagamento, para agilizar
-// as melhorias do app. Ver nota em src/hooks/useJornadaDev.ts.
 
 export const Route = createFileRoute("/dia/$numero")({
   head: ({ params }) => {
@@ -37,16 +35,24 @@ function DiaOracional() {
   const area = getAreaDoDia(numeroDoDia);
 
   const navigate = useNavigate();
-  const { diasConcluidos, carregado, concluirDia } = useJornadaDev();
+  const { user, carregando: carregandoAuth } = useAuth();
+  const { data: jornada, isLoading: carregandoJornada } = useJornada(user?.id);
+  const concluirDiaMutation = useConcluirDia(user?.id);
   const [concluindo, setConcluindo] = useState(false);
 
-  if (!carregado || !dia) {
+  useEffect(() => {
+    if (!carregandoAuth && !user) navigate({ to: "/entrar", replace: true });
+  }, [carregandoAuth, user, navigate]);
+
+  if (carregandoAuth || !user || carregandoJornada || !dia) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando o dia de oração…</p>
       </main>
     );
   }
+
+  const diasConcluidos = jornada?.dias_concluidos ?? 0;
 
   const liberado = diaLiberado(numeroDoDia, diasConcluidos);
   const jaConcluido = numeroDoDia <= diasConcluidos;
@@ -72,16 +78,21 @@ function DiaOracional() {
     );
   }
 
-  const concluir = () => {
+  const concluir = async () => {
     setConcluindo(true);
-    concluirDia(numeroDoDia);
-    toast.success("Que a paz de Deus fique com você hoje.");
-    if (numeroDoDia < TOTAL_DIAS) {
-      navigate({ to: "/dia/$numero", params: { numero: String(proximoNumero) } });
-    } else {
-      navigate({ to: "/jornada" });
+    try {
+      await concluirDiaMutation.mutateAsync(numeroDoDia);
+      toast.success("Que a paz de Deus fique com você hoje.");
+      if (numeroDoDia < TOTAL_DIAS) {
+        navigate({ to: "/dia/$numero", params: { numero: String(proximoNumero) } });
+      } else {
+        navigate({ to: "/jornada" });
+      }
+    } catch {
+      toast.error("Não conseguimos salvar seu progresso agora. Tente novamente.");
+    } finally {
+      setConcluindo(false);
     }
-    setConcluindo(false);
   };
 
   return (
