@@ -634,6 +634,28 @@ if (dia13) {
   ];
 }
 
+// Conteúdo real do Dia 14, enviado por Marcos (transcrição da gravação de
+// oração). Substitui o título e o texto de placeholder deste dia.
+const dia14 = todosOsDias.find((dia) => dia.numero === 14);
+if (dia14) {
+  dia14.titulo = "Ensina-me a esperar a Tua resposta";
+  dia14.audioUrl = "/audio/dia-14.ogg";
+  dia14.oracaoTempos = [0, 2.65, 16.31, 30.7, 40.55, 57.04, 75.35, 82.97, 119.02, 129.58, 133.33];
+  dia14.oracao = [
+    "Senhor, ensina-me a esperar a Tua resposta.",
+    "Meu Pai, meu Senhor e meu Deus, quantas vezes eu me coloco diante da Tua presença e clamo, Senhor, justamente com o coração ansioso, com o coração sem condições de esperar a Tua resposta.",
+    "Ó Deus, Tu nunca nos deixas sem resposta. Nunca deixaste os profetas sem resposta. Até o próprio Cristo, Pai, Vosso Filho Amado, nunca o deixaste sem resposta.",
+    "Por isso, hoje, meu Deus, nesta oração, meu Senhor e meu Rei, eu quero clamar: Senhor, ensina-me a esperar a Tua resposta.",
+    "Porque eu acredito na força da oração. Eu acredito que, através da nossa oração, a Tua resposta chega até nós. O nosso coração fica sensível, o nosso coração fica preparado para a Tua resposta.",
+    "E muitas e muitas vezes, Senhor, ao não esperar a Tua resposta, agi por conta própria, buscando os meus próprios caminhos, as minhas próprias resoluções, Senhor. E isso não me fez feliz e me levou para caminhos errados, ó Pai.",
+    "Por isso, hoje, nesta oportunidade, Senhor, eu suplico: eu quero esperar. Ensina-me a esperar.",
+    "Manda o Teu Espírito Santo sobre mim, através da intercessão de Nossa Senhora, que é a nossa professora de oração. Ela nos ensina a esperar, porque Maria esperou. Nossa Senhora sabia esperar profundamente a vontade de Deus acontecer na sua vida. Ela via as realidades, mas mesmo assim acreditava na misericórdia e na graça de que Deus haveria de dar resposta, de que Deus haveria de vir ao encontro, Senhor, de acordo com a Tua vontade, meu Pai.",
+    "Por isso, Senhor, aqui eu clamo: eu quero aprender a esperar essa resposta, porque certamente ela vai me guiar, Senhor, vai guiar o meu coração, ó Pai.",
+    "Senhor, ensina-me a esperar a Tua resposta.",
+    "Amém.",
+  ];
+}
+
 export function getDia(numero: number): Dia | undefined {
   return todosOsDias.find((dia) => dia.numero === numero);
 }
