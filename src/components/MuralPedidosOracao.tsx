@@ -114,7 +114,7 @@ function CartaoPedido({
             </p>
             {ehAdmin && (
               <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                Administrador
+                Intercessor
               </span>
             )}
             <span className="text-xs text-muted-foreground">
