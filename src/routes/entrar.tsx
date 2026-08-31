@@ -59,7 +59,7 @@ function Entrar() {
   const entrarCom = async (provedor: "google" | "apple") => {
     setEntrando(provedor);
     const resultado = await lovable.auth.signInWithOAuth(provedor, {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/entrar`,
     });
 
     if (resultado.error) {
