@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Megaphone, Info, TriangleAlert, BellRing, X } from "lucide-react";
-import { avisos, type Aviso, type TipoAviso } from "@/lib/avisos";
+import { type TipoAviso } from "@/lib/avisos";
+import { useAvisos, type AvisoDb } from "@/hooks/useAvisos";
 
 const CHAVE_DISPENSADOS = "avisos_dispensados";
 
@@ -48,6 +49,7 @@ function lerDispensados(): string[] {
 }
 
 export function PainelAvisos() {
+  const { data: avisos } = useAvisos();
   const [dispensados, setDispensados] = useState<string[]>([]);
   const [carregado, setCarregado] = useState(false);
 
@@ -64,7 +66,9 @@ export function PainelAvisos() {
     });
   };
 
-  const visiveis = carregado ? avisos.filter((a) => !dispensados.includes(a.id)) : [];
+  const visiveis = carregado
+    ? (avisos ?? []).filter((a) => a.ativo && !dispensados.includes(a.id))
+    : [];
 
   if (visiveis.length === 0) return null;
 
@@ -77,7 +81,7 @@ export function PainelAvisos() {
   );
 }
 
-function ItemAviso({ aviso, onFechar }: { aviso: Aviso; onFechar: () => void }) {
+function ItemAviso({ aviso, onFechar }: { aviso: AvisoDb; onFechar: () => void }) {
   const estilo = estiloPorTipo[aviso.tipo];
   const Icone = estilo.icone;
 

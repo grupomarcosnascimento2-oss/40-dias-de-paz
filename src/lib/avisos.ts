@@ -1,7 +1,7 @@
-// Lista de avisos exibidos no painel do topo. Edite este arquivo para
-// publicar novas notícias, avisos, alertas ou comunicados aos usuários.
-// Cada aviso precisa de um "id" único — ao trocar o id, o aviso volta a
-// aparecer mesmo para quem já tinha fechado uma versão anterior.
+// Tipos dos avisos exibidos no painel do topo do app (PainelAvisos.tsx).
+// Os avisos em si agora vivem no banco de dados (tabela "avisos"),
+// gerenciados pelo administrador direto no Dashboard — ver useAvisos.ts.
+// Este arquivo guarda só os tipos, reaproveitados nos dois lugares.
 
 export type TipoAviso = "noticia" | "aviso" | "alerta" | "comunicado";
 
@@ -11,5 +11,3 @@ export type Aviso = {
   titulo: string;
   mensagem: string;
 };
-
-export const avisos: Aviso[] = [];

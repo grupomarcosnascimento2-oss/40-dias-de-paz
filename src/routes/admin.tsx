@@ -6,6 +6,7 @@ import { usePerfil } from "@/hooks/usePerfil";
 import { useContagemPorPapel } from "@/hooks/useMetricasAdmin";
 import { useContagemPresencaAoVivo } from "@/hooks/usePresencaGlobal";
 import { AppShell } from "@/components/AppShell";
+import { GerenciarAvisos } from "@/components/GerenciarAvisos";
 import { Cruz } from "@/components/Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
 import {
@@ -86,15 +87,9 @@ function Admin() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]">
-          {/* Conteúdo principal — espaço para futuras ferramentas de gestão */}
-          <section
-            className="rounded-2xl border border-accent/30 bg-card p-6 text-foreground/75"
-            style={sombra3d}
-          >
-            <p>
-              Este espaço vai reunir, aos poucos, as ferramentas para gerenciar conteúdo, menus e
-              recursos do devocional.
-            </p>
+          {/* Conteúdo principal — ferramentas de gestão */}
+          <section>
+            <GerenciarAvisos />
           </section>
 
           {/* Painel lateral — informações estratégicas e gerenciais */}
