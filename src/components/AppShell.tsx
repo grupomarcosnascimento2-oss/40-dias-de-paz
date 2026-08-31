@@ -8,6 +8,7 @@ import { sombra3d } from "@/lib/estilo3d";
 import { CONTROLE_DE_PERFIL_HABILITADO, type Papel } from "@/lib/perfis";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
+import { useRastrearPresenca } from "@/hooks/usePresencaGlobal";
 
 type ItemMenu = {
   numero: string;
@@ -146,6 +147,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const { data: perfil } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
   const papel: Papel | undefined = CONTROLE_DE_PERFIL_HABILITADO ? perfil?.papel : undefined;
+  useRastrearPresenca(user?.id, papel);
 
   const menuVisivel = menu.filter((item) => !item.papeis || (papel && item.papeis.includes(papel)));
 

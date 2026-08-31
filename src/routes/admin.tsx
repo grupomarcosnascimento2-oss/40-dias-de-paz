@@ -4,6 +4,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import { useContagemPorPapel } from "@/hooks/useMetricasAdmin";
+import { useContagemPresencaAoVivo } from "@/hooks/usePresencaGlobal";
 import { AppShell } from "@/components/AppShell";
 import { Cruz } from "@/components/Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
@@ -53,6 +54,7 @@ function Admin() {
     souAdministrador,
   );
   const { data: quantidadeVisitantes } = useContagemPorPapel("visitante", souAdministrador);
+  const membrosSimultaneos = useContagemPresencaAoVivo(souAdministrador);
 
   const dadosGrafico = [
     { papel: "Administrador", quantidade: quantidadeAdministradores ?? 0 },
@@ -107,6 +109,18 @@ function Admin() {
               </p>
               <p className="mt-1 text-3xl font-semibold text-primary">
                 {carregandoMembros ? "…" : quantidadeMembros}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-accent/30 bg-card p-5" style={sombra3d}>
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Membros simultâneos agora
+                </p>
+              </div>
+              <p className="mt-1 text-3xl font-semibold text-primary">
+                {membrosSimultaneos ?? "…"}
               </p>
             </div>
 
