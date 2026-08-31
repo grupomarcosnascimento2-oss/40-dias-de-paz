@@ -20,14 +20,27 @@ import { sombra3d } from "@/lib/estilo3d";
 // navega para outra página ou troca para a aba "Jornada de Oração". O
 // player é destruído nesse momento (parando o áudio), e recriado do
 // zero ao voltar.
+//
+// Rodízio de vídeos: o vídeo atual (VIDEO_ATUAL) toca por 2 minutos,
+// depois troca para VIDEO_NOVO por 1 minuto, e assim continua girando
+// indefinidamente enquanto a TV estiver na tela (ver PLAYLIST abaixo).
 
-const VIDEO_ID = "lEjwi2SkJnM";
+const VIDEO_ATUAL = "lEjwi2SkJnM";
+const VIDEO_NOVO = "qz8YE61BoXM";
+
+// Rodízio contínuo: o vídeo atual toca por 2 minutos, depois troca para
+// o vídeo novo por 1 minuto, e volta a girar assim indefinidamente.
+const PLAYLIST = [
+  { id: VIDEO_ATUAL, duracaoMs: 2 * 60 * 1000 },
+  { id: VIDEO_NOVO, duracaoMs: 1 * 60 * 1000 },
+] as const;
 
 type PlayerYouTube = {
   destroy: () => void;
   mute: () => void;
   unMute: () => void;
   playVideo: () => void;
+  loadVideoById: (videoId: string) => void;
 };
 
 declare global {
@@ -79,7 +92,7 @@ export function TVOracional() {
     carregarApiYouTube().then(() => {
       if (cancelado || !window.YT) return;
       playerRef.current = new window.YT.Player("tv-oracional-player", {
-        videoId: VIDEO_ID,
+        videoId: VIDEO_ATUAL,
         playerVars: {
           autoplay: 1,
           mute: 1,
@@ -113,6 +126,47 @@ export function TVOracional() {
     }
     playerRef.current?.playVideo();
   }, [ativo, pronto, carregado]);
+
+  // Guarda o estado de som mais recente numa ref, para o rodízio de
+  // vídeos (abaixo) sempre aplicar o som certo ao trocar de vídeo, sem
+  // precisar reiniciar o cronômetro de 2min/1min toda vez que alguém
+  // liga/desliga o interruptor de som.
+  const ativoRef = useRef(ativo);
+  useEffect(() => {
+    ativoRef.current = ativo;
+  }, [ativo]);
+
+  useEffect(() => {
+    if (!pronto) return;
+
+    const [primeiro, segundo] = PLAYLIST;
+    let atualEhPrimeiro = true;
+    let cancelado = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const agendarProximo = () => {
+      const atual = atualEhPrimeiro ? primeiro : segundo;
+      timeoutId = setTimeout(() => {
+        if (cancelado) return;
+        atualEhPrimeiro = !atualEhPrimeiro;
+        const proximo = atualEhPrimeiro ? primeiro : segundo;
+        playerRef.current?.loadVideoById(proximo.id);
+        if (ativoRef.current) {
+          playerRef.current?.unMute();
+        } else {
+          playerRef.current?.mute();
+        }
+        agendarProximo();
+      }, atual.duracaoMs);
+    };
+
+    agendarProximo();
+
+    return () => {
+      cancelado = true;
+      clearTimeout(timeoutId);
+    };
+  }, [pronto]);
 
   return (
     <div className="mx-auto max-w-3xl px-6 pt-8">
