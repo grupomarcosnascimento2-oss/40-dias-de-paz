@@ -337,8 +337,9 @@ function Jornada() {
                   <Cruz className="mx-auto h-6 w-6 text-accent" />
                   <h2 className="script mt-4 text-3xl text-primary">Acompanhamento espiritual</h2>
                   <p className="mx-auto mt-3 max-w-md text-foreground/75">
-                    Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui o
-                    acompanhamento espiritual.
+                    Em breve, você vai poder agendar aqui um encontro individual em vídeochamada com
+                    Marcos Nascimento, para um acompanhamento espiritual mais próximo e pessoal.
+                    Estamos preparando esse espaço com todo cuidado — fique de olho.
                   </p>
                 </section>
               </TabsPrimitive.Content>

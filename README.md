@@ -150,3 +150,18 @@ Este projeto foi (e continua sendo) desenvolvido em parceria com um assistente d
 5. Commit com mensagem descritiva + push direto para `main`
 
 Veja `AGENTS.md` para instruções mais diretas caso você seja um agente de IA continuando este trabalho.
+
+## 13. Ideia registrada para o futuro — Acompanhamento espiritual individual (vídeochamada paga)
+
+Discutido, **ainda não implementado** — só o texto de "em breve" foi colocado na aba "Acompanhamento espiritual" por enquanto.
+
+Objetivo: membro paga para agendar um encontro individual em vídeochamada com Marcos Nascimento.
+
+Dois caminhos possíveis, avaliados:
+
+1. **Agendamento + ferramenta externa (recomendado para começar)** — o app cuida só de agenda e pagamento; a chamada em si acontece no Google Meet/Zoom (link gerado e enviado ao membro). Mais rápido de construir, sem custo de infraestrutura de vídeo.
+2. **Vídeo-chamada embutida no app** — usando um serviço pronto (ex: Daily.co, Twilio Video), mais integrado à experiência, mas mais esforço de construção e custo variável por minuto/sessão.
+
+Recomendação registrada: começar pelo caminho 1 para validar a demanda antes de investir na solução embutida.
+
+Independente do caminho escolhido, vai precisar de: agenda de disponibilidade do Marcos, um produto/preço separado da assinatura do devocional, lembretes antes do horário marcado, e um marcador no perfil do usuário indicando que ele contratou esse serviço.
