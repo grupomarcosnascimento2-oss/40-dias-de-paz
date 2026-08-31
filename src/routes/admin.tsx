@@ -1,11 +1,18 @@
 import { useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import { useContagemPorPapel } from "@/hooks/useMetricasAdmin";
 import { AppShell } from "@/components/AppShell";
 import { Cruz } from "@/components/Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 // Dashboard do administrador. Protegido de verdade: exige login E papel
 // "administrador" — quem não for admin é redirecionado (não basta o
@@ -37,10 +44,25 @@ function Admin() {
     }
   }, [carregando, user, souAdministrador, navigate]);
 
+  const { data: quantidadeAdministradores } = useContagemPorPapel(
+    "administrador",
+    souAdministrador,
+  );
   const { data: quantidadeMembros, isLoading: carregandoMembros } = useContagemPorPapel(
     "membro",
     souAdministrador,
   );
+  const { data: quantidadeVisitantes } = useContagemPorPapel("visitante", souAdministrador);
+
+  const dadosGrafico = [
+    { papel: "Administrador", quantidade: quantidadeAdministradores ?? 0 },
+    { papel: "Membros", quantidade: quantidadeMembros ?? 0 },
+    { papel: "Visitantes", quantidade: quantidadeVisitantes ?? 0 },
+  ];
+
+  const configuracaoGrafico = {
+    quantidade: { label: "Pessoas", color: "var(--accent)" },
+  } satisfies ChartConfig;
 
   if (carregando || !user || !souAdministrador) {
     return (
@@ -86,6 +108,28 @@ function Admin() {
               <p className="mt-1 text-3xl font-semibold text-primary">
                 {carregandoMembros ? "…" : quantidadeMembros}
               </p>
+            </div>
+
+            <div className="rounded-2xl border border-accent/30 bg-card p-5" style={sombra3d}>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                Pessoas por perfil
+              </p>
+              <ChartContainer config={configuracaoGrafico} className="mt-3 h-40 w-full">
+                <BarChart data={dadosGrafico} layout="vertical" margin={{ left: 0 }}>
+                  <CartesianGrid horizontal={false} stroke="var(--border)" />
+                  <XAxis type="number" hide />
+                  <YAxis
+                    type="category"
+                    dataKey="papel"
+                    tickLine={false}
+                    axisLine={false}
+                    width={90}
+                    fontSize={12}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="quantidade" fill="var(--color-quantidade)" radius={6} />
+                </BarChart>
+              </ChartContainer>
             </div>
           </aside>
         </div>
