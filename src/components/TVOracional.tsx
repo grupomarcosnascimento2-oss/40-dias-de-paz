@@ -21,17 +21,17 @@ import { sombra3d } from "@/lib/estilo3d";
 // player é destruído nesse momento (parando o áudio), e recriado do
 // zero ao voltar.
 //
-// Rodízio de vídeos: o vídeo atual (VIDEO_ATUAL) toca por 5 minutos,
+// Rodízio de vídeos: o vídeo atual (VIDEO_ATUAL) toca por 10 minutos,
 // depois troca para VIDEO_NOVO por 1 minuto, e assim continua girando
 // indefinidamente enquanto a TV estiver na tela (ver PLAYLIST abaixo).
 
 const VIDEO_ATUAL = "lEjwi2SkJnM";
 const VIDEO_NOVO = "qz8YE61BoXM";
 
-// Rodízio contínuo: o vídeo atual toca por 5 minutos, depois troca para
+// Rodízio contínuo: o vídeo atual toca por 10 minutos, depois troca para
 // o vídeo novo por 1 minuto, e volta a girar assim indefinidamente.
 const PLAYLIST = [
-  { id: VIDEO_ATUAL, duracaoMs: 5 * 60 * 1000 },
+  { id: VIDEO_ATUAL, duracaoMs: 10 * 60 * 1000 },
   { id: VIDEO_NOVO, duracaoMs: 1 * 60 * 1000 },
 ] as const;
 
@@ -129,7 +129,7 @@ export function TVOracional() {
 
   // Guarda o estado de som mais recente numa ref, para o rodízio de
   // vídeos (abaixo) sempre aplicar o som certo ao trocar de vídeo, sem
-  // precisar reiniciar o cronômetro de 5min/1min toda vez que alguém
+  // precisar reiniciar o cronômetro de 10min/1min toda vez que alguém
   // liga/desliga o interruptor de som.
   const ativoRef = useRef(ativo);
   useEffect(() => {
