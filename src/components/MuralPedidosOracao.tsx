@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowUp, Pin, PinOff, Trash2 } from "lucide-react";
+import { ArrowUp, MessageCircle, Pin, PinOff, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import {
@@ -16,6 +16,12 @@ import {
   EMOJIS_DISPONIVEIS,
   type Reacao,
 } from "@/hooks/useReacoesPedidos";
+import {
+  useRespostasPedidos,
+  useResponderPedido,
+  useRemoverResposta,
+  type RespostaPedido,
+} from "@/hooks/useRespostasPedidos";
 import { sombra3d } from "@/lib/estilo3d";
 
 // Mural da Comunidade de Oração — membros logados publicam pedidos de
@@ -24,7 +30,8 @@ import { sombra3d } from "@/lib/estilo3d";
 // "novo pedido"), mas sem herdar a sensação descartável de um chat de
 // transmissão: sem mensagens curtíssimas nem rolagem impossível de
 // acompanhar. Moderação: o autor do pedido ou um administrador podem
-// remover; só administrador pode fixar um pedido no topo.
+// remover; só administrador pode fixar um pedido no topo ou responder
+// publicamente a um pedido (não é comentário aberto para qualquer um).
 
 function tempoRelativo(dataIso: string): string {
   const segundos = Math.floor((Date.now() - new Date(dataIso).getTime()) / 1000);
@@ -56,22 +63,41 @@ function CartaoPedido({
   podeRemover,
   souAdministrador,
   reacoes,
+  respostas,
   onRemover,
   onFixar,
   onReagir,
+  onResponder,
+  onRemoverResposta,
 }: {
   pedido: PedidoOracao;
   userId: string | undefined;
   podeRemover: boolean;
   souAdministrador: boolean;
   reacoes: Reacao[] | undefined;
+  respostas: RespostaPedido[] | undefined;
   onRemover: () => void;
   onFixar: () => void;
   onReagir: (emoji: string) => void;
+  onResponder: (texto: string) => Promise<void>;
+  onRemoverResposta: (respostaId: string) => void;
 }) {
   const ehAdmin = pedido.papel === "administrador";
   const contagem = contarReacoes(reacoes, pedido.id);
   const minhaReacao = userId ? reacaoDoUsuario(reacoes, pedido.id, userId) : undefined;
+  const respostasDoPedido = respostas?.filter((r) => r.pedido_id === pedido.id) ?? [];
+
+  const [mostrarCaixaResposta, setMostrarCaixaResposta] = useState(false);
+  const [textoResposta, setTextoResposta] = useState("");
+  const [enviandoResposta, setEnviandoResposta] = useState(false);
+
+  const enviarResposta = async () => {
+    setEnviandoResposta(true);
+    await onResponder(textoResposta);
+    setEnviandoResposta(false);
+    setTextoResposta("");
+    setMostrarCaixaResposta(false);
+  };
 
   return (
     <div
@@ -143,7 +169,79 @@ function CartaoPedido({
             </button>
           );
         })}
+
+        {souAdministrador && (
+          <button
+            type="button"
+            onClick={() => setMostrarCaixaResposta((v) => !v)}
+            className="flex items-center gap-1 rounded-full border border-border/60 px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-secondary"
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            Responder
+          </button>
+        )}
       </div>
+
+      {respostasDoPedido.length > 0 && (
+        <div className="mt-2 space-y-2 border-l-2 border-red-300 pl-3">
+          {respostasDoPedido.map((resposta) => (
+            <div key={resposta.id} className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-2">
+                  <p className="text-xs font-medium text-red-700">{resposta.nome}</p>
+                  <span className="text-[11px] text-muted-foreground">
+                    {tempoRelativo(resposta.created_at)}
+                  </span>
+                </div>
+                <p className="text-sm leading-snug text-foreground/85">{resposta.texto}</p>
+              </div>
+              {souAdministrador && (
+                <button
+                  type="button"
+                  onClick={() => onRemoverResposta(resposta.id)}
+                  aria-label="Remover resposta"
+                  title="Remover resposta"
+                  className="shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {mostrarCaixaResposta && (
+        <div className="mt-2 border-l-2 border-red-300 pl-3">
+          <textarea
+            value={textoResposta}
+            onChange={(e) => setTextoResposta(e.target.value)}
+            placeholder="Responder como equipe do devocional..."
+            rows={2}
+            className="w-full resize-none rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
+          />
+          <div className="mt-1.5 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMostrarCaixaResposta(false);
+                setTextoResposta("");
+              }}
+              className="rounded-full px-3 py-1 text-xs text-muted-foreground hover:bg-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              disabled={enviandoResposta || !textoResposta.trim()}
+              onClick={enviarResposta}
+              className="rounded-full bg-red-600 px-3 py-1 text-xs text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+            >
+              {enviandoResposta ? "Enviando…" : "Enviar resposta"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -153,10 +251,13 @@ export function MuralPedidosOracao() {
   const { data: perfil } = usePerfil(user?.id);
   const { data: pedidos, isLoading } = usePedidosOracao();
   const { data: reacoes } = useReacoesPedidos();
+  const { data: respostas } = useRespostasPedidos();
   const { publicar, publicando } = usePublicarPedido();
   const remover = useRemoverPedido();
   const fixar = useFixarPedido();
   const reagir = useReagir();
+  const { responder } = useResponderPedido();
+  const removerResposta = useRemoverResposta();
   const [texto, setTexto] = useState("");
   const [temNovoPedido, setTemNovoPedido] = useState(false);
 
@@ -225,6 +326,18 @@ export function MuralPedidosOracao() {
     if (resultado.erro) toast.error("Não conseguimos registrar sua reação agora.");
   };
 
+  const responderPedido = async (pedidoId: string, texto: string) => {
+    if (!user) return;
+    const nome = (user.user_metadata?.["full_name"] as string | undefined) ?? "Equipe";
+    const resultado = await responder(pedidoId, user.id, nome, texto);
+    if (resultado.erro) toast.error("Não conseguimos publicar a resposta agora.");
+  };
+
+  const removerRespostaPedido = async (respostaId: string) => {
+    const resultado = await removerResposta(respostaId);
+    if (resultado.erro) toast.error("Não conseguimos remover esta resposta agora.");
+  };
+
   return (
     <section className="mx-auto max-w-3xl px-6 py-12">
       <p className="mx-auto max-w-md text-center text-foreground/75">
@@ -273,9 +386,12 @@ export function MuralPedidosOracao() {
             podeRemover={Boolean(user && (user.id === pedidoFixado.user_id || souAdministrador))}
             souAdministrador={souAdministrador}
             reacoes={reacoes}
+            respostas={respostas}
             onRemover={() => removerPedido(pedidoFixado.id)}
             onFixar={() => fixarPedido(pedidoFixado.id, pedidoFixado.fixado)}
             onReagir={(emoji) => reagirAoPedido(pedidoFixado.id, emoji)}
+            onResponder={(texto) => responderPedido(pedidoFixado.id, texto)}
+            onRemoverResposta={removerRespostaPedido}
           />
         </div>
       )}
@@ -312,9 +428,12 @@ export function MuralPedidosOracao() {
               podeRemover={Boolean(user && (user.id === pedido.user_id || souAdministrador))}
               souAdministrador={souAdministrador}
               reacoes={reacoes}
+              respostas={respostas}
               onRemover={() => removerPedido(pedido.id)}
               onFixar={() => fixarPedido(pedido.id, pedido.fixado)}
               onReagir={(emoji) => reagirAoPedido(pedido.id, emoji)}
+              onResponder={(texto) => responderPedido(pedido.id, texto)}
+              onRemoverResposta={removerRespostaPedido}
             />
           ))}
         </div>
