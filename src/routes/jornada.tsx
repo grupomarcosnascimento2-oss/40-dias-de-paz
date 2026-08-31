@@ -13,6 +13,7 @@ import { AppShell } from "@/components/AppShell";
 import { AtalhosRapidos } from "@/components/AtalhosRapidos";
 import { TVOracional } from "@/components/TVOracional";
 import { MuralPedidosOracao } from "@/components/MuralPedidosOracao";
+import { MuralVisitanteOracao } from "@/components/MuralVisitanteOracao";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 export const Route = createFileRoute("/jornada")({
@@ -356,15 +357,35 @@ function Jornada() {
           </TabsPrimitive.Content>
 
           <TabsPrimitive.Content value="jornadaOracao">
-            <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+            <section className="mx-auto max-w-3xl px-6 pb-4 pt-10 text-center">
               <Cruz className="mx-auto h-6 w-6 text-accent" />
-              <h2 className="script mt-4 text-3xl text-primary">Jornada de Oração</h2>
+              <h1 className="script mt-4 text-4xl text-primary">Semana da Jornada de Oração</h1>
               <p className="mx-auto mt-3 max-w-md text-foreground/75">
-                Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui uma
-                experiência de oração profunda com Deus que vai transformar sua vida completamente!
-                🙏
+                Um evento gratuito de oração — em breve, mais detalhes sobre datas e horários da
+                nossa Semana da Jornada de Oração aparecerão aqui.
               </p>
             </section>
+
+            <section className="mx-auto max-w-3xl px-6">
+              <div
+                className="flex aspect-video items-center justify-center rounded-2xl border border-accent/30 bg-secondary/40"
+                style={sombra3d}
+              >
+                <p className="px-6 text-center text-sm text-muted-foreground">
+                  A transmissão ao vivo da Semana da Jornada de Oração aparecerá aqui em breve.
+                </p>
+              </div>
+            </section>
+
+            {souVisitante ? (
+              <MuralVisitanteOracao />
+            ) : (
+              <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+                <p className="mx-auto max-w-md text-foreground/75">
+                  Este espaço vai reunir, aos poucos, os detalhes da Semana da Jornada de Oração.
+                </p>
+              </section>
+            )}
           </TabsPrimitive.Content>
         </TabsPrimitive.Root>
       </div>
