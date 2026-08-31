@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
+import { useSistemaOperacional } from "@/hooks/useSistemaOperacional";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 export const Route = createFileRoute("/entrar")({
@@ -27,6 +28,7 @@ function Entrar() {
   const { user, carregando } = useAuth();
   const navigate = useNavigate();
   const [entrando, setEntrando] = useState<string | null>(null);
+  const sistema = useSistemaOperacional();
 
   useEffect(() => {
     if (!carregando && user) navigate({ to: "/jornada" });
@@ -47,6 +49,20 @@ function Entrar() {
     navigate({ to: "/jornada" });
   };
 
+  // No iPhone/iPad, Apple aparece primeiro e em destaque; no Android,
+  // Google aparece primeiro e em destaque. Em qualquer outro caso
+  // (computador, ou antes da detecção rodar), mantém a ordem padrão.
+  // As duas opções continuam sempre disponíveis — a detecção só decide
+  // a ordem/destaque visual, nunca esconde uma opção.
+  const preferido = sistema === "ios" ? "apple" : "google";
+  const provedores: Array<"google" | "apple"> =
+    preferido === "apple" ? ["apple", "google"] : ["google", "apple"];
+
+  const rotulos: Record<"google" | "apple", string> = {
+    google: "Continuar com Google",
+    apple: "Continuar com Apple",
+  };
+
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-16">
       <div className="paper w-full max-w-md rounded-2xl border border-accent/35 p-8 text-center shadow-[var(--shadow-sacred)] sm:p-10">
@@ -57,22 +73,24 @@ function Entrar() {
         <Ornamento className="my-7" />
 
         <div className="space-y-3">
-          <button
-            type="button"
-            disabled={entrando !== null}
-            onClick={() => entrarCom("google")}
-            className="w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
-          >
-            {entrando === "google" ? "Abrindo…" : "Continuar com Google"}
-          </button>
-          <button
-            type="button"
-            disabled={entrando !== null}
-            onClick={() => entrarCom("apple")}
-            className="w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
-          >
-            {entrando === "apple" ? "Abrindo…" : "Continuar com Apple"}
-          </button>
+          {provedores.map((provedor) => {
+            const destaque = provedor === preferido;
+            return (
+              <button
+                key={provedor}
+                type="button"
+                disabled={entrando !== null}
+                onClick={() => entrarCom(provedor)}
+                className={
+                  destaque
+                    ? "w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
+                    : "w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
+                }
+              >
+                {entrando === provedor ? "Abrindo…" : rotulos[provedor]}
+              </button>
+            );
+          })}
         </div>
 
         <p className="mt-7 text-sm text-muted-foreground">
