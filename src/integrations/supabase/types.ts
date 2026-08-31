@@ -16,31 +16,31 @@ export type Database = {
     Tables: {
       avisos: {
         Row: {
-          ativo: boolean;
-          created_at: string;
-          id: string;
-          mensagem: string;
-          tipo: string;
-          titulo: string;
-        };
+          ativo: boolean
+          created_at: string
+          id: string
+          mensagem: string
+          tipo: string
+          titulo: string
+        }
         Insert: {
-          ativo?: boolean;
-          created_at?: string;
-          id?: string;
-          mensagem: string;
-          tipo: string;
-          titulo: string;
-        };
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          mensagem: string
+          tipo: string
+          titulo: string
+        }
         Update: {
-          ativo?: boolean;
-          created_at?: string;
-          id?: string;
-          mensagem?: string;
-          tipo?: string;
-          titulo?: string;
-        };
-        Relationships: [];
-      };
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          mensagem?: string
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: []
+      }
       jornadas: {
         Row: {
           created_at: string
@@ -192,6 +192,7 @@ export type Database = {
     }
     Functions: {
       eh_administrador: { Args: never; Returns: boolean }
+      pode_responder_pedidos: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
