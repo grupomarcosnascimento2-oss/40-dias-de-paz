@@ -1,9 +1,11 @@
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { ChevronDown } from "lucide-react";
-import { useEffect } from "react";
+import { ChevronDown, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { usePerfil } from "@/hooks/usePerfil";
+import { CONTROLE_DE_PERFIL_HABILITADO } from "@/lib/perfis";
 import { useJornada, diaLiberado } from "@/hooks/useJornada";
 import { areas, TOTAL_DIAS } from "@/lib/devocional";
 import { sombra3d, sombra3dAberto } from "@/lib/estilo3d";
@@ -48,18 +50,35 @@ function Jornada() {
   const { user, carregando: carregandoAuth } = useAuth();
   const navigate = useNavigate();
   const { data: jornada, isLoading: carregandoJornada } = useJornada(user?.id);
+  const { data: perfil, isLoading: carregandoPerfil } = usePerfil(
+    CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined,
+  );
+  const [abaExternaEscolhida, setAbaExternaEscolhida] = useState<string | null>(null);
 
   useEffect(() => {
     if (!carregandoAuth && !user) navigate({ to: "/entrar", replace: true });
   }, [carregandoAuth, user, navigate]);
 
-  if (carregandoAuth || !user || carregandoJornada) {
+  const carregandoTudo =
+    carregandoAuth ||
+    !user ||
+    carregandoJornada ||
+    (CONTROLE_DE_PERFIL_HABILITADO && carregandoPerfil);
+
+  if (carregandoTudo) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando sua caminhada…</p>
       </main>
     );
   }
+
+  const souVisitante = CONTROLE_DE_PERFIL_HABILITADO && perfil?.papel === "visitante";
+
+  // Visitante cai direto em "Jornada de Oração"; membro/administrador
+  // caem em "Devocional", como sempre. Depois que a pessoa troca de aba
+  // manualmente, essa escolha prevalece.
+  const abaExterna = abaExternaEscolhida ?? (souVisitante ? "jornadaOracao" : "quarentaDias");
 
   const diasConcluidos = jornada?.dias_concluidos ?? 0;
 
@@ -69,7 +88,7 @@ function Jornada() {
   return (
     <AppShell>
       <div className="min-h-screen">
-        <TabsPrimitive.Root defaultValue="quarentaDias">
+        <TabsPrimitive.Root value={abaExterna} onValueChange={setAbaExternaEscolhida}>
           <TabsPrimitive.List className="mx-auto flex max-w-3xl items-end gap-1.5 overflow-x-auto border-b border-accent/25 px-6 pt-6">
             <TabsPrimitive.Trigger
               value="quarentaDias"
@@ -124,6 +143,20 @@ function Jornada() {
                     <h1 className="text-2xl sm:text-3xl">40 Dias Rezando com Marcos Nascimento</h1>
                   </div>
                 </header>
+
+                {souVisitante && (
+                  <section className="mx-auto max-w-3xl px-6 pt-6">
+                    <div
+                      className="rounded-2xl border border-accent/40 bg-accent/10 p-4 text-center sm:p-5"
+                      style={sombra3d}
+                    >
+                      <p className="text-sm text-foreground/85">
+                        Você está experimentando o <strong>Dia 1</strong> como visitante. Torne-se
+                        membro para desbloquear os 40 dias completos.
+                      </p>
+                    </div>
+                  </section>
+                )}
 
                 <section className="mx-auto max-w-3xl px-6 pt-8">
                   <div
@@ -217,7 +250,12 @@ function Jornada() {
                               <ul className="grid gap-3 sm:grid-cols-5">
                                 {area.dias.map((dia) => {
                                   const concluido = dia.numero <= diasConcluidos;
-                                  const liberado = diaLiberado(dia.numero, diasConcluidos);
+                                  const liberadoPorProgresso = diaLiberado(
+                                    dia.numero,
+                                    diasConcluidos,
+                                  );
+                                  const liberado =
+                                    liberadoPorProgresso && (!souVisitante || dia.numero === 1);
                                   const conteudo = (
                                     <>
                                       <p className="text-xs uppercase tracking-[0.18em] text-accent/90">
@@ -226,12 +264,15 @@ function Jornada() {
                                       <p className="mt-1 text-sm leading-snug text-foreground/90">
                                         {dia.titulo}
                                       </p>
-                                      <p className="mt-3 text-xs font-medium text-muted-foreground">
+                                      <p className="mt-3 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                                        {souVisitante && !liberado && <Lock className="h-3 w-3" />}
                                         {concluido
                                           ? "Concluído"
                                           : liberado
                                             ? "Disponível"
-                                            : "Em breve"}
+                                            : souVisitante
+                                              ? "Só para membros"
+                                              : "Em breve"}
                                       </p>
                                     </>
                                   );
@@ -276,7 +317,18 @@ function Jornada() {
               </TabsPrimitive.Content>
 
               <TabsPrimitive.Content value="comunidade">
-                <MuralPedidosOracao />
+                {souVisitante ? (
+                  <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+                    <Lock className="mx-auto h-6 w-6 text-accent" />
+                    <h2 className="script mt-4 text-3xl text-primary">Comunidade de Oração</h2>
+                    <p className="mx-auto mt-3 max-w-md text-foreground/75">
+                      Esse espaço é exclusivo para membros. Torne-se membro para publicar e
+                      acompanhar os pedidos de oração da comunidade.
+                    </p>
+                  </section>
+                ) : (
+                  <MuralPedidosOracao />
+                )}
               </TabsPrimitive.Content>
 
               <TabsPrimitive.Content value="acompanhamento">

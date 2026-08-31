@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { usePerfil } from "@/hooks/usePerfil";
+import { CONTROLE_DE_PERFIL_HABILITADO } from "@/lib/perfis";
 import { useJornada, useConcluirDia, diaLiberado } from "@/hooks/useJornada";
 import { getDia, getAreaDoDia, TOTAL_DIAS } from "@/lib/devocional";
 import { PlayerOracao } from "@/components/PlayerOracao";
@@ -37,6 +39,9 @@ function DiaOracional() {
   const navigate = useNavigate();
   const { user, carregando: carregandoAuth } = useAuth();
   const { data: jornada, isLoading: carregandoJornada } = useJornada(user?.id);
+  const { data: perfil, isLoading: carregandoPerfil } = usePerfil(
+    CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined,
+  );
   const concluirDiaMutation = useConcluirDia(user?.id);
   const [concluindo, setConcluindo] = useState(false);
 
@@ -44,7 +49,14 @@ function DiaOracional() {
     if (!carregandoAuth && !user) navigate({ to: "/entrar", replace: true });
   }, [carregandoAuth, user, navigate]);
 
-  if (carregandoAuth || !user || carregandoJornada || !dia) {
+  const carregandoTudo =
+    carregandoAuth ||
+    !user ||
+    carregandoJornada ||
+    !dia ||
+    (CONTROLE_DE_PERFIL_HABILITADO && carregandoPerfil);
+
+  if (carregandoTudo) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preparando o dia de oração…</p>
@@ -52,9 +64,10 @@ function DiaOracional() {
     );
   }
 
+  const souVisitante = CONTROLE_DE_PERFIL_HABILITADO && perfil?.papel === "visitante";
   const diasConcluidos = jornada?.dias_concluidos ?? 0;
 
-  const liberado = diaLiberado(numeroDoDia, diasConcluidos);
+  const liberado = diaLiberado(numeroDoDia, diasConcluidos) && (!souVisitante || numeroDoDia === 1);
   const jaConcluido = numeroDoDia <= diasConcluidos;
   const proximoNumero = Math.min(numeroDoDia + 1, TOTAL_DIAS);
 
@@ -63,9 +76,13 @@ function DiaOracional() {
       <main className="flex min-h-screen items-center justify-center px-6 py-16">
         <div className="paper w-full max-w-md rounded-2xl border border-accent/35 p-8 text-center shadow-[var(--shadow-sacred)]">
           <Cruz className="mx-auto h-5 w-5 text-accent" />
-          <h1 className="mt-4 text-2xl">Um passo de cada vez</h1>
+          <h1 className="mt-4 text-2xl">
+            {souVisitante ? "Esse dia é exclusivo para membros" : "Um passo de cada vez"}
+          </h1>
           <p className="mt-2 text-foreground/80">
-            Este dia ainda não foi liberado. Continue sua caminhada a partir de onde você parou.
+            {souVisitante
+              ? "Como visitante, você pode experimentar o Dia 1. Torne-se membro para desbloquear os 40 dias completos."
+              : "Este dia ainda não foi liberado. Continue sua caminhada a partir de onde você parou."}
           </p>
           <Link
             to="/jornada"
