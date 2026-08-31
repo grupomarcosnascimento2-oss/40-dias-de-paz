@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { ArrowUp, MessageCircle, Pin, PinOff, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
+import { podeResponderPedidos } from "@/lib/perfis";
 import {
   usePedidosOracao,
   usePublicarPedido,
@@ -62,6 +63,7 @@ function CartaoPedido({
   userId,
   podeRemover,
   souAdministrador,
+  podeResponder,
   reacoes,
   respostas,
   onRemover,
@@ -74,6 +76,7 @@ function CartaoPedido({
   userId: string | undefined;
   podeRemover: boolean;
   souAdministrador: boolean;
+  podeResponder: boolean;
   reacoes: Reacao[] | undefined;
   respostas: RespostaPedido[] | undefined;
   onRemover: () => void;
@@ -82,7 +85,7 @@ function CartaoPedido({
   onResponder: (texto: string) => Promise<void>;
   onRemoverResposta: (respostaId: string) => void;
 }) {
-  const ehAdmin = pedido.papel === "administrador";
+  const destacado = pedido.papel === "administrador" || pedido.papel === "intercessor";
   const contagem = contarReacoes(reacoes, pedido.id);
   const minhaReacao = userId ? reacaoDoUsuario(reacoes, pedido.id, userId) : undefined;
   const respostasDoPedido = respostas?.filter((r) => r.pedido_id === pedido.id) ?? [];
@@ -102,17 +105,17 @@ function CartaoPedido({
   return (
     <div
       className={`rounded-xl border p-3 ${
-        ehAdmin ? "border-red-300 bg-red-50/70" : "border-border/70 bg-card"
+        destacado ? "border-red-300 bg-red-50/70" : "border-border/70 bg-card"
       }`}
       style={sombra3d}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-baseline gap-x-2">
-            <p className={`text-sm font-medium ${ehAdmin ? "text-red-700" : "text-primary"}`}>
+            <p className={`text-sm font-medium ${destacado ? "text-red-700" : "text-primary"}`}>
               {pedido.nome}
             </p>
-            {ehAdmin && (
+            {destacado && (
               <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
                 Intercessor
               </span>
@@ -170,7 +173,7 @@ function CartaoPedido({
           );
         })}
 
-        {souAdministrador && (
+        {podeResponder && (
           <button
             type="button"
             onClick={() => setMostrarCaixaResposta((v) => !v)}
@@ -195,7 +198,7 @@ function CartaoPedido({
                 </div>
                 <p className="text-sm leading-snug text-foreground/85">{resposta.texto}</p>
               </div>
-              {souAdministrador && (
+              {(souAdministrador || resposta.user_id === userId) && (
                 <button
                   type="button"
                   onClick={() => onRemoverResposta(resposta.id)}
@@ -265,6 +268,7 @@ export function MuralPedidosOracao() {
   const primeiroIdRef = useRef<string | null>(null);
 
   const souAdministrador = perfil?.papel === "administrador";
+  const podeResponder = podeResponderPedidos(perfil?.papel);
 
   const pedidoFixado = pedidos?.find((p) => p.fixado);
   const pedidosDaLista = pedidos?.filter((p) => !p.fixado) ?? [];
@@ -385,6 +389,7 @@ export function MuralPedidosOracao() {
             userId={user?.id}
             podeRemover={Boolean(user && (user.id === pedidoFixado.user_id || souAdministrador))}
             souAdministrador={souAdministrador}
+            podeResponder={podeResponder}
             reacoes={reacoes}
             respostas={respostas}
             onRemover={() => removerPedido(pedidoFixado.id)}
@@ -427,6 +432,7 @@ export function MuralPedidosOracao() {
               userId={user?.id}
               podeRemover={Boolean(user && (user.id === pedido.user_id || souAdministrador))}
               souAdministrador={souAdministrador}
+              podeResponder={podeResponder}
               reacoes={reacoes}
               respostas={respostas}
               onRemover={() => removerPedido(pedido.id)}

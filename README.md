@@ -77,15 +77,17 @@ O destaque de texto sincronizado (`PlayerOracao.tsx`) usa `oracaoTempos` quando 
 
 Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`, agora em `true`. Login com Google/Apple está ativo; `jornada.tsx` e `dia.$numero.tsx` usam `useAuth` + `useJornada` (Supabase) em vez do antigo modo sem login (`useJornadaDev`, mantido no repositório só como referência histórica).
 
-- **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `membro` | `visitante`). RLS: o usuário só cria a si mesmo como `visitante`; promoção a `membro`/`administrador` exige `service_role`.
-- **`sincronizarPerfilAposLogin.functions.ts`**: existe e funciona, mas **ainda não é chamada automaticamente** após o login — a promoção para `membro` via pagamento confirmado no Apps Script ainda precisa ser conectada ao fluxo de login.
+- **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `intercessor` | `membro` | `visitante`). RLS: o usuário só cria a si mesmo como `visitante`; promoção a `membro`/`administrador`/`intercessor` exige `service_role`.
+- **`sincronizarPerfilAposLogin.functions.ts`**: conectada ao fluxo de login (`entrar.tsx`) — verifica pagamento confirmado na planilha via Apps Script e promove para `membro` automaticamente; nunca promove a `administrador` nem a `intercessor` (sempre manual).
 - **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — promovido manualmente via SQL (ver histórico de commits/conversas para o comando exato).
-- **Menu lateral**: item "Painel administrativo" (rota `/admin`, ainda placeholder) só aparece se `papel === 'administrador'`.
+- **Intercessor** (papel novo, 31/08/2026): pessoa preparada para responder pedidos de oração na Comunidade de Oração, apoiando esse trabalho junto com o administrador — pensado para quando o administrador não estiver disponível; a tendência é ter vários intercessores ao longo do tempo. Promoção sempre manual via SQL, igual ao administrador. Pode responder pedidos (`respostas_pedidos_oracao`) e remover as próprias respostas; não pode fixar pedidos nem remover pedidos/respostas de outras pessoas (isso continua exclusivo do administrador).
+- **Menu lateral**: item "Dashboard" (rota `/admin`) só aparece se `papel === 'administrador'` — intercessor não vê esse item.
+- **Visitante**: cai direto na aba "Jornada de Oração" ao entrar; pode navegar até "Devocional" mas só o Dia 1 fica desbloqueado (degustação); Comunidade de Oração bloqueada, com um mural próprio de conversão (prévia somente-leitura + CTA para virar membro).
 
 ### Ainda pendente
 
-1. Definir e implementar as regras específicas do Visitante (ainda não definidas — hoje ele herda o mesmo menu do Membro)
-2. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
+1. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
+2. Conteúdo definitivo da aba "Jornada de Oração" (vídeo/link da transmissão da "Semana da Jornada de Oração" e texto da campanha) — hoje só placeholder
 
 ## 7. Banco de dados (Supabase) — atenção especial
 
@@ -101,7 +103,7 @@ Este ambiente de trabalho (onde o código é editado) não tem acesso de rede ao
 | Tabela | Propósito | Migration |
 |---|---|---|
 | `jornadas` | Progresso do usuário nos 40 dias (dias concluídos, acesso liberado) | `20260823173838_...sql` |
-| `perfis` | Papel do usuário (administrador/membro/visitante) | `20260828120000_perfis.sql` |
+| `perfis` | Papel do usuário (administrador/intercessor/membro/visitante) | `20260828120000_perfis.sql` |
 | `pedidos_oracao` | Mural de pedidos de oração da Comunidade de Oração (Realtime habilitado) | `20260830140000_pedidos_oracao.sql` |
 
 ## 8. Variáveis de ambiente / secrets
