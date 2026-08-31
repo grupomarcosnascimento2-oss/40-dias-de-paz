@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Papel } from "@/lib/perfis";
 
 export type PedidoOracao = {
   id: string;
   user_id: string;
   nome: string;
   texto: string;
+  papel: Papel;
+  fixado: boolean;
   created_at: string;
 };
 
@@ -15,7 +18,7 @@ const CHAVE = ["pedidos_oracao"] as const;
 async function buscarPedidos(): Promise<PedidoOracao[]> {
   const { data, error } = await supabase
     .from("pedidos_oracao")
-    .select("id, user_id, nome, texto, created_at")
+    .select("id, user_id, nome, texto, papel, fixado, created_at")
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -30,8 +33,8 @@ export function usePedidosOracao() {
   const queryClient = useQueryClient();
   const consulta = useQuery({ queryKey: CHAVE, queryFn: buscarPedidos });
 
-  // Atualização em tempo real: assim que alguém publica ou remove um
-  // pedido, todo mundo com o mural aberto vê a mudança sem recarregar.
+  // Atualização em tempo real: assim que alguém publica, remove ou fixa
+  // um pedido, todo mundo com o mural aberto vê a mudança sem recarregar.
   useEffect(() => {
     const canal = supabase
       .channel("pedidos_oracao_mural")
@@ -52,14 +55,14 @@ export function usePublicarPedido() {
   const queryClient = useQueryClient();
   const [publicando, setPublicando] = useState(false);
 
-  const publicar = async (userId: string, nome: string, texto: string) => {
+  const publicar = async (userId: string, nome: string, papel: Papel, texto: string) => {
     const textoLimpo = texto.trim();
     if (!textoLimpo) return { erro: "texto_vazio" as const };
 
     setPublicando(true);
     const { error } = await supabase
       .from("pedidos_oracao")
-      .insert({ user_id: userId, nome, texto: textoLimpo });
+      .insert({ user_id: userId, nome, papel, texto: textoLimpo });
     setPublicando(false);
 
     if (error) {
@@ -83,4 +86,39 @@ export function useRemoverPedido() {
     if (!error) void queryClient.invalidateQueries({ queryKey: CHAVE });
     return { erro: error ? ("falha_ao_remover" as const) : undefined };
   };
+}
+
+// Fixa um pedido no topo (sempre visível, não rola). Só um pedido fica
+// fixado por vez: ao fixar um novo, o anterior é desafixado. A segurança
+// de verdade (só administrador pode) está garantida na RLS — este hook
+// só existe para quem já passou por essa checagem na tela.
+export function useFixarPedido() {
+  const queryClient = useQueryClient();
+
+  const fixar = async (id: string, jaFixado: boolean) => {
+    if (!jaFixado) {
+      const { error: erroDesafixar } = await supabase
+        .from("pedidos_oracao")
+        .update({ fixado: false })
+        .eq("fixado", true);
+      if (erroDesafixar) {
+        console.error("[useFixarPedido] Falha ao desafixar o anterior:", erroDesafixar);
+      }
+    }
+
+    const { error } = await supabase
+      .from("pedidos_oracao")
+      .update({ fixado: !jaFixado })
+      .eq("id", id);
+
+    if (error) {
+      console.error("[useFixarPedido] Falha ao fixar/desafixar:", error);
+      return { erro: "falha_ao_fixar" as const };
+    }
+
+    void queryClient.invalidateQueries({ queryKey: CHAVE });
+    return {};
+  };
+
+  return fixar;
 }
