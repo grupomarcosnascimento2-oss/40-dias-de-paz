@@ -24,6 +24,12 @@ type ItemMenu = {
 
 const menu: ItemMenu[] = [
   {
+    numero: "0",
+    titulo: "Dashboard",
+    to: "/admin",
+    papeis: ["administrador"],
+  },
+  {
     numero: "1",
     titulo: "Introdução",
     subtitulo: "Uma jornada de 40 dias com Deus",
@@ -72,12 +78,6 @@ const menu: ItemMenu[] = [
     numero: "7",
     titulo: "Os 40 Dias de Oração",
     to: "/jornada",
-  },
-  {
-    numero: "8",
-    titulo: "Painel administrativo",
-    to: "/admin",
-    papeis: ["administrador"],
   },
 ];
 
