@@ -165,6 +165,7 @@ export type Database = {
     }
     Functions: {
       eh_administrador: { Args: never; Returns: boolean }
+      pode_responder_pedidos: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
