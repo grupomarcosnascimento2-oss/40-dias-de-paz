@@ -1,12 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronsLeft, ChevronsRight, Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { ChevronsLeft, ChevronsRight, LogOut, Menu, X } from "lucide-react";
 import { Cruz } from "./Ornamento";
 import { MuralTopo } from "./MuralTopo";
 import { PainelAvisos } from "./PainelAvisos";
 import { sombra3d } from "@/lib/estilo3d";
 import { CONTROLE_DE_PERFIL_HABILITADO, type Papel } from "@/lib/perfis";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, sair } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import { useRastrearPresenca } from "@/hooks/usePresencaGlobal";
 
@@ -165,6 +165,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   const fecharMobile = () => setAbertoMobile(false);
+  const navigate = useNavigate();
+
+  const sairDaConta = async () => {
+    await sair();
+    navigate({ to: "/entrar" });
+  };
 
   return (
     <div className="min-h-screen">
@@ -251,6 +257,22 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           ))}
         </nav>
+
+        {user && (
+          <div className="border-t border-accent/20 px-2 py-3">
+            <button
+              type="button"
+              onClick={sairDaConta}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-primary ${
+                expandido ? "" : "justify-center"
+              }`}
+              title="Sair da conta"
+            >
+              <LogOut className="h-4 w-4 shrink-0" />
+              {expandido && <span>Sair da conta</span>}
+            </button>
+          </div>
+        )}
       </aside>
 
       <div
