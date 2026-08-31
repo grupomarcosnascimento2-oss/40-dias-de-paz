@@ -84,9 +84,8 @@ Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`
 
 ### Ainda pendente
 
-1. Conectar `sincronizarPerfilAposLogin` ao fluxo de login (hoje ela existe mas não é chamada)
-2. Definir e implementar as regras específicas do Visitante (ainda não definidas — hoje ele herda o mesmo menu do Membro)
-3. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
+1. Definir e implementar as regras específicas do Visitante (ainda não definidas — hoje ele herda o mesmo menu do Membro)
+2. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
 
 ## 7. Banco de dados (Supabase) — atenção especial
 

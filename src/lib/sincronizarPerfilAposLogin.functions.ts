@@ -6,10 +6,9 @@ import { consultarPagamentoPorEmail } from "@/lib/appsScriptPagamento.server";
 // "membro" no banco de dados. Se não estiver confirmado, o perfil
 // permanece como "visitante" (papel padrão criado no primeiro acesso).
 //
-// AINDA NÃO É CHAMADA POR NENHUMA ROTA — faz parte do controle de perfil
-// implementado, mas ainda não habilitado (ver CONTROLE_DE_PERFIL_HABILITADO
-// em src/lib/perfis.ts). Quando o login for religado, chame esta função
-// logo após o usuário entrar pela primeira vez.
+// Chamada por src/routes/entrar.tsx logo após o login (uma vez por
+// sessão de login), consultando a planilha de leads/pagamentos da
+// landing page (rezandocomesperanca40dias) via Apps Script.
 //
 // Nunca promove ninguém a "administrador" — essa promoção é sempre manual,
 // feita diretamente no banco de dados por quem já é administrador.

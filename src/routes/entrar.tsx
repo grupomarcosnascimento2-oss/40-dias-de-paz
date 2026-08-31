@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
 import { useSistemaOperacional } from "@/hooks/useSistemaOperacional";
+import { sincronizarPerfilAposLogin } from "@/lib/sincronizarPerfilAposLogin.functions";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
 export const Route = createFileRoute("/entrar")({
@@ -27,12 +29,32 @@ export const Route = createFileRoute("/entrar")({
 function Entrar() {
   const { user, carregando } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [entrando, setEntrando] = useState<string | null>(null);
+  const [confirmandoAcesso, setConfirmandoAcesso] = useState(false);
   const sistema = useSistemaOperacional();
 
   useEffect(() => {
-    if (!carregando && user) navigate({ to: "/jornada" });
-  }, [carregando, user, navigate]);
+    if (carregando || !user) return;
+
+    let cancelado = false;
+    setConfirmandoAcesso(true);
+
+    (async () => {
+      // Depois do login, confere na planilha de pagamentos (via Apps
+      // Script) se este e-mail já pagou — se sim, promove o perfil para
+      // "membro"; se não, permanece "visitante" (papel padrão). Essa
+      // checagem acontece aqui, uma vez por login.
+      await sincronizarPerfilAposLogin({ data: { userId: user.id, email: user.email ?? "" } });
+      if (cancelado) return;
+      await queryClient.invalidateQueries({ queryKey: ["perfil", user.id] });
+      navigate({ to: "/jornada" });
+    })();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [carregando, user, navigate, queryClient]);
 
   const entrarCom = async (provedor: "google" | "apple") => {
     setEntrando(provedor);
@@ -72,26 +94,30 @@ function Entrar() {
 
         <Ornamento className="my-7" />
 
-        <div className="space-y-3">
-          {provedores.map((provedor) => {
-            const destaque = provedor === preferido;
-            return (
-              <button
-                key={provedor}
-                type="button"
-                disabled={entrando !== null}
-                onClick={() => entrarCom(provedor)}
-                className={
-                  destaque
-                    ? "w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
-                    : "w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
-                }
-              >
-                {entrando === provedor ? "Abrindo…" : rotulos[provedor]}
-              </button>
-            );
-          })}
-        </div>
+        {confirmandoAcesso ? (
+          <p className="py-3 text-sm text-muted-foreground">Confirmando seu acesso…</p>
+        ) : (
+          <div className="space-y-3">
+            {provedores.map((provedor) => {
+              const destaque = provedor === preferido;
+              return (
+                <button
+                  key={provedor}
+                  type="button"
+                  disabled={entrando !== null}
+                  onClick={() => entrarCom(provedor)}
+                  className={
+                    destaque
+                      ? "w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
+                      : "w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
+                  }
+                >
+                  {entrando === provedor ? "Abrindo…" : rotulos[provedor]}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <p className="mt-7 text-sm text-muted-foreground">
           Sua caminhada fica guardada na sua conta. Você pode voltar de onde parou, em qualquer
