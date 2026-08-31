@@ -44,22 +44,28 @@ export type Database = {
       pedidos_oracao: {
         Row: {
           created_at: string
+          fixado: boolean
           id: string
           nome: string
+          papel: string
           texto: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          fixado?: boolean
           id?: string
           nome: string
+          papel?: string
           texto: string
           user_id: string
         }
         Update: {
           created_at?: string
+          fixado?: boolean
           id?: string
           nome?: string
+          papel?: string
           texto?: string
           user_id?: string
         }
@@ -85,6 +91,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      reacoes_pedidos_oracao: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          pedido_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          pedido_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          pedido_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reacoes_pedidos_oracao_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_oracao"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
