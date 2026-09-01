@@ -167,3 +167,7 @@ Dois caminhos possíveis, avaliados:
 Recomendação registrada: começar pelo caminho 1 para validar a demanda antes de investir na solução embutida.
 
 Independente do caminho escolhido, vai precisar de: agenda de disponibilidade do Marcos, um produto/preço separado da assinatura do devocional, lembretes antes do horário marcado, e um marcador no perfil do usuário indicando que ele contratou esse serviço.
+
+## 14. Histórias de Usuário (documento vivo)
+
+Documento Word separado, cobrindo **todas** as funcionalidades do devocional em formato de histórias de usuário, numeradas por área (10 áreas, ~70 histórias). Gerado a partir de `docs/historias-usuario/gerar.js` — ver o README dentro dessa pasta para saber como atualizar quando uma funcionalidade nova for construída ou mudar de status.
