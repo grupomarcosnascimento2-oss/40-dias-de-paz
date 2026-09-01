@@ -1,16 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PAPEL_PADRAO, type Papel } from "@/lib/perfis";
 
 export type Perfil = {
   user_id: string;
   papel: Papel;
+  acessos_devocional: number;
 };
 
 async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
   const { data, error } = await supabase
     .from("perfis")
-    .select("user_id, papel")
+    .select("user_id, papel, acessos_devocional")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -25,7 +26,7 @@ async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
   const { data: criado, error: erroCriacao } = await supabase
     .from("perfis")
     .insert({ user_id: userId, papel: PAPEL_PADRAO })
-    .select("user_id, papel")
+    .select("user_id, papel, acessos_devocional")
     .single();
 
   if (erroCriacao) throw erroCriacao;
@@ -38,4 +39,26 @@ export function usePerfil(userId: string | undefined) {
     queryFn: () => buscarOuCriarPerfil(userId!),
     enabled: Boolean(userId),
   });
+}
+
+// Incrementa o contador de acessos à aba Devocional. Usado para
+// identificar a segunda visita do visitante e, a partir daí, restringir
+// o acesso (ver jornada.tsx). Só é chamado na primeira visita (quando o
+// contador ainda está em 0) — a partir da segunda, a pessoa já é
+// bloqueada antes de chegar a incrementar de novo.
+export function useIncrementarAcessoDevocional() {
+  const queryClient = useQueryClient();
+
+  return async (userId: string, valorAtual: number) => {
+    const { error } = await supabase
+      .from("perfis")
+      .update({ acessos_devocional: valorAtual + 1 })
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("[useIncrementarAcessoDevocional] Falha ao atualizar:", error);
+      return;
+    }
+    void queryClient.invalidateQueries({ queryKey: ["perfil", userId] });
+  };
 }
