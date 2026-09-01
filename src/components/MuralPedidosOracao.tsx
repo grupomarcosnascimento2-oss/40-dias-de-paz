@@ -25,7 +25,7 @@ import {
 } from "@/hooks/useRespostasPedidos";
 import { sombra3d } from "@/lib/estilo3d";
 
-// Mural da Comunidade de Oração — membros logados publicam pedidos de
+// Mural de Pedidos de Oração — membros logados publicam pedidos de
 // oração; a lista atualiza em tempo real (Supabase Realtime). Elementos
 // inspirados em chat ao vivo (auto-rolagem para o mais novo, aviso de
 // "novo pedido"), mas sem herdar a sensação descartável de um chat de

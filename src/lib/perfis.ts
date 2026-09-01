@@ -20,7 +20,7 @@ export function ehAdministrador(papel: Papel | undefined): boolean {
 }
 
 // Intercessor: pessoa preparada para responder pedidos de oração na
-// Comunidade de Oração, apoiando esse trabalho junto com o
+// Pedidos de Oração, apoiando esse trabalho junto com o
 // administrador (pensado para quando o administrador não estiver
 // disponível — a tendência é ter vários intercessores ao longo do tempo).
 export function podeResponderPedidos(papel: Papel | undefined): boolean {

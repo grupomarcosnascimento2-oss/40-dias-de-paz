@@ -3,7 +3,7 @@ import { sombra3d } from "@/lib/estilo3d";
 import { Cruz } from "./Ornamento";
 
 // Mural do visitante — mostra uma prévia real dos pedidos de oração da
-// comunidade (mesmos dados da Comunidade de Oração dos membros), mas
+// comunidade (mesmos dados dos Pedidos de Oração dos membros), mas
 // sem caixa de publicar, sem reações e sem remover: é só leitura, com
 // foco em mostrar que a comunidade é viva e convidar a pessoa a virar
 // membro para participar de verdade.
@@ -20,7 +20,7 @@ export function MuralVisitanteOracao() {
     <section className="mx-auto max-w-3xl px-6 py-12">
       <div className="text-center">
         <Cruz className="mx-auto h-6 w-6 text-accent" />
-        <h2 className="script mt-4 text-3xl text-primary">Comunidade de Oração</h2>
+        <h2 className="script mt-4 text-3xl text-primary">Pedidos de Oração</h2>
         <p className="mx-auto mt-3 max-w-md text-foreground/75">
           Veja pedidos reais de pessoas que já fazem parte da nossa comunidade — nossa equipe está
           intercedendo por cada um deles.
