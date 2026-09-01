@@ -36,12 +36,16 @@ export function useAvisos() {
   const consulta = useQuery({ queryKey: CHAVE, queryFn: buscarAvisos });
 
   useEffect(() => {
+    // Nome único por instância: dois componentes podem usar este hook ao
+    // mesmo tempo, e reaproveitar o mesmo nome de canal faz o Supabase
+    // recusar o segundo `on("postgres_changes")` (canal já inscrito).
     const canal = supabase
-      .channel("avisos_realtime")
+      .channel(`avisos_realtime_${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "avisos" }, () => {
         void queryClient.invalidateQueries({ queryKey: CHAVE });
       })
       .subscribe();
+
 
     return () => {
       void supabase.removeChannel(canal);
