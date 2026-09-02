@@ -17,7 +17,7 @@ Devocional católico digital de 40 dias, autoral, escrito e narrado por **Marcos
 ## 2. Modelo de negócio
 
 - **Pagamento único** por acesso completo aos 40 dias (não é assinatura). Futuramente pode virar a porta de entrada para um "ecossistema oracional" maior (outros devocionais, assinatura) — mas isso é fase 2, não implementado.
-- **Três perfis de usuário** estão desenhados (ver seção 6): Administrador, Membro, Visitante. Só o Administrador e o Membro têm acesso pleno; o Visitante (ainda não implementado de fato) teria uma amostra/teaser.
+- **Quatro perfis de usuário**, todos implementados e em uso (ver seção 6): Administrador, Intercessor, Membro, Visitante. Administrador e Membro têm acesso pleno; Intercessor tem acesso pleno + pode responder pedidos de oração; Visitante tem uma degustação real (Dia 1 completo, até 3 pedidos de oração próprios), com restrições progressivas para incentivar a conversão.
 
 ## 3. Stack técnica
 
@@ -77,12 +77,17 @@ O destaque de texto sincronizado (`PlayerOracao.tsx`) usa `oracaoTempos` quando 
 
 Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`, agora em `true`. Login com Google/Apple está ativo; `jornada.tsx` e `dia.$numero.tsx` usam `useAuth` + `useJornada` (Supabase) em vez do antigo modo sem login (`useJornadaDev`, mantido no repositório só como referência histórica).
 
-- **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `intercessor` | `membro` | `visitante`). RLS: o usuário só cria a si mesmo como `visitante`; promoção a `membro`/`administrador`/`intercessor` exige `service_role`.
-- **`sincronizarPerfilAposLogin.functions.ts`**: conectada ao fluxo de login (`entrar.tsx`) — verifica pagamento confirmado na planilha via Apps Script e promove para `membro` automaticamente; nunca promove a `administrador` nem a `intercessor` (sempre manual).
-- **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — promovido manualmente via SQL (ver histórico de commits/conversas para o comando exato).
-- **Intercessor** (papel novo, 31/08/2026): pessoa preparada para responder pedidos de oração na Comunidade de Oração, apoiando esse trabalho junto com o administrador — pensado para quando o administrador não estiver disponível; a tendência é ter vários intercessores ao longo do tempo. Promoção sempre manual via SQL, igual ao administrador. Pode responder pedidos (`respostas_pedidos_oracao`) e remover as próprias respostas; não pode fixar pedidos nem remover pedidos/respostas de outras pessoas (isso continua exclusivo do administrador).
-- **Menu lateral**: item "Dashboard" (rota `/admin`) só aparece se `papel === 'administrador'` — intercessor não vê esse item.
-- **Visitante**: cai direto na aba "Jornada de Oração" ao entrar; pode navegar até "Devocional" mas só o Dia 1 fica desbloqueado (degustação); Comunidade de Oração bloqueada, com um mural próprio de conversão (prévia somente-leitura + CTA para virar membro).
+- **Tabela `perfis`** (Supabase): `user_id`, `papel` (`administrador` | `intercessor` | `membro` | `visitante`), `acessos_devocional` (contador, ver Visitante abaixo), `tornou_se_membro_em` (timestamp, preenchido automaticamente por um gatilho no banco na primeira vez que o papel vira `membro` — funciona tanto pela sincronização automática de pagamento quanto por promoção manual). RLS: o usuário só cria a si mesmo como `visitante`; promoção de papel exige `service_role`; o próprio usuário só pode alterar a coluna `acessos_devocional` da própria linha (GRANT de coluna, não de papel).
+- **`sincronizarPerfilAposLogin.functions.ts`**: conectada ao fluxo de login (`entrar.tsx`) — verifica pagamento confirmado na planilha via Apps Script e promove para `membro` automaticamente; nunca promove a `administrador` nem a `intercessor` (sempre manual). **Importante**: o `redirect_uri` do login social precisa apontar para `/entrar` (não para `/`) — já foi um bug real corrigido, porque a raiz do site não roda essa sincronização.
+- **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — promovido manualmente via SQL.
+- **Intercessor**: pessoa preparada para responder pedidos de oração no mural, apoiando esse trabalho junto com o administrador — pensado para quando o administrador não estiver disponível; a tendência é ter vários intercessores ao longo do tempo. Promoção sempre manual via SQL, igual ao administrador. Pode responder pedidos e remover as próprias respostas; não pode fixar pedidos nem remover pedidos/respostas de outras pessoas (isso continua exclusivo do administrador).
+- **Menu lateral**: item "Dashboard" (rota `/admin`) só aparece se `papel === 'administrador'` — intercessor não vê esse item. A própria rota também exige login + papel administrador de verdade (não é só o item de menu escondido).
+- **Visitante** — regras completas, implementadas em 01-02/09/2026:
+  - Cai direto na aba "Jornada de Oração" ao entrar (não em "Devocional")
+  - Pode navegar até "Devocional", mas só o **Dia 1** fica desbloqueado (degustação) — vale tanto na listagem quanto na rota `/dia/$numero` direto
+  - **A partir da 2ª visita** à aba "Devocional" (contador `acessos_devocional` na conta, não no navegador — sobrevive a limpar cookies), a aba inteira (TV Oracional + as 4 sub-abas) é substituída por uma tela única "Quero ser membro"
+  - No mural "Pedidos de Oração" (dentro de "Jornada de Oração"), vê a lista completa de pedidos reais e pode **publicar até 3 pedidos próprios** — depois disso, a caixa de publicar é substituída pelo convite pra virar membro (continua vendo tudo)
+  - "Pedidos de Oração" dentro de "Devocional" (a versão dos membros, com reações/respostas/fixar) continua bloqueada — o visitante usa a versão dele, dentro de "Jornada de Oração"
 
 ### Ainda pendente
 
@@ -100,11 +105,16 @@ Este ambiente de trabalho (onde o código é editado) não tem acesso de rede ao
 
 ### Tabelas existentes
 
-| Tabela | Propósito | Migration |
-|---|---|---|
-| `jornadas` | Progresso do usuário nos 40 dias (dias concluídos, acesso liberado) | `20260823173838_...sql` |
-| `perfis` | Papel do usuário (administrador/intercessor/membro/visitante) | `20260828120000_perfis.sql` |
-| `pedidos_oracao` | Mural de pedidos de oração da Comunidade de Oração (Realtime habilitado) | `20260830140000_pedidos_oracao.sql` |
+| Tabela | Propósito |
+|---|---|
+| `jornadas` | Progresso do usuário nos 40 dias (dias concluídos, acesso liberado) |
+| `perfis` | Papel do usuário, contador de acessos ao Devocional (visitante) e data em que virou membro |
+| `pedidos_oracao` | Pedidos de oração (papel de quem postou, se está fixado, Realtime habilitado) |
+| `respostas_pedidos_oracao` | Respostas de administrador/intercessor a um pedido específico |
+| `reacoes_pedidos_oracao` | Reações em emoji aos pedidos (uma por pessoa por pedido) |
+| `avisos` | Avisos do painel do topo, com tipo e público-alvo (todos/membros/novos membros) |
+
+Todas com RLS habilitada. Funções `SECURITY DEFINER` (`eh_administrador()`, `pode_responder_pedidos()`) usadas nas policies para evitar recursão — sempre com `EXECUTE` revogado de `anon`/`PUBLIC` e `SET search_path = public` (ver `AGENTS.md` para a convenção completa).
 
 ## 8. Variáveis de ambiente / secrets
 
@@ -119,12 +129,15 @@ Configuradas nas configurações do projeto no Lovable (Cloud tab), nunca commit
 
 ## 9. Funcionalidades já construídas na tela principal (`jornada.tsx`)
 
-- **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada (Introdução, Apresentação com 2 subitens, Força da oração, Palavra ao leitor, Por que 40 dias, Como viver, Os 40 Dias de Oração, + Painel administrativo restrito a admin)
+- **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada (Introdução, Apresentação com 2 subitens, Força da oração, Palavra ao leitor, Por que 40 dias, Como viver, Os 40 Dias de Oração, + "Dashboard" restrito a administrador, sempre em primeiro quando visível). Botão "Sair da conta" no rodapé.
 - **Mural do topo** (`MuralTopo.tsx`): faixa fina com frases curtas em letreiro animado (direita → esquerda), alterna entre frases automaticamente
-- **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado) — hoje vazio (`src/lib/avisos.ts`)
-- **TV Oracional** (`TVOracional.tsx`): vídeo do YouTube embutido (API oficial `window.YT.Player`, não postMessage cru — isso corrigiu um bug real de instabilidade), sem controles do YouTube visíveis, som controlado pelo mesmo interruptor global (`useSom`)
-- **Duas camadas de abas**: externa ("Devocional" / "Jornada de Oração" — esta última reservada para visitantes/não-membros, ainda placeholder) e interna ("40 Dias de Oração" / "Comunidade de Oração" / "Acompanhamento espiritual" / "Agenda de eventos" — só a primeira e a Comunidade estão implementadas de verdade, as outras duas são placeholder "em breve")
-- **Comunidade de Oração** (`MuralPedidosOracao.tsx`): mural de pedidos de oração com publicação, atualização em tempo real (Supabase Realtime) e moderação (autor ou administrador podem remover) — assume que quem acessa já está logado, sem prompt de login inline (isso será resolvido pelo controle de acesso do item 6)
+- **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado) com selo colorido, animação de entrada e pulso no tipo alerta. Cada aviso tem um **público-alvo** (todos / todos os membros / só novos membros — até 7 dias desde que virou membro). Gerenciados pelo administrador direto no Dashboard (`GerenciarAvisos.tsx`), sem precisar editar código.
+- **TV Oracional** (`TVOracional.tsx`): vídeo do YouTube embutido (API oficial `window.YT.Player`, não postMessage cru — isso corrigiu um bug real de instabilidade), sem controles do YouTube visíveis. **Rodízio automático entre dois vídeos** (vídeo principal por 10 min, depois o secundário por 1 min, contínuo). Som controlado pelo mesmo interruptor global (`useSom`).
+- **Duas camadas de abas**: externa ("Devocional" / "Jornada de Oração") e interna, dentro de "Devocional" ("40 Dias de Oração" / "Pedidos de Oração" / "Acompanhamento espiritual" / "Agenda de eventos" — as duas últimas ainda são placeholder "em breve"). Para o Visitante, a aba externa "Devocional" fica bloqueada a partir da 2ª visita (ver seção 6).
+- **Pedidos de Oração** (`MuralPedidosOracao.tsx`, dentro de "Devocional", para membro/administrador/intercessor): publicar pedido, reagir com emoji (🙏 ❤️ 🕊️ 🙌), responder publicamente (administrador/intercessor, com destaque visual vermelho), fixar um pedido no topo (administrador), remover pedido (autor ou administrador) ou resposta (autor da resposta ou administrador). Tudo em tempo real via Supabase Realtime. Lista com rolagem própria (não a página inteira), com auto-rolagem para o mais novo e aviso discreto quando a pessoa está lendo pedidos antigos.
+- **Mural do visitante** (`MuralVisitanteOracao.tsx`, dentro de "Jornada de Oração"): vê a lista completa de pedidos reais da comunidade (mesmos dados dos membros) e pode publicar **até 3 pedidos próprios** — depois disso, a caixa de publicar é substituída pelo convite para virar membro.
+- **Jornada de Oração** (hub do evento, aba padrão do Visitante): título e texto de convite para a "Semana da Jornada de Oração", área reservada para transmissão ao vivo (placeholder, aguardando vídeo/link real) + o mural do visitante acima.
+- **Dashboard administrativo** (`admin.tsx`, só administrador): métricas em tempo real — quantidade de membros, gráfico comparando os 4 papéis, membros simultaneamente conectados (via Supabase Realtime Presence) — e o gerenciamento de avisos.
 - **Player de oração** (`PlayerOracao.tsx`): áudio com destaque de texto sincronizado por parágrafo
 
 ## 10. Decisões de UX deliberadas (não mexer sem entender o porquê)
@@ -136,10 +149,9 @@ Configuradas nas configurações do projeto no Lovable (Cloud tab), nunca commit
 
 ## 11. O que fica combinado mas não deve ser feito sem pedido explícito
 
-- Não habilitar `CONTROLE_DE_PERFIL_HABILITADO`
-- Não reconectar o login por conta própria
-- Não aplicar migrations diretamente no banco (não há acesso de rede para isso de qualquer forma)
-- Não decidir sozinho as regras de acesso do Visitante — ainda em aberto
+- Não aplicar migrations diretamente no banco (não há acesso de rede para isso de qualquer forma) — sempre pedir para o usuário repassar ao Lovable
+- Não decidir sozinho novas regras de acesso ou de negócio (ex: preço, duração de janelas de tempo como os 7 dias de "novo membro") sem confirmar antes
+- Não implementar as ideias registradas na seção 13 (acompanhamento espiritual) sem pedido explícito — ficou combinado só registrar, não construir
 
 ## 12. Processo de trabalho neste repositório
 

@@ -211,6 +211,7 @@ const secoes = [
       "Existe uma chave central no código (CONTROLE_DE_PERFIL_HABILITADO, em src/lib/perfis.ts) que liga/desliga todo o sistema de perfis de uma vez. Toda a estrutura (banco de dados, hooks, verificação de acesso) foi construída e testada com essa chave desligada, sem afetar o app publicado, e só foi ligada quando tudo já estava pronto.",
       "Bug real encontrado e corrigido: o redirecionamento após o login (redirect_uri) originalmente apontava para a raiz do site (\"/\"), que só verifica se a pessoa está logada e manda para a jornada — sem rodar a sincronização de pagamento. Corrigido para apontar para \"/entrar\", onde essa sincronização de fato acontece.",
       "Toda promoção a papel sensível (administrador, intercessor) é deliberadamente manual — nunca automática — como decisão de segurança.",
+      "Bug real encontrado e corrigido (02/09/2026): quando a consulta do perfil falhava (ex: uma coluna nova que a migration ainda não tinha aplicado no banco real), a tela ficava presa na mensagem \"Preparando sua caminhada\" para sempre, sem explicação — chegou a impedir várias pessoas de entrarem ao mesmo tempo, incluindo o próprio administrador. Corrigido em duas frentes: o erro passou a ser registrado no console (antes falhava em silêncio) e as telas que dependem do perfil (jornada, dia) agora mostram uma tela de erro com botão \"Tentar de novo\" em vez de ficar presas indefinidamente.",
     ],
   },
   {
@@ -258,8 +259,8 @@ const secoes = [
         "sentir a força da comunidade antes de decidir virar membro",
         [
           "Mostra pedidos reais publicados pelos membros (prova social genuína, não conteúdo inventado).",
-          "Prévia é somente leitura — sem publicar, reagir ou responder.",
-          "Botão \"Quero ser membro\" em destaque, junto da prévia.",
+          "Lista completa e rolável, não só uma prévia fixa.",
+          "Botão \"Quero ser membro\" em destaque, junto da lista.",
         ],
         "FEITO",
       ],
@@ -274,7 +275,7 @@ const secoes = [
       [
         "US-02.06",
         "membro",
-        "ter acesso completo aos 40 dias e à Comunidade de Oração",
+        "ter acesso completo aos 40 dias e aos Pedidos de Oração",
         "viver a jornada por inteiro, sem restrições de degustação",
         [
           "Todos os dias liberados progressivamente pelo próprio ritmo de conclusão, sem trava de papel.",
@@ -304,10 +305,35 @@ const secoes = [
         ],
         "FEITO",
       ],
+      [
+        "US-02.09",
+        "visitante",
+        "ter a aba \"Devocional\" bloqueada a partir da minha 2ª visita",
+        "ser incentivado a virar membro depois de já ter experimentado o Dia 1 uma vez",
+        [
+          "Contador de visitas salvo na conta (banco de dados), não no navegador — não é contornável limpando cookies.",
+          "Na 1ª visita, acesso normal de degustação (ver US-02.02).",
+          "Da 2ª visita em diante, a TV Oracional e as 4 abas internas somem, substituídas por uma tela única \"Quero ser membro\".",
+        ],
+        "FEITO",
+      ],
+      [
+        "US-02.10",
+        "visitante",
+        "publicar até 3 pedidos de oração próprios no mural da Jornada de Oração",
+        "participar de verdade da comunidade antes de virar membro, não só observar",
+        [
+          "Caixa de publicar visível enquanto a pessoa tiver menos de 3 pedidos próprios.",
+          "Contador \"X de 3 pedidos como visitante\" exibido junto da caixa.",
+          "Ao atingir o limite, a caixa some e o cartão de conversão explica que o limite foi atingido.",
+        ],
+        "FEITO",
+      ],
     ],
     notas: [
-      "As regras de acesso do Visitante ficaram registradas como \"ainda não definidas\" por boa parte do desenvolvimento do projeto — foram deliberadamente adiadas até o controle de perfil estar maduro o suficiente para implementá-las com segurança, evitando decisões apressadas sobre um fluxo de conversão tão importante.",
+      "As regras de acesso do Visitante ficaram registradas como \"ainda não definidas\" por boa parte do desenvolvimento do projeto — foram deliberadamente adiadas até o controle de perfil estar maduro o suficiente para implementá-las com segurança, evitando decisões apressadas sobre um fluxo de conversão tão importante. Foram fechadas em etapas, ao longo de setembro de 2026: primeiro a degustação do Dia 1, depois o bloqueio na 2ª visita e a publicação limitada a 3 pedidos.",
       "A degustação do Dia 1 é aplicada em duas camadas: na listagem visual da jornada (o card do dia aparece trancado) e diretamente na rota /dia/$numero (mesmo digitando a URL de outro dia, o acesso é bloqueado no servidor). Essa dupla camada existe porque bloquear só visualmente não impede alguém de tentar acessar pela URL.",
+      "O limite de 3 pedidos do visitante não precisou de coluna nova no banco — é calculado contando, na própria lista de pedidos já carregada, quantos têm o user_id da pessoa logada. A regra de segurança (RLS) que permite publicar já valia para qualquer autenticado, independente do papel; só faltava a interface.",
     ],
   },
   {
@@ -560,7 +586,7 @@ const secoes = [
   },
   {
     numero: "6",
-    titulo: "Comunidade de Oração",
+    titulo: "Pedidos de Oração (Membros)",
     historias: [
       [
         "US-06.01",
@@ -665,11 +691,11 @@ const secoes = [
       [
         "US-06.11",
         "visitante",
-        "não conseguir acessar a Comunidade de Oração dos membros",
-        "ser incentivado a virar membro para participar de verdade",
+        "não conseguir acessar a versão dos Pedidos de Oração dos membros (dentro de Devocional)",
+        "ser incentivado a virar membro para participar da versão completa",
         [
-          "Mensagem \"exclusivo para membros\" ao tentar acessar.",
-          "Redirecionado, em vez disso, para o mural de prévia com foco em conversão (ver US-02.04).",
+          "Mensagem \"exclusivo para membros\" ao tentar acessar essa aba específica.",
+          "O visitante tem seu próprio mural, separado, na aba Jornada de Oração (ver US-02.04 e US-02.10) — com lista completa e até 3 pedidos próprios, mas sem reações, respostas ou fixação.",
         ],
         "FEITO",
       ],
@@ -768,10 +794,11 @@ const secoes = [
         "US-09.02",
         "usuário logado",
         "ver avisos importantes (notícia/aviso/alerta/comunicado) destacados na tela",
-        "ficar informado sobre novidades do devocional",
+        "ficar informado sobre novidades do devocional, de um jeito que chama atenção",
         [
-          "Quatro tipos de aviso, cada um com ícone e cor própria.",
-          "Avisos aparecem em painel próprio, diferente do letreiro de frases.",
+          "Quatro tipos de aviso, cada um com ícone dentro de um selo circular colorido e sólido, e cor própria.",
+          "Avisos aparecem em painel próprio, diferente do letreiro de frases, com animação de entrada (fade + leve deslize).",
+          "O tipo \"Alerta\" ganha um pulso animado ao redor do selo do ícone, para se destacar ainda mais que os outros.",
         ],
         "FEITO",
       ],
@@ -786,11 +813,11 @@ const secoes = [
       [
         "US-09.04",
         "administrador",
-        "criar um aviso novo pelo Dashboard",
-        "comunicar algo a todos os usuários sem precisar pedir ajuda técnica",
+        "criar um aviso novo pelo Dashboard, escolhendo para quem ele deve aparecer",
+        "comunicar algo a todos os usuários, ou só a um público específico, sem precisar pedir ajuda técnica",
         [
-          "Formulário no Dashboard com tipo, título e mensagem.",
-          "Aviso publicado aparece automaticamente para todo mundo, em tempo real.",
+          "Formulário no Dashboard com tipo, público-alvo, título e mensagem.",
+          "Aviso publicado aparece automaticamente para quem se encaixa no público escolhido, em tempo real.",
         ],
         "FEITO",
       ],
@@ -805,9 +832,30 @@ const secoes = [
         ],
         "FEITO",
       ],
+      [
+        "US-09.06",
+        "membro que virou membro recentemente",
+        "ver um aviso de boas-vindas pensado especificamente para mim",
+        "me sentir acolhido logo que entro como membro pela primeira vez",
+        [
+          "Aviso marcado com público \"Novos membros\" só aparece para quem virou membro há menos de 7 dias.",
+          "Quem virou membro há mais tempo, ou ainda é visitante, não vê esse aviso.",
+        ],
+        "FEITO",
+      ],
+      [
+        "US-09.07",
+        "membro (novo ou antigo)",
+        "ver avisos direcionados a todos os membros, independente de há quanto tempo sou membro",
+        "receber comunicados relevantes para quem já faz parte da comunidade paga",
+        ["Aviso marcado com público \"Todos os membros\" aparece para qualquer papel membro, sem checar data."],
+        "FEITO",
+      ],
     ],
     notas: [
       "Os avisos migraram de uma lista fixa dentro do código (só editável por mim, exigindo um novo commit para cada aviso novo) para uma tabela no banco de dados, gerenciável pelo próprio administrador no Dashboard, sem depender de ajuda técnica para cada mudança.",
+      "O momento em que alguém \"virou membro\" é registrado automaticamente por um gatilho no banco de dados (não por código do app) — na primeira vez que o papel de uma pessoa muda para 'membro', a data é gravada uma única vez. Isso funciona igual tanto para quem vira membro pela sincronização automática de pagamento quanto por promoção manual, sem precisar lembrar de atualizar isso em nenhum lugar do código.",
+      "A janela de \"novo membro\" (7 dias) é uma constante única no código, fácil de ajustar se o tempo ideal de boas-vindas mudar.",
     ],
   },
   {
@@ -974,7 +1022,7 @@ const doc = new Document({
         new Paragraph({
           alignment: AlignmentType.CENTER,
           children: [
-            new TextRun({ text: "Versão 2 — 31 de agosto de 2026", size: 20, color: CINZA }),
+            new TextRun({ text: "Versão 3 — 2 de setembro de 2026", size: 20, color: CINZA }),
           ],
         }),
 
@@ -1014,7 +1062,7 @@ const doc = new Document({
           ],
         }),
         p(
-          "Este documento reúne, em formato de histórias de usuário, todas as funcionalidades já construídas (ou planejadas) no devocional \"40 Dias Rezando com Marcos Nascimento\". Cada funcionalidade é numerada por área (ex: seção 6 = Comunidade de Oração) e cada história recebe um identificador único (ex: US-06.04). É um documento vivo: além do que cada funcionalidade faz, ele guarda também o porquê — as decisões, os bugs reais resolvidos e o caminho percorrido até chegar no que está no ar hoje.",
+          "Este documento reúne, em formato de histórias de usuário, todas as funcionalidades já construídas (ou planejadas) no devocional \"40 Dias Rezando com Marcos Nascimento\". Cada funcionalidade é numerada por área (ex: seção 6 = Pedidos de Oração) e cada história recebe um identificador único (ex: US-06.04). É um documento vivo: além do que cada funcionalidade faz, ele guarda também o porquê — as decisões, os bugs reais resolvidos e o caminho percorrido até chegar no que está no ar hoje.",
         ),
         h2("Formato de cada história"),
         p(
