@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           mensagem: string
+          publico: string
           tipo: string
           titulo: string
         }
@@ -28,6 +29,7 @@ export type Database = {
           created_at?: string
           id?: string
           mensagem: string
+          publico?: string
           tipo: string
           titulo: string
         }
@@ -36,6 +38,7 @@ export type Database = {
           created_at?: string
           id?: string
           mensagem?: string
+          publico?: string
           tipo?: string
           titulo?: string
         }
@@ -103,6 +106,7 @@ export type Database = {
           acessos_devocional: number
           created_at: string
           papel: string
+          tornou_se_membro_em: string | null
           updated_at: string
           user_id: string
         }
@@ -110,6 +114,7 @@ export type Database = {
           acessos_devocional?: number
           created_at?: string
           papel?: string
+          tornou_se_membro_em?: string | null
           updated_at?: string
           user_id: string
         }
@@ -117,6 +122,7 @@ export type Database = {
           acessos_devocional?: number
           created_at?: string
           papel?: string
+          tornou_se_membro_em?: string | null
           updated_at?: string
           user_id?: string
         }
