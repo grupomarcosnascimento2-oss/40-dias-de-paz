@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
-import { useAvisos, useCriarAviso, useAlternarAviso, useRemoverAviso } from "@/hooks/useAvisos";
+import {
+  useAvisos,
+  useCriarAviso,
+  useAlternarAviso,
+  useRemoverAviso,
+  type PublicoAviso,
+} from "@/hooks/useAvisos";
 import type { TipoAviso } from "@/lib/avisos";
 import { sombra3d } from "@/lib/estilo3d";
 
@@ -10,6 +16,12 @@ const OPCOES_TIPO: { valor: TipoAviso; rotulo: string }[] = [
   { valor: "noticia", rotulo: "Notícia" },
   { valor: "aviso", rotulo: "Aviso" },
   { valor: "alerta", rotulo: "Alerta" },
+];
+
+const OPCOES_PUBLICO: { valor: PublicoAviso; rotulo: string }[] = [
+  { valor: "todos", rotulo: "Todos" },
+  { valor: "novos_membros", rotulo: "Novos membros (boas-vindas)" },
+  { valor: "membros", rotulo: "Todos os membros" },
 ];
 
 // Gerenciamento de avisos — exibido no Dashboard, só para administrador.
@@ -22,6 +34,7 @@ export function GerenciarAvisos() {
   const removerAviso = useRemoverAviso();
 
   const [tipo, setTipo] = useState<TipoAviso>("comunicado");
+  const [publico, setPublico] = useState<PublicoAviso>("todos");
   const [titulo, setTitulo] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [publicando, setPublicando] = useState(false);
@@ -29,7 +42,7 @@ export function GerenciarAvisos() {
   const publicar = async () => {
     if (!titulo.trim() || !mensagem.trim()) return;
     setPublicando(true);
-    const resultado = await criarAviso(tipo, titulo.trim(), mensagem.trim());
+    const resultado = await criarAviso(tipo, titulo.trim(), mensagem.trim(), publico);
     setPublicando(false);
     if (resultado.erro) {
       toast.error("Não conseguimos publicar o aviso agora. Tente novamente.");
@@ -60,6 +73,17 @@ export function GerenciarAvisos() {
           className="w-full rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
         >
           {OPCOES_TIPO.map((opcao) => (
+            <option key={opcao.valor} value={opcao.valor}>
+              {opcao.rotulo}
+            </option>
+          ))}
+        </select>
+        <select
+          value={publico}
+          onChange={(e) => setPublico(e.target.value as PublicoAviso)}
+          className="w-full rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
+        >
+          {OPCOES_PUBLICO.map((opcao) => (
             <option key={opcao.valor} value={opcao.valor}>
               {opcao.rotulo}
             </option>
@@ -103,6 +127,8 @@ export function GerenciarAvisos() {
             <div className="min-w-0">
               <p className="text-xs font-medium text-muted-foreground">
                 {OPCOES_TIPO.find((o) => o.valor === aviso.tipo)?.rotulo}
+                {" · "}
+                {OPCOES_PUBLICO.find((o) => o.valor === aviso.publico)?.rotulo}
                 {!aviso.ativo && " · desativado"}
               </p>
               <p className="truncate text-sm font-medium text-primary">{aviso.titulo}</p>

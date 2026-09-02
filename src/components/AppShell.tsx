@@ -281,7 +281,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         }`}
       >
         <MuralTopo />
-        <PainelAvisos />
+        <PainelAvisos papel={papel} tornouSeMembroEm={perfil?.tornou_se_membro_em} />
         {children}
       </div>
     </div>

@@ -3,12 +3,15 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { TipoAviso } from "@/lib/avisos";
 
+export type PublicoAviso = "todos" | "membros" | "novos_membros";
+
 export type AvisoDb = {
   id: string;
   tipo: TipoAviso;
   titulo: string;
   mensagem: string;
   ativo: boolean;
+  publico: PublicoAviso;
   created_at: string;
 };
 
@@ -17,7 +20,7 @@ const CHAVE = ["avisos"] as const;
 async function buscarAvisos(): Promise<AvisoDb[]> {
   const { data, error } = await supabase
     .from("avisos")
-    .select("id, tipo, titulo, mensagem, ativo, created_at")
+    .select("id, tipo, titulo, mensagem, ativo, publico, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -46,7 +49,6 @@ export function useAvisos() {
       })
       .subscribe();
 
-
     return () => {
       void supabase.removeChannel(canal);
     };
@@ -58,8 +60,8 @@ export function useAvisos() {
 export function useCriarAviso() {
   const queryClient = useQueryClient();
 
-  return async (tipo: TipoAviso, titulo: string, mensagem: string) => {
-    const { error } = await supabase.from("avisos").insert({ tipo, titulo, mensagem });
+  return async (tipo: TipoAviso, titulo: string, mensagem: string, publico: PublicoAviso) => {
+    const { error } = await supabase.from("avisos").insert({ tipo, titulo, mensagem, publico });
     if (error) {
       console.error("[useCriarAviso] Falha ao criar aviso:", error);
       return { erro: "falha_ao_criar" as const };

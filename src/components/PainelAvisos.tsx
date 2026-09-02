@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { Megaphone, Info, TriangleAlert, BellRing, X } from "lucide-react";
 import { type TipoAviso } from "@/lib/avisos";
 import { useAvisos, type AvisoDb } from "@/hooks/useAvisos";
+import type { Papel } from "@/lib/perfis";
 
 const CHAVE_DISPENSADOS = "avisos_dispensados";
+
+// Janela de tempo em que um membro é considerado "novo" para fins de
+// aviso de boas-vindas — ajustável aqui, num único lugar.
+const JANELA_NOVO_MEMBRO_DIAS = 7;
 
 const estiloPorTipo: Record<
   TipoAviso,
@@ -61,7 +66,13 @@ function lerDispensados(): string[] {
   }
 }
 
-export function PainelAvisos() {
+export function PainelAvisos({
+  papel,
+  tornouSeMembroEm,
+}: {
+  papel: Papel | undefined;
+  tornouSeMembroEm: string | null | undefined;
+}) {
   const { data: avisos } = useAvisos();
   const [dispensados, setDispensados] = useState<string[]>([]);
   const [carregado, setCarregado] = useState(false);
@@ -79,8 +90,20 @@ export function PainelAvisos() {
     });
   };
 
+  const souMembro = papel === "membro";
+  const souNovoMembro =
+    souMembro &&
+    Boolean(tornouSeMembroEm) &&
+    Date.now() - new Date(tornouSeMembroEm as string).getTime() <
+      JANELA_NOVO_MEMBRO_DIAS * 24 * 60 * 60 * 1000;
+
   const visiveis = carregado
-    ? (avisos ?? []).filter((a) => a.ativo && !dispensados.includes(a.id))
+    ? (avisos ?? []).filter((a) => {
+        if (!a.ativo || dispensados.includes(a.id)) return false;
+        if (a.publico === "membros") return souMembro;
+        if (a.publico === "novos_membros") return souNovoMembro;
+        return true;
+      })
     : [];
 
   if (visiveis.length === 0) return null;
