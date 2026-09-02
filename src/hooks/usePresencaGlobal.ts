@@ -15,9 +15,17 @@ type PresencaPessoa = { user_id: string; papel: Papel };
 // Chamado uma única vez, num componente que fica montado durante toda a
 // sessão logada (o AppShell, que envolve todas as páginas internas).
 // Ao fechar/sair, a presença é removida automaticamente pelo Supabase.
+//
+// Também registra ultimo_acesso (uma vez por sessão), usado no
+// Dashboard para contar quantos acessos aconteceram hoje no total.
 export function useRastrearPresenca(userId: string | undefined, papel: Papel | undefined) {
   useEffect(() => {
     if (!userId || !papel) return;
+
+    void supabase
+      .from("perfis")
+      .update({ ultimo_acesso: new Date().toISOString() })
+      .eq("user_id", userId);
 
     const canal = supabase.channel(CANAL_PRESENCA, {
       config: { presence: { key: userId } },

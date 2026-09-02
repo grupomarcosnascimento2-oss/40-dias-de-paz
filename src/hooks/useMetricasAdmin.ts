@@ -29,3 +29,32 @@ export function useContagemPorPapel(papel: Papel, habilitado: boolean) {
     enabled: habilitado,
   });
 }
+
+// Conta quantos acessos aconteceram hoje, no total — não é o mesmo que
+// "membros simultâneos" (esse é um número acumulado do dia inteiro,
+// vindo de perfis.ultimo_acesso; aquele é só quem está conectado agora,
+// via Presence). Início do dia calculado no horário local do navegador
+// de quem está vendo o Dashboard.
+async function contarAcessosHoje(): Promise<number> {
+  const inicioDoDia = new Date();
+  inicioDoDia.setHours(0, 0, 0, 0);
+
+  const { count, error } = await supabase
+    .from("perfis")
+    .select("*", { count: "exact", head: true })
+    .gte("ultimo_acesso", inicioDoDia.toISOString());
+
+  if (error) {
+    console.error("[useAcessosHoje] Falha ao contar acessos de hoje:", error);
+    throw error;
+  }
+  return count ?? 0;
+}
+
+export function useAcessosHoje(habilitado: boolean) {
+  return useQuery({
+    queryKey: ["acessos_hoje"],
+    queryFn: contarAcessosHoje,
+    enabled: habilitado,
+  });
+}
