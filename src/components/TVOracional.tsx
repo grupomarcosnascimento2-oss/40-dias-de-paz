@@ -169,7 +169,7 @@ export function TVOracional() {
   }, [pronto]);
 
   return (
-    <div className="mx-auto max-w-3xl px-6 pt-8">
+    <div className="mx-auto max-w-3xl px-6 pt-3">
       <div className="relative mx-auto max-w-xl pt-6">
         {/* Antena decorativa, com uma cruz no topo */}
         <div className="absolute -top-2 left-1/2 h-9 w-16 -translate-x-1/2">
