@@ -81,8 +81,8 @@ function Entrar() {
     preferido === "apple" ? ["apple", "google"] : ["google", "apple"];
 
   const rotulos: Record<"google" | "apple", string> = {
-    google: "Continuar com Google",
-    apple: "Continuar com Apple",
+    google: "Continuar com e-mail do Google",
+    apple: "Continuar com e-mail da Apple",
   };
 
   return (
