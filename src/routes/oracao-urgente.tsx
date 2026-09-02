@@ -111,7 +111,7 @@ function OracaoUrgente() {
               type="button"
               disabled={enviando || !nome.trim() || !email.trim()}
               onClick={enviar}
-              className="w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
+              className="w-full rounded-full bg-accent px-6 py-3.5 text-accent-foreground ring-1 ring-accent/50 transition-colors hover:bg-accent/90 disabled:opacity-60"
             >
               {enviando ? "Enviando…" : "Continuar"}
             </button>
