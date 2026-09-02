@@ -14,7 +14,7 @@ import { AtalhosRapidos } from "@/components/AtalhosRapidos";
 import { TVOracional } from "@/components/TVOracional";
 import { MuralPedidosOracao } from "@/components/MuralPedidosOracao";
 import { MuralVisitanteOracao } from "@/components/MuralVisitanteOracao";
-import { Ornamento, Cruz } from "@/components/Ornamento";
+import { Cruz } from "@/components/Ornamento";
 
 export const Route = createFileRoute("/jornada")({
   head: () => ({
@@ -264,9 +264,7 @@ function Jornada() {
                       </div>
                     </section>
 
-                    <section className="mx-auto max-w-3xl px-6 py-12">
-                      <Ornamento className="mb-8" />
-
+                    <section className="mx-auto max-w-3xl px-6 pb-12 pt-4">
                       <AccordionPrimitive.Root
                         type="multiple"
                         defaultValue={[
