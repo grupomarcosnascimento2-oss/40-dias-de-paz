@@ -8,16 +8,17 @@ import { Cruz } from "./Ornamento";
 
 // Mural do visitante — mostra os pedidos de oração reais da comunidade
 // (mesmos dados dos Pedidos de Oração dos membros) e deixa o visitante
-// publicar até 3 pedidos próprios. Depois de atingir o limite, ele
+// publicar pedidos próprios livremente durante as primeiras 24 horas
+// desde o primeiro acesso (perfis.created_at). Depois dessa janela, ele
 // continua vendo tudo normalmente, mas a caixa de publicar é
-// substituída pelo convite para virar membro (sem limite de pedidos).
+// substituída pelo convite para virar membro.
 //
 // Sem reações, resposta ou moderação aqui — essas ações continuam
 // exclusivas de membro/administrador/intercessor.
 //
 // Link do CTA: aponta para a landing page de vendas do devocional.
 
-const LIMITE_PEDIDOS_VISITANTE = 3;
+const JANELA_VISITANTE_HORAS = 24;
 const LINK_TORNAR_SE_MEMBRO = "https://rezandocomesperanca40dias.lovable.app/";
 
 export function MuralVisitanteOracao() {
@@ -28,8 +29,11 @@ export function MuralVisitanteOracao() {
   const [texto, setTexto] = useState("");
 
   const listaVisivel = (pedidos ?? []).filter((p: PedidoOracao) => !p.fixado);
-  const meusPedidos = user ? listaVisivel.filter((p) => p.user_id === user.id) : [];
-  const atingiuLimite = meusPedidos.length >= LIMITE_PEDIDOS_VISITANTE;
+
+  const dentroDaJanela = perfil
+    ? Date.now() - new Date(perfil.created_at).getTime() < JANELA_VISITANTE_HORAS * 60 * 60 * 1000
+    : false;
+  const janelaEncerrada = Boolean(perfil) && !dentroDaJanela;
 
   const enviarPedido = async () => {
     if (!user) return;
@@ -54,7 +58,7 @@ export function MuralVisitanteOracao() {
         </p>
       </div>
 
-      {user && !atingiuLimite && (
+      {user && dentroDaJanela && (
         <div
           className="mx-auto mt-6 rounded-2xl border border-accent/30 bg-card p-4 sm:p-5"
           style={sombra3d}
@@ -68,7 +72,7 @@ export function MuralVisitanteOracao() {
           />
           <div className="mt-3 flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
-              {meusPedidos.length} de {LIMITE_PEDIDOS_VISITANTE} pedidos como visitante
+              Você pode publicar pedidos como visitante nas suas primeiras 24 horas aqui.
             </p>
             <button
               type="button"
@@ -108,8 +112,8 @@ export function MuralVisitanteOracao() {
         style={sombra3d}
       >
         <p className="text-foreground/85">
-          {atingiuLimite
-            ? "Você já usou seus 3 pedidos de oração como visitante. Torne-se membro para publicar sem limite e receber o apoio contínuo da nossa comunidade."
+          {janelaEncerrada
+            ? "Suas primeiras 24 horas para publicar pedidos como visitante já passaram. Torne-se membro para publicar sem limite e receber o apoio contínuo da nossa comunidade."
             : "Torne-se membro para publicar sem limite e receber o apoio em oração da nossa comunidade."}
         </p>
         <a

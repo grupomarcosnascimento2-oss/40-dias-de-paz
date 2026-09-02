@@ -7,12 +7,13 @@ export type Perfil = {
   papel: Papel;
   acessos_devocional: number;
   tornou_se_membro_em: string | null;
+  created_at: string;
 };
 
 async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
   const { data, error } = await supabase
     .from("perfis")
-    .select("user_id, papel, acessos_devocional, tornou_se_membro_em")
+    .select("user_id, papel, acessos_devocional, tornou_se_membro_em, created_at")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -30,7 +31,7 @@ async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
   const { data: criado, error: erroCriacao } = await supabase
     .from("perfis")
     .insert({ user_id: userId, papel: PAPEL_PADRAO })
-    .select("user_id, papel, acessos_devocional, tornou_se_membro_em")
+    .select("user_id, papel, acessos_devocional, tornou_se_membro_em, created_at")
     .single();
 
   if (erroCriacao) {
