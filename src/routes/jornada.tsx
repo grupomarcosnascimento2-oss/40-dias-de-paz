@@ -201,6 +201,12 @@ function Jornada() {
                     >
                       Agenda de eventos
                     </TabsPrimitive.Trigger>
+                    <TabsPrimitive.Trigger
+                      value="testemunhos"
+                      className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+                    >
+                      Testemunhos
+                    </TabsPrimitive.Trigger>
                   </TabsPrimitive.List>
 
                   <TabsPrimitive.Content value="caminhada">
@@ -425,6 +431,17 @@ function Jornada() {
                       <p className="mx-auto mt-3 max-w-md text-foreground/75">
                         Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui a
                         agenda de eventos.
+                      </p>
+                    </section>
+                  </TabsPrimitive.Content>
+
+                  <TabsPrimitive.Content value="testemunhos">
+                    <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+                      <Cruz className="mx-auto h-6 w-6 text-accent" />
+                      <h2 className="script mt-4 text-3xl text-primary">Testemunhos</h2>
+                      <p className="mx-auto mt-3 max-w-md text-foreground/75">
+                        Este espaço ainda está sendo construído. Em breve, você vai encontrar aqui
+                        testemunhos de pessoas que viveram essa jornada.
                       </p>
                     </section>
                   </TabsPrimitive.Content>
