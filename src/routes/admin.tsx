@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
-import { useContagemPorPapel, useAcessosHoje } from "@/hooks/useMetricasAdmin";
+import { useContagemPorPapel, useAberturasHoje } from "@/hooks/useMetricasAdmin";
 import { useContagemPresencaAoVivo } from "@/hooks/usePresencaGlobal";
 import { AppShell } from "@/components/AppShell";
 import { GerenciarAvisos } from "@/components/GerenciarAvisos";
@@ -56,7 +56,7 @@ function Admin() {
   );
   const { data: quantidadeVisitantes } = useContagemPorPapel("visitante", souAdministrador);
   const membrosSimultaneos = useContagemPresencaAoVivo(souAdministrador);
-  const { data: acessosHoje } = useAcessosHoje(souAdministrador);
+  const { data: acessosHoje } = useAberturasHoje(souAdministrador);
 
   const dadosGrafico = [
     { papel: "Administrador", quantidade: quantidadeAdministradores ?? 0 },
@@ -122,7 +122,7 @@ function Admin() {
 
             <div className="rounded-2xl border border-accent/30 bg-card p-5" style={sombra3d}>
               <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                Acessos hoje (total, não só agora)
+                Vezes que o app foi aberto hoje
               </p>
               <p className="mt-1 text-3xl font-semibold text-primary">{acessosHoje ?? "…"}</p>
             </div>

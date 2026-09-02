@@ -65,6 +65,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      logs_acesso: {
+        Row: {
+          created_at: string;
+          id: string;
+          papel: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          papel: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          papel?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       leads_captacao: {
         Row: {
           created_at: string;
