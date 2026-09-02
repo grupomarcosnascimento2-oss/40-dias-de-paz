@@ -152,6 +152,7 @@ export type Database = {
           created_at: string
           papel: string
           tornou_se_membro_em: string | null
+          ultimo_acesso: string | null
           updated_at: string
           user_id: string
         }
@@ -160,6 +161,7 @@ export type Database = {
           created_at?: string
           papel?: string
           tornou_se_membro_em?: string | null
+          ultimo_acesso?: string | null
           updated_at?: string
           user_id: string
         }
@@ -168,6 +170,7 @@ export type Database = {
           created_at?: string
           papel?: string
           tornou_se_membro_em?: string | null
+          ultimo_acesso?: string | null
           updated_at?: string
           user_id?: string
         }
