@@ -20,6 +20,7 @@ const OPCOES_TIPO: { valor: TipoAviso; rotulo: string }[] = [
 
 const OPCOES_PUBLICO: { valor: PublicoAviso; rotulo: string }[] = [
   { valor: "todos", rotulo: "Todos" },
+  { valor: "visitante", rotulo: "Visitante" },
   { valor: "novos_membros", rotulo: "Novos membros (boas-vindas)" },
   { valor: "membros", rotulo: "Todos os membros" },
 ];

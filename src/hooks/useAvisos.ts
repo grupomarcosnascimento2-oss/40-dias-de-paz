@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { TipoAviso } from "@/lib/avisos";
 
-export type PublicoAviso = "todos" | "membros" | "novos_membros";
+export type PublicoAviso = "todos" | "membros" | "novos_membros" | "visitante";
 
 export type AvisoDb = {
   id: string;

@@ -102,6 +102,7 @@ export function PainelAvisos({
         if (!a.ativo || dispensados.includes(a.id)) return false;
         if (a.publico === "membros") return souMembro;
         if (a.publico === "novos_membros") return souNovoMembro;
+        if (a.publico === "visitante") return papel === "visitante";
         return true;
       })
     : [];
