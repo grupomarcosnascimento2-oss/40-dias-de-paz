@@ -71,6 +71,30 @@ export type Database = {
         }
         Relationships: []
       }
+      leads_captacao: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       pedidos_oracao: {
         Row: {
           created_at: string
