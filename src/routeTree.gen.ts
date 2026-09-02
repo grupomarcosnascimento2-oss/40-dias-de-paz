@@ -16,6 +16,7 @@ import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as ForcaDaOracaoRouteImport } from './routes/forca-da-oracao'
 import { Route as IntroducaoRouteImport } from './routes/introducao'
 import { Route as JornadaRouteImport } from './routes/jornada'
+import { Route as OracaoUrgenteRouteImport } from './routes/oracao-urgente'
 import { Route as PalavraAoLeitorRouteImport } from './routes/palavra-ao-leitor'
 import { Route as PorQue40DiasRouteImport } from './routes/por-que-40-dias'
 import { Route as ApresentacaoIndexRouteImport } from './routes/apresentacao.index'
@@ -58,6 +59,11 @@ const JornadaRoute = JornadaRouteImport.update({
   path: '/jornada',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OracaoUrgenteRoute = OracaoUrgenteRouteImport.update({
+  id: '/oracao-urgente',
+  path: '/oracao-urgente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PalavraAoLeitorRoute = PalavraAoLeitorRouteImport.update({
   id: '/palavra-ao-leitor',
   path: '/palavra-ao-leitor',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
   '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
   '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
   '/introducao': typeof IntroducaoRoute
   '/jornada': typeof JornadaRoute
+  '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/forca-da-oracao'
     | '/introducao'
     | '/jornada'
+    | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
     | '/apresentacao/caminhada'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/forca-da-oracao'
     | '/introducao'
     | '/jornada'
+    | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
     | '/apresentacao/caminhada'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/forca-da-oracao'
     | '/introducao'
     | '/jornada'
+    | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
     | '/apresentacao/caminhada'
@@ -191,6 +203,7 @@ export interface RootRouteChildren {
   ForcaDaOracaoRoute: typeof ForcaDaOracaoRoute
   IntroducaoRoute: typeof IntroducaoRoute
   JornadaRoute: typeof JornadaRoute
+  OracaoUrgenteRoute: typeof OracaoUrgenteRoute
   PalavraAoLeitorRoute: typeof PalavraAoLeitorRoute
   PorQue40DiasRoute: typeof PorQue40DiasRoute
   ApresentacaoCaminhadaRoute: typeof ApresentacaoCaminhadaRoute
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JornadaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oracao-urgente': {
+      id: '/oracao-urgente'
+      path: '/oracao-urgente'
+      fullPath: '/oracao-urgente'
+      preLoaderRoute: typeof OracaoUrgenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/palavra-ao-leitor': {
       id: '/palavra-ao-leitor'
       path: '/palavra-ao-leitor'
@@ -303,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForcaDaOracaoRoute: ForcaDaOracaoRoute,
   IntroducaoRoute: IntroducaoRoute,
   JornadaRoute: JornadaRoute,
+  OracaoUrgenteRoute: OracaoUrgenteRoute,
   PalavraAoLeitorRoute: PalavraAoLeitorRoute,
   PorQue40DiasRoute: PorQue40DiasRoute,
   ApresentacaoCaminhadaRoute: ApresentacaoCaminhadaRoute,
