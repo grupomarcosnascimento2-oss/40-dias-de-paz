@@ -184,16 +184,16 @@ function Jornada() {
                       40 Dias de Oração
                     </TabsPrimitive.Trigger>
                     <TabsPrimitive.Trigger
-                      value="comunidade"
-                      className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
-                    >
-                      Pedidos de Oração
-                    </TabsPrimitive.Trigger>
-                    <TabsPrimitive.Trigger
                       value="acompanhamento"
                       className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
                     >
                       Acompanhamento espiritual
+                    </TabsPrimitive.Trigger>
+                    <TabsPrimitive.Trigger
+                      value="comunidade"
+                      className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
+                    >
+                      Pedidos de Oração
                     </TabsPrimitive.Trigger>
                     <TabsPrimitive.Trigger
                       value="agenda"
