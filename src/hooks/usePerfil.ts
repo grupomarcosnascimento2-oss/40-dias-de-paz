@@ -15,7 +15,10 @@ async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error("[usePerfil] Falha ao buscar perfil:", error);
+    throw error;
+  }
   if (data) return data as Perfil;
 
   // Primeiro acesso: cria o perfil como "visitante" — o papel mínimo,
@@ -29,7 +32,10 @@ async function buscarOuCriarPerfil(userId: string): Promise<Perfil> {
     .select("user_id, papel, acessos_devocional")
     .single();
 
-  if (erroCriacao) throw erroCriacao;
+  if (erroCriacao) {
+    console.error("[usePerfil] Falha ao criar perfil:", erroCriacao);
+    throw erroCriacao;
+  }
   return criado as Perfil;
 }
 

@@ -51,9 +51,11 @@ function Jornada() {
   const { user, carregando: carregandoAuth } = useAuth();
   const navigate = useNavigate();
   const { data: jornada, isLoading: carregandoJornada } = useJornada(user?.id);
-  const { data: perfil, isLoading: carregandoPerfil } = usePerfil(
-    CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined,
-  );
+  const {
+    data: perfil,
+    isLoading: carregandoPerfil,
+    isError: erroPerfil,
+  } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
   const incrementarAcesso = useIncrementarAcessoDevocional();
   const [abaExternaEscolhida, setAbaExternaEscolhida] = useState<string | null>(null);
   const jaIncrementouRef = useRef(false);
@@ -101,6 +103,25 @@ function Jornada() {
     acessosDevocional,
     incrementarAcesso,
   ]);
+
+  if (erroPerfil) {
+    return (
+      <main className="flex min-h-screen items-center justify-center px-6 text-center">
+        <div>
+          <p className="text-foreground/80">
+            Não conseguimos carregar sua conta agora. Isso costuma ser passageiro.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded-full bg-primary px-6 py-3 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft"
+          >
+            Tentar de novo
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   if (carregandoTudo) {
     return (
