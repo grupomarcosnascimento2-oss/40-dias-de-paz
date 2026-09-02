@@ -69,8 +69,8 @@ function OracaoUrgente() {
   const provedores: Array<"google" | "apple"> =
     preferido === "apple" ? ["apple", "google"] : ["google", "apple"];
   const rotulos: Record<"google" | "apple", string> = {
-    google: "Continuar com e-mail do Google",
-    apple: "Continuar com e-mail da Apple",
+    google: "Continuar",
+    apple: "Continuar",
   };
 
   return (
@@ -132,8 +132,8 @@ function OracaoUrgente() {
                   onClick={() => entrarCom(provedor)}
                   className={
                     destaque
-                      ? "w-full rounded-full bg-primary px-6 py-3.5 text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
-                      : "w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 text-primary transition-colors hover:bg-secondary disabled:opacity-60"
+                      ? "w-full rounded-full bg-primary px-6 py-3.5 font-bold text-white ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-60"
+                      : "w-full rounded-full border border-accent/50 bg-card px-6 py-3.5 font-bold text-primary transition-colors hover:bg-secondary disabled:opacity-60"
                   }
                 >
                   {entrando === provedor ? "Abrindo…" : rotulos[provedor]}
