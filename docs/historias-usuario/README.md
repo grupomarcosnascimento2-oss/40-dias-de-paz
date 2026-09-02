@@ -22,5 +22,25 @@ padrão usado nas sessões deste projeto).
 ## Convenção de IDs
 
 `US-<seção>.<sequencial>` — ex: `US-06.04` é a 4ª história da seção 6
-(Comunidade de Oração). Ao adicionar uma seção nova, use o próximo
-número disponível (hoje vai até a seção 10).
+(Pedidos de Oração). Ao adicionar uma seção nova, use o próximo número
+disponível (hoje vai até a seção 10).
+
+## Pendências para a próxima atualização
+
+Funcionalidades já implementadas no app, mas ainda **não incorporadas**
+a este documento (registradas em memória em 01/09/2026, aguardando a
+próxima rodada de atualização):
+
+- Renomeação de "Comunidade de Oração" para "Pedidos de Oração" em todo
+  texto visível do app (rótulo da aba, títulos de bloqueio, mural do
+  visitante) — os IDs de história continuam válidos, só o nome mudou.
+- Nova regra de visibilidade para o Visitante: a partir da **2ª visita**
+  à aba Devocional, a TV Oracional e as 4 abas internas (40 Dias,
+  Pedidos de Oração, Acompanhamento, Agenda) são substituídas por uma
+  tela única "Quero ser membro", com botão para a landing page. O
+  contador de acessos fica salvo na conta (banco de dados), não no
+  navegador. Isso muda o comportamento descrito nas histórias US-02.02
+  e US-02.04 (que hoje descrevem só a degustação da 1ª visita) — vale
+  adicionar uma história nova (ex: US-02.09) e uma nota técnica na
+  seção 2.
+
