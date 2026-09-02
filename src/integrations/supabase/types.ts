@@ -100,18 +100,21 @@ export type Database = {
       }
       perfis: {
         Row: {
+          acessos_devocional: number
           created_at: string
           papel: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          acessos_devocional?: number
           created_at?: string
           papel?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          acessos_devocional?: number
           created_at?: string
           papel?: string
           updated_at?: string
