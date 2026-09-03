@@ -7,6 +7,7 @@ import { useContagemPorPapel, useAberturasHoje } from "@/hooks/useMetricasAdmin"
 import { useContagemPresencaAoVivo } from "@/hooks/usePresencaGlobal";
 import { AppShell } from "@/components/AppShell";
 import { GerenciarAvisos } from "@/components/GerenciarAvisos";
+import { PedidosPendentes } from "@/components/PedidosPendentes";
 import { Cruz } from "@/components/Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
 import {
@@ -89,7 +90,8 @@ function Admin() {
 
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]">
           {/* Conteúdo principal — ferramentas de gestão */}
-          <section>
+          <section className="space-y-6">
+            <PedidosPendentes />
             <GerenciarAvisos />
           </section>
 
