@@ -453,16 +453,14 @@ function Jornada() {
           </TabsPrimitive.Content>
 
           <TabsPrimitive.Content value="jornadaOracao">
-            <section className="mx-auto max-w-3xl px-6 pb-2 pt-10 text-center">
-              <Cruz className="mx-auto h-6 w-6 text-accent" />
-              <h1 className="script mt-4 text-4xl text-primary">Jornada de Oração</h1>
-              <p className="mx-auto mt-3 max-w-md text-foreground/75">
+            <TVOracional />
+
+            <section className="mx-auto max-w-3xl px-6 pb-2 pt-4 text-center">
+              <p className="mx-auto max-w-md text-foreground/75">
                 A Jornada de Oração é um movimento de intercessão pelas pessoas. Deixe aqui o seu
                 pedido de oração — nossa equipe estará intercedendo por você.
               </p>
             </section>
-
-            <TVOracional />
 
             <MuralPedidosOracao />
           </TabsPrimitive.Content>
