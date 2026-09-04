@@ -208,7 +208,7 @@ function Jornada() {
                     >
                       Pedidos de Oração
                       {pedidosNaoVistos > 0 && !souVisitante && (
-                        <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white ring-2 ring-background">
+                        <span className="absolute -right-1.5 top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white ring-2 ring-background">
                           {pedidosNaoVistos > 99 ? "99+" : pedidosNaoVistos}
                         </span>
                       )}
