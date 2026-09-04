@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
 import { useSistemaOperacional } from "@/hooks/useSistemaOperacional";
+import { useRastrearPresencaVisitante } from "@/hooks/usePresencaGlobal";
 import { sincronizarPerfilAposLogin } from "@/lib/sincronizarPerfilAposLogin.functions";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
