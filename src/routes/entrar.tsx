@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
 import { useSistemaOperacional } from "@/hooks/useSistemaOperacional";
+import { useRastrearPresencaVisitante } from "@/hooks/usePresencaGlobal";
 import { sincronizarPerfilAposLogin } from "@/lib/sincronizarPerfilAposLogin.functions";
 import { Ornamento, Cruz } from "@/components/Ornamento";
 
@@ -33,6 +34,10 @@ function Entrar() {
   const [entrando, setEntrando] = useState<string | null>(null);
   const [confirmandoAcesso, setConfirmandoAcesso] = useState(false);
   const sistema = useSistemaOperacional();
+
+  // Registra a presença de quem está com a landing page aberta, mesmo
+  // antes de entrar — depois do login, o AppShell assume o rastreio.
+  useRastrearPresencaVisitante(!user);
 
   useEffect(() => {
     if (carregando || !user) return;
