@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil, useIncrementarAcessoDevocional } from "@/hooks/usePerfil";
+import { usePedidosNaoVistos } from "@/hooks/usePedidosNaoVistos";
 import { CONTROLE_DE_PERFIL_HABILITADO } from "@/lib/perfis";
 import { useJornada, diaLiberado } from "@/hooks/useJornada";
 import { areas, TOTAL_DIAS } from "@/lib/devocional";
@@ -57,6 +58,9 @@ function Jornada() {
   } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
   const incrementarAcesso = useIncrementarAcessoDevocional();
   const [abaExternaEscolhida, setAbaExternaEscolhida] = useState<string | null>(null);
+  const [abaInterna, setAbaInterna] = useState("caminhada");
+  const { naoVistos: pedidosNaoVistos, marcarComoVisto: marcarPedidosComoVistos } =
+    usePedidosNaoVistos(user?.id);
   const jaIncrementouRef = useRef(false);
 
   useEffect(() => {
@@ -102,6 +106,18 @@ function Jornada() {
     acessosDevocional,
     incrementarAcesso,
   ]);
+
+  const jaMarcouPedidosVistosRef = useRef(false);
+  useEffect(() => {
+    if (abaInterna === "comunidade") {
+      if (!jaMarcouPedidosVistosRef.current) {
+        jaMarcouPedidosVistosRef.current = true;
+        marcarPedidosComoVistos();
+      }
+    } else {
+      jaMarcouPedidosVistosRef.current = false;
+    }
+  }, [abaInterna, marcarPedidosComoVistos]);
 
   if (erroPerfil) {
     return (
@@ -174,7 +190,11 @@ function Jornada() {
               <>
                 <TVOracional />
 
-                <TabsPrimitive.Root defaultValue="caminhada" className="mt-6">
+                <TabsPrimitive.Root
+                  value={abaInterna}
+                  onValueChange={setAbaInterna}
+                  className="mt-6"
+                >
                   <TabsPrimitive.List className="mx-auto flex max-w-3xl items-end gap-1.5 overflow-x-auto border-b border-accent/25 px-6">
                     <TabsPrimitive.Trigger
                       value="caminhada"
@@ -187,6 +207,11 @@ function Jornada() {
                       className="script relative -mb-px shrink-0 translate-y-0.5 rounded-t-2xl border border-b-0 border-transparent bg-secondary/50 px-5 py-2.5 text-xl text-black shadow-[inset_0_-2px_5px_0_rgba(31,42,82,0.08)] transition-all data-[state=active]:z-10 data-[state=active]:-translate-y-0.5 data-[state=active]:border-accent/40 data-[state=active]:bg-card data-[state=active]:shadow-[0_-10px_22px_-14px_rgba(31,42,82,0.55),inset_0_1px_0_0_rgba(255,255,255,0.6),0_1px_0_0_rgba(184,137,43,0.35)]"
                     >
                       Pedidos de Oração
+                      {pedidosNaoVistos > 0 && !souVisitante && (
+                        <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white ring-2 ring-background">
+                          {pedidosNaoVistos > 99 ? "99+" : pedidosNaoVistos}
+                        </span>
+                      )}
                     </TabsPrimitive.Trigger>
                     <TabsPrimitive.Trigger
                       value="agenda"
