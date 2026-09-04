@@ -4,7 +4,11 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import { useContagemPorPapel, useAberturasHoje } from "@/hooks/useMetricasAdmin";
-import { useContagemPresencaAoVivo } from "@/hooks/usePresencaGlobal";
+import {
+  useContagemPresencaAoVivo,
+  useContagemPresencaTotal,
+} from "@/hooks/usePresencaGlobal";
+import { Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { GerenciarAvisos } from "@/components/GerenciarAvisos";
 import { PedidosPendentes } from "@/components/PedidosPendentes";
@@ -57,6 +61,7 @@ function Admin() {
   );
   const { data: quantidadeVisitantes } = useContagemPorPapel("visitante", souAdministrador);
   const membrosSimultaneos = useContagemPresencaAoVivo(souAdministrador);
+  const pessoasConectadas = useContagemPresencaTotal(souAdministrador);
   const { data: acessosHoje } = useAberturasHoje(souAdministrador);
 
   const dadosGrafico = [
@@ -107,6 +112,18 @@ function Admin() {
               </p>
               <p className="mt-1 text-3xl font-semibold text-primary">
                 {carregandoMembros ? "…" : quantidadeMembros}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-accent/30 bg-card p-5" style={sombra3d}>
+              <div className="flex items-center gap-1.5">
+                <Users className="h-4 w-4 text-accent" aria-hidden="true" />
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Pessoas conectadas agora
+                </p>
+              </div>
+              <p className="mt-1 text-3xl font-semibold text-primary">
+                {pessoasConectadas ?? "…"}
               </p>
             </div>
 
