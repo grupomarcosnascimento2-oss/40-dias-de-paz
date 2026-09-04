@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Papel } from "@/lib/perfis";
@@ -33,11 +33,18 @@ export function usePedidosOracao() {
   const queryClient = useQueryClient();
   const consulta = useQuery({ queryKey: CHAVE, queryFn: buscarPedidos });
 
+  // Nome do canal único por instância deste hook (via useId) — o hook
+  // pode estar ativo em mais de um componente ao mesmo tempo (ex: o
+  // mural completo e o contador de não vistos, ambos na tela de
+  // Jornada de Oração), e dois canais com o mesmo nome causavam erro
+  // em produção.
+  const idInstancia = useId();
+
   // Atualização em tempo real: assim que alguém publica, remove ou fixa
   // um pedido, todo mundo com o mural aberto vê a mudança sem recarregar.
   useEffect(() => {
     const canal = supabase
-      .channel("pedidos_oracao_mural")
+      .channel(`pedidos_oracao_mural_${idInstancia}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "pedidos_oracao" }, () => {
         void queryClient.invalidateQueries({ queryKey: CHAVE });
       })
@@ -46,7 +53,7 @@ export function usePedidosOracao() {
     return () => {
       void supabase.removeChannel(canal);
     };
-  }, [queryClient]);
+  }, [queryClient, idInstancia]);
 
   return consulta;
 }

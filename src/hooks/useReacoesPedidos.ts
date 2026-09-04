@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -26,10 +26,11 @@ async function buscarReacoes(): Promise<Reacao[]> {
 export function useReacoesPedidos() {
   const queryClient = useQueryClient();
   const consulta = useQuery({ queryKey: CHAVE, queryFn: buscarReacoes });
+  const idInstancia = useId();
 
   useEffect(() => {
     const canal = supabase
-      .channel("reacoes_pedidos_oracao_mural")
+      .channel(`reacoes_pedidos_oracao_mural_${idInstancia}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "reacoes_pedidos_oracao" },
@@ -42,7 +43,7 @@ export function useReacoesPedidos() {
     return () => {
       void supabase.removeChannel(canal);
     };
-  }, [queryClient]);
+  }, [queryClient, idInstancia]);
 
   return consulta;
 }
