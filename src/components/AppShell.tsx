@@ -27,58 +27,58 @@ type ItemMenu = {
 
 const menu: ItemMenu[] = [
   {
-    numero: "0",
+    numero: "1",
     titulo: "Dashboard",
     to: "/admin",
     papeis: ["administrador"],
   },
   {
-    numero: "1",
+    numero: "2",
     titulo: "Introdução",
     subtitulo: "Uma jornada de 40 dias com Deus",
     to: "/introducao",
   },
   {
-    numero: "2",
+    numero: "3",
     titulo: "Apresentação",
     subtitulo: "Quem é Marcos Nascimento",
     to: "/apresentacao",
     filhos: [
       {
-        numero: "2.1",
+        numero: "3.1",
         titulo: "Minha caminhada com Deus e com a Igreja",
         to: "/apresentacao/caminhada",
       },
       {
-        numero: "2.2",
+        numero: "3.2",
         titulo: "Família, fé e experiências vividas",
         to: "/apresentacao/familia",
       },
     ],
   },
   {
-    numero: "3",
+    numero: "4",
     titulo: "A força da oração na minha caminhada",
     to: "/forca-da-oracao",
   },
   {
-    numero: "4",
+    numero: "5",
     titulo: "Uma palavra ao leitor",
     to: "/palavra-ao-leitor",
   },
   {
-    numero: "5",
+    numero: "6",
     titulo: "Por que 40 dias?",
     subtitulo: "O significado bíblico do número 40",
     to: "/por-que-40-dias",
   },
   {
-    numero: "6",
+    numero: "7",
     titulo: "Como viver esta jornada de 40 dias",
     to: "/como-viver",
   },
   {
-    numero: "7",
+    numero: "8",
     titulo: "Os 40 Dias de Oração",
     to: "/jornada",
   },
