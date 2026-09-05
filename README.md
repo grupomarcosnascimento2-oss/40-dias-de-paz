@@ -81,7 +81,7 @@ Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`
 - **`sincronizarPerfilAposLogin.functions.ts`**: conectada ao fluxo de login (`entrar.tsx`) — verifica pagamento confirmado na planilha via Apps Script e promove para `membro` automaticamente; nunca promove a `administrador` nem a `intercessor` (sempre manual). **Importante**: o `redirect_uri` do login social precisa apontar para `/entrar` (não para `/`) — já foi um bug real corrigido, porque a raiz do site não roda essa sincronização.
 - **Administrador designado**: Marcos Nascimento de Sousa, `grupomarcosnascimento@gmail.com` — promovido manualmente via SQL.
 - **Intercessor**: pessoa preparada para responder pedidos de oração no mural, apoiando esse trabalho junto com o administrador — pensado para quando o administrador não estiver disponível; a tendência é ter vários intercessores ao longo do tempo. Promoção sempre manual via SQL, igual ao administrador. Pode responder pedidos e remover as próprias respostas; não pode fixar pedidos nem remover pedidos/respostas de outras pessoas (isso continua exclusivo do administrador).
-- **Menu lateral**: item "Dashboard" (rota `/admin`) só aparece se `papel === 'administrador'` — intercessor não vê esse item. A própria rota também exige login + papel administrador de verdade (não é só o item de menu escondido).
+- **Menu lateral**: item "Administração" (item 1) só aparece se `papel === 'administrador'` — intercessor não vê esse item nem seus subitens. Reúne 5 subitens: 1.1 Dashboard (`/admin`), 1.2 Cadastros, 1.3 Controle, 1.4 Regras de Negócio, 1.5 Usuários/Permissionamento (as 4 últimas são placeholders — ver seção 9). Todas as rotas exigem login + papel administrador de verdade (não é só o item de menu escondido).
 - **Visitante** — regras completas, implementadas em 01-02/09/2026:
   - Cai direto na aba "Jornada de Oração" ao entrar (não em "Devocional")
   - Pode navegar até "Devocional", mas só o **Dia 1** fica desbloqueado (degustação) — vale tanto na listagem quanto na rota `/dia/$numero` direto
@@ -93,6 +93,7 @@ Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`
 
 1. Gate de pagamento (`jornadas.tem_acesso`) — a tabela já tem esse campo, mas nenhuma tela ainda o verifica antes de liberar o conteúdo
 2. Conteúdo definitivo da aba "Jornada de Oração" (vídeo/link da transmissão da "Semana da Jornada de Oração" e texto da campanha) — hoje só placeholder
+3. Conteúdo real das 4 páginas administrativas criadas em 05/09/2026 (Cadastros, Controle, Regras de Negócio, Usuários/Permissionamento) — hoje são só placeholders "em construção", protegidos por login+administrador, aguardando definição do que cada uma deve fazer de verdade
 
 ## 7. Banco de dados (Supabase) — atenção especial
 
@@ -129,7 +130,7 @@ Configuradas nas configurações do projeto no Lovable (Cloud tab), nunca commit
 
 ## 9. Funcionalidades já construídas na tela principal (`jornada.tsx`)
 
-- **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada (Introdução, Apresentação com 2 subitens, Força da oração, Palavra ao leitor, Por que 40 dias, Como viver, Os 40 Dias de Oração, + "Dashboard" restrito a administrador, sempre em primeiro quando visível). Botão "Sair da conta" no rodapé.
+- **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada 1 a 8: 1. Administração (restrito a administrador, com 5 subitens — 1.1 Dashboard, 1.2 Cadastros, 1.3 Controle, 1.4 Regras de Negócio, 1.5 Usuários/Permissionamento, as 4 últimas ainda placeholder), 2. Introdução, 3. Apresentação (com 2 subitens), 4. Força da oração, 5. Palavra ao leitor, 6. Por que 40 dias, 7. Como viver, 8. Os 40 Dias de Oração. Botão "Sair da conta" no rodapé. Suporta níveis de profundidade variáveis (ex: 3.1, 3.2) via renderização recursiva.
 - **Mural do topo** (`MuralTopo.tsx`): faixa fina com frases curtas em letreiro animado (direita → esquerda), alterna entre frases automaticamente
 - **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado) com selo colorido, animação de entrada e pulso no tipo alerta. Cada aviso tem um **público-alvo** (todos / todos os membros / só novos membros — até 7 dias desde que virou membro). Gerenciados pelo administrador direto no Dashboard (`GerenciarAvisos.tsx`), sem precisar editar código.
 - **TV Oracional** (`TVOracional.tsx`): vídeo do YouTube embutido (API oficial `window.YT.Player`, não postMessage cru — isso corrigiu um bug real de instabilidade), sem controles do YouTube visíveis. **Rodízio automático entre dois vídeos** (vídeo principal por 10 min, depois o secundário por 1 min, contínuo). Som controlado pelo mesmo interruptor global (`useSom`).
