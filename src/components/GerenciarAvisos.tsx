@@ -9,6 +9,7 @@ import {
   type PublicoAviso,
 } from "@/hooks/useAvisos";
 import type { TipoAviso } from "@/lib/avisos";
+import { enviarNotificacaoAviso } from "@/lib/enviarNotificacaoAviso.functions";
 import { sombra3d } from "@/lib/estilo3d";
 
 const OPCOES_TIPO: { valor: TipoAviso; rotulo: string }[] = [
@@ -51,6 +52,14 @@ export function GerenciarAvisos() {
     }
     setTitulo("");
     setMensagem("");
+
+    // Best-effort: o aviso já foi publicado normalmente mesmo que o
+    // envio de push falhe (ex: chaves VAPID ainda não configuradas).
+    void enviarNotificacaoAviso({
+      data: { titulo: titulo.trim(), mensagem: mensagem.trim(), publico },
+    }).catch((erro: unknown) => {
+      console.error("[GerenciarAvisos] Falha ao enviar notificação push:", erro);
+    });
   };
 
   const alternar = async (id: string, ativoAtual: boolean) => {
