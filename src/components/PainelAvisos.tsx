@@ -174,14 +174,14 @@ function ItemAviso({ aviso, onFechar }: { aviso: AvisoDb; onFechar: () => void }
   );
 }
 
-// Calcula e mostra "Faltam X dias, Y horas e Z minutos" até a data-alvo,
-// atualizando sozinho a cada 30 segundos. Depois que a data passa,
+// Calcula e mostra "Faltam X dias, Y horas, Z minutos e W segundos" até
+// a data-alvo, atualizando a cada segundo. Depois que a data passa,
 // mostra que o evento já começou, em vez de números negativos.
 function ContagemRegressiva({ dataAlvo }: { dataAlvo: string }) {
   const [agora, setAgora] = useState(() => Date.now());
 
   useEffect(() => {
-    const id = setInterval(() => setAgora(Date.now()), 30_000);
+    const id = setInterval(() => setAgora(Date.now()), 1_000);
     return () => clearInterval(id);
   }, []);
 
@@ -194,11 +194,19 @@ function ContagemRegressiva({ dataAlvo }: { dataAlvo: string }) {
   const dias = Math.floor(diferenca / (24 * 60 * 60 * 1000));
   const horas = Math.floor((diferenca / (60 * 60 * 1000)) % 24);
   const minutos = Math.floor((diferenca / (60 * 1000)) % 60);
+  const segundos = Math.floor((diferenca / 1000) % 60);
 
   const partes: string[] = [];
   if (dias > 0) partes.push(`${dias} dia${dias === 1 ? "" : "s"}`);
   if (horas > 0 || dias > 0) partes.push(`${horas} hora${horas === 1 ? "" : "s"}`);
-  partes.push(`${minutos} minuto${minutos === 1 ? "" : "s"}`);
+  if (minutos > 0 || horas > 0 || dias > 0) {
+    partes.push(`${minutos} minuto${minutos === 1 ? "" : "s"}`);
+  }
+  partes.push(`${segundos} segundo${segundos === 1 ? "" : "s"}`);
 
-  return <p className="mt-2 text-sm font-semibold text-primary">⏳ Faltam {partes.join(", ")}</p>;
+  return (
+    <p className="mt-2 text-sm font-semibold tabular-nums text-primary">
+      ⏳ Faltam {partes.join(", ")}
+    </p>
+  );
 }
