@@ -52,6 +52,18 @@ export function useNotificacoesPush(userId: string | undefined) {
       }
 
       const registro = await navigator.serviceWorker.ready;
+
+      // Se já existir uma inscrição (possivelmente com uma chave VAPID
+      // antiga, de antes de trocarmos as chaves), desfaz primeiro — o
+      // navegador não cria uma nova inscrição com chave diferente
+      // enquanto uma antiga ainda estiver ativa; ele só devolveria a
+      // mesma de sempre, presa na chave velha.
+      const inscricaoAntiga = await registro.pushManager.getSubscription();
+      if (inscricaoAntiga) {
+        await supabase.from("push_subscriptions").delete().eq("endpoint", inscricaoAntiga.endpoint);
+        await inscricaoAntiga.unsubscribe();
+      }
+
       const inscricao = await registro.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: base64UrlParaUint8Array(CHAVE_PUBLICA_VAPID) as BufferSource,
