@@ -8,6 +8,13 @@ import { createServerFn } from "@tanstack/react-start";
 // Dashboard — best-effort: se falhar, o aviso já foi publicado normal
 // (o envio de push é um "a mais", nunca bloqueia a publicação em si).
 //
+// Usa @pushforge/builder em vez da biblioteca "web-push" — aquela é
+// pensada para Node.js (usa Buffer e o módulo `crypto` do Node) e não
+// funciona de verdade no Cloudflare Workers, mesmo com ajustes (isso já
+// é um problema conhecido e documentado pelos próprios mantenedores).
+// O pushforge usa só Web Crypto API + fetch, que o Workers já suporta
+// nativamente.
+//
 // Retorna também um "motivo" quando não envia nada, para dar visibilidade
 // de diagnóstico (ver DiagnosticoNotificacoes.tsx, no Dashboard).
 
@@ -26,11 +33,18 @@ type MotivoFalha =
 export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
   .validator((data: { titulo: string; mensagem: string; publico: Publico }) => data)
   .handler(async ({ data }): Promise<{ enviados: number; motivo?: MotivoFalha; erro?: string }> => {
-    const chavePrivada = process.env["VAPID_PRIVATE_KEY"];
-    const chavePublica = process.env["VAPID_PUBLIC_KEY"];
+    const chavePrivadaJwk = process.env["VAPID_PRIVATE_KEY"];
 
-    if (!chavePrivada || !chavePublica) {
-      console.error("[enviarNotificacaoAviso] Chaves VAPID não configuradas — envio ignorado.");
+    if (!chavePrivadaJwk) {
+      console.error("[enviarNotificacaoAviso] Chave VAPID não configurada — envio ignorado.");
+      return { enviados: 0, motivo: "chaves_nao_configuradas" };
+    }
+
+    let privateJWK: JsonWebKey;
+    try {
+      privateJWK = JSON.parse(chavePrivadaJwk) as JsonWebKey;
+    } catch {
+      console.error("[enviarNotificacaoAviso] VAPID_PRIVATE_KEY não é um JSON válido.");
       return { enviados: 0, motivo: "chaves_nao_configuradas" };
     }
 
@@ -38,20 +52,8 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
     // biblioteca de push só devem ser carregados dentro do handler de
     // servidor, nunca no topo de um arquivo .functions.ts (que também é
     // empacotado para o cliente).
-    //
-    // web-push é uma biblioteca CommonJS; dependendo de como o bundler
-    // do Cloudflare Workers interpreta isso, os métodos às vezes ficam
-    // em ".default" e às vezes direto no módulo — por isso a checagem
-    // abaixo, em vez de só assumir ".default".
-    const moduloWebPush = (await import("web-push")) as unknown as Record<string, unknown>;
-    const webpush = (
-      typeof moduloWebPush["setVapidDetails"] === "function"
-        ? moduloWebPush
-        : (moduloWebPush["default"] as Record<string, unknown>)
-    ) as typeof import("web-push");
+    const { buildPushHTTPRequest } = await import("@pushforge/builder");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-    webpush.setVapidDetails("mailto:grupomarcosnascimento@gmail.com", chavePublica, chavePrivada);
 
     const { data: perfis, error: erroPerfis } = await supabaseAdmin
       .from("perfis")
@@ -92,30 +94,43 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
       return { enviados: 0, motivo: "nenhuma_inscricao_encontrada" };
     }
 
-    const payload = JSON.stringify({ titulo: data.titulo, corpo: data.mensagem, url: "/jornada" });
+    const mensagem = {
+      payload: { titulo: data.titulo, corpo: data.mensagem, url: "/jornada" },
+      options: { ttl: 3600, urgency: "normal" as const },
+      adminContact: "mailto:grupomarcosnascimento@gmail.com",
+    };
+
     let enviados = 0;
     let ultimoErro: string | undefined;
 
     for (const inscricao of inscricoes) {
       try {
-        await webpush.sendNotification(
-          {
-            endpoint: inscricao.endpoint,
-            keys: { p256dh: inscricao.p256dh, auth: inscricao.auth },
-          },
-          payload,
-        );
-        enviados += 1;
-      } catch (erro: unknown) {
-        const codigo = (erro as { statusCode?: number } | undefined)?.statusCode;
-        if (codigo === 404 || codigo === 410) {
+        const subscription = {
+          endpoint: inscricao.endpoint,
+          keys: { p256dh: inscricao.p256dh, auth: inscricao.auth },
+        };
+
+        const { endpoint, headers, body } = await buildPushHTTPRequest({
+          privateJWK,
+          message: mensagem,
+          subscription,
+        });
+
+        const resposta = await fetch(endpoint, { method: "POST", headers, body });
+
+        if (resposta.status === 201) {
+          enviados += 1;
+        } else if (resposta.status === 404 || resposta.status === 410) {
           // Inscrição expirada ou revogada pelo navegador — remove, para
           // não tentar de novo nas próximas vezes.
           await supabaseAdmin.from("push_subscriptions").delete().eq("id", inscricao.id);
         } else {
-          ultimoErro = erro instanceof Error ? erro.message : String(erro);
-          console.error("[enviarNotificacaoAviso] Falha ao enviar para uma inscrição:", erro);
+          ultimoErro = `HTTP ${resposta.status}: ${await resposta.text()}`;
+          console.error("[enviarNotificacaoAviso] Falha ao enviar para uma inscrição:", ultimoErro);
         }
+      } catch (erro: unknown) {
+        ultimoErro = erro instanceof Error ? erro.message : String(erro);
+        console.error("[enviarNotificacaoAviso] Falha ao enviar para uma inscrição:", erro);
       }
     }
 

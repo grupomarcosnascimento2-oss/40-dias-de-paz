@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 // secreta, guardada como variável de ambiente do servidor — assina
 // cada envio).
 const CHAVE_PUBLICA_VAPID =
-  "BOI2rRXwk4EAqAbpKHXJC0QOkqRUMN5eXL58g-kSBhSsDWqO2ZDdeBudAY4eu7iqE9C9AJJxb17IzdFUj5f5PfQ";
+  "BN6DSMqhQTZtPbwt8EEbXRIIX6ZQX4NEjk1ZPeusMt3-uqdtFvOhIpivAAlr2v8Oc1_cSSAiKdhlvWEJIosZjGk";
 
 function base64UrlParaUint8Array(base64Url: string): Uint8Array {
   const preenchimento = "=".repeat((4 - (base64Url.length % 4)) % 4);
