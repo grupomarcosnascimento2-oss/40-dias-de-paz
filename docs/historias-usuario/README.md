@@ -31,3 +31,15 @@ disponível (hoje vai até a seção 10).
 - **v2** (31/08/2026): critérios de aceite completos + notas técnicas por seção
 - **v3** (02/09/2026): renomeação "Comunidade de Oração" → "Pedidos de Oração"; bloqueio do Visitante na 2ª visita à aba Devocional; publicação limitada a 3 pedidos para Visitante; avisos com público-alvo (todos/membros/novos membros); correção da tela travada em erro de perfil — 76 histórias
 
+## Pendências para a próxima atualização (desde a v3)
+
+- Notificações push (inscrição, envio ao publicar aviso, correção de compatibilidade com Cloudflare Workers)
+- Instalação como app/PWA (manifesto, ícone, banner de sugestão)
+- Painel de avisos: visual mais chamativo, tipo "Evento" com contagem regressiva, título opcional, público "Visitante"
+- Dashboard: "Vezes que o app foi aberto hoje", "Pessoas conectadas agora" (com nomes), "Pedidos de oração sem resposta"
+- Selo de pedidos não vistos (estilo WhatsApp) na aba Pedidos de Oração
+- Mural do visitante: janela de 24h para publicar (substituiu o limite de 3 pedidos)
+- Página `/oracao-urgente` (captação de leads em situação de emergência)
+- Jornada de Oração: acolhimento imediato sem framing comercial (TV + mural completo, sem espera)
+- Menu lateral reorganizado: item 1 "Administração" (5 subitens: Dashboard, Cadastros, Controle, Regras de Negócio, Usuários/Permissionamento — as 4 últimas ainda placeholder)
+
