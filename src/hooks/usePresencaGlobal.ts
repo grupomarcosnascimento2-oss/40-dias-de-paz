@@ -22,6 +22,7 @@ type OuvinteSync = (estado: Record<string, PresencaPessoa[]>) => void;
 
 let canalCompartilhado: RealtimeChannel | null = null;
 let statusInscricao: "aguardando" | "inscrito" = "aguardando";
+let ultimoEstadoConhecido: Record<string, PresencaPessoa[]> | null = null;
 const ouvintesSync = new Set<OuvinteSync>();
 const filaDeRastreio: PresencaPessoa[] = [];
 
@@ -32,6 +33,7 @@ function obterCanalCompartilhado(): RealtimeChannel {
 
   canalCompartilhado.on("presence", { event: "sync" }, () => {
     const estado = canalCompartilhado!.presenceState<PresencaPessoa>();
+    ultimoEstadoConhecido = estado;
     ouvintesSync.forEach((ouvinte) => ouvinte(estado));
   });
 
@@ -61,6 +63,12 @@ function rastrearPresenca(presenca: PresencaPessoa) {
 function assinarSync(ouvinte: OuvinteSync): () => void {
   obterCanalCompartilhado();
   ouvintesSync.add(ouvinte);
+  // Se o canal já tiver sincronizado antes (ex: esse painel abriu
+  // depois que outra pessoa já estava conectada), entrega o estado
+  // atual na hora — sem isso, quem começa a ouvir agora só veria
+  // alguma coisa na PRÓXIMA vez que alguém entrasse ou saísse, o que
+  // podia nunca acontecer durante um teste.
+  if (ultimoEstadoConhecido) ouvinte(ultimoEstadoConhecido);
   return () => ouvintesSync.delete(ouvinte);
 }
 
