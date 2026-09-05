@@ -96,7 +96,7 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
 
     const mensagem = {
       payload: { titulo: data.titulo, corpo: data.mensagem, url: "/jornada" },
-      options: { ttl: 3600, urgency: "normal" as const },
+      options: { ttl: 3600, urgency: "high" as const },
       adminContact: "mailto:grupomarcosnascimento@gmail.com",
     };
 
