@@ -8,7 +8,7 @@ export type PublicoAviso = "todos" | "membros" | "novos_membros" | "visitante";
 export type AvisoDb = {
   id: string;
   tipo: TipoAviso;
-  titulo: string;
+  titulo: string | null;
   mensagem: string;
   ativo: boolean;
   publico: PublicoAviso;
@@ -68,9 +68,13 @@ export function useCriarAviso() {
     publico: PublicoAviso,
     dataEvento?: string,
   ) => {
-    const { error } = await supabase
-      .from("avisos")
-      .insert({ tipo, titulo, mensagem, publico, data_evento: dataEvento ?? null });
+    const { error } = await supabase.from("avisos").insert({
+      tipo,
+      titulo: titulo.trim() || null,
+      mensagem,
+      publico,
+      data_evento: dataEvento ?? null,
+    });
     if (error) {
       console.error("[useCriarAviso] Falha ao criar aviso:", error);
       return { erro: "falha_ao_criar" as const };

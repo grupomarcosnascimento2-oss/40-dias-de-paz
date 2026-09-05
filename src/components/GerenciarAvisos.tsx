@@ -56,7 +56,7 @@ export function GerenciarAvisos() {
   const ehEvento = tipo === "evento";
 
   const publicar = async () => {
-    if (!titulo.trim() || !mensagem.trim()) return;
+    if (!mensagem.trim()) return;
     if (ehEvento && !dataEvento) return;
     setPublicando(true);
     const resultado = await criarAviso(
@@ -136,7 +136,7 @@ export function GerenciarAvisos() {
         <input
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
-          placeholder="Título do aviso"
+          placeholder="Título do aviso (opcional)"
           className="w-full rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
         />
         <textarea
@@ -162,7 +162,7 @@ export function GerenciarAvisos() {
         <div className="flex justify-end">
           <button
             type="button"
-            disabled={publicando || !titulo.trim() || !mensagem.trim() || (ehEvento && !dataEvento)}
+            disabled={publicando || !mensagem.trim() || (ehEvento && !dataEvento)}
             onClick={publicar}
             className="rounded-full bg-primary px-5 py-2 text-sm text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-50"
           >
@@ -190,7 +190,9 @@ export function GerenciarAvisos() {
                   ` · evento em ${new Date(aviso.data_evento).toLocaleString("pt-BR")}`}
                 {!aviso.ativo && " · desativado"}
               </p>
-              <p className="truncate text-sm font-medium text-primary">{aviso.titulo}</p>
+              <p className="truncate text-sm font-medium text-primary">
+                {aviso.titulo || aviso.mensagem}
+              </p>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               <button

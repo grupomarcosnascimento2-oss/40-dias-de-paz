@@ -156,7 +156,11 @@ function ItemAviso({ aviso, onFechar }: { aviso: AvisoDb; onFechar: () => void }
         <p className={`text-xs font-bold uppercase tracking-[0.16em] ${estilo.corTexto}`}>
           {estilo.rotulo}
         </p>
-        <p className="mt-1 text-base font-semibold leading-snug text-foreground">{aviso.titulo}</p>
+        {aviso.titulo && (
+          <p className="mt-1 text-base font-semibold leading-snug text-foreground">
+            {aviso.titulo}
+          </p>
+        )}
         <p className="mt-1 text-sm leading-snug text-foreground/75">{aviso.mensagem}</p>
         {aviso.tipo === "evento" && aviso.data_evento && (
           <ContagemRegressiva dataAlvo={aviso.data_evento} />
