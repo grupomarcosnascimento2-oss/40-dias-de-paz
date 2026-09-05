@@ -26,6 +26,16 @@ const OPCOES_PUBLICO: { valor: PublicoAviso; rotulo: string }[] = [
   { valor: "membros", rotulo: "Todos os membros" },
 ];
 
+const MOTIVOS: Record<string, string> = {
+  chaves_nao_configuradas: "chaves VAPID não configuradas no servidor",
+  falha_ao_buscar_perfis: "falha ao buscar perfis",
+  nenhum_perfil_elegivel: "nenhum perfil se encaixa nesse público",
+  falha_ao_buscar_inscricoes: "falha ao buscar inscrições",
+  nenhuma_inscricao_encontrada: "ninguém desse público ativou notificações ainda",
+  falha_ao_enviar: "falha ao enviar (ver console do servidor)",
+  outro: "motivo desconhecido",
+};
+
 // Gerenciamento de avisos — exibido no Dashboard, só para administrador.
 // Cria, ativa/desativa e remove os avisos que aparecem no painel do topo
 // do app (PainelAvisos.tsx) para todo mundo logado.
@@ -55,11 +65,21 @@ export function GerenciarAvisos() {
 
     // Best-effort: o aviso já foi publicado normalmente mesmo que o
     // envio de push falhe (ex: chaves VAPID ainda não configuradas).
-    void enviarNotificacaoAviso({
-      data: { titulo: titulo.trim(), mensagem: mensagem.trim(), publico },
-    }).catch((erro: unknown) => {
+    try {
+      const resultado = await enviarNotificacaoAviso({
+        data: { titulo: titulo.trim(), mensagem: mensagem.trim(), publico },
+      });
+      if (resultado.enviados > 0) {
+        toast.success(`Notificação push enviada para ${resultado.enviados} pessoa(s).`);
+      } else {
+        toast.message(
+          `Aviso publicado. Push não enviado (${MOTIVOS[resultado.motivo ?? "outro"]}).`,
+        );
+      }
+    } catch (erro: unknown) {
       console.error("[GerenciarAvisos] Falha ao enviar notificação push:", erro);
-    });
+      toast.message("Aviso publicado. Push não enviado (erro inesperado — ver console).");
+    }
   };
 
   const alternar = async (id: string, ativoAtual: boolean) => {

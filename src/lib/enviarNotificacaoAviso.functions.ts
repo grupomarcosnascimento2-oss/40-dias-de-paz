@@ -7,20 +7,31 @@ import { createServerFn } from "@tanstack/react-start";
 // Chamada por GerenciarAvisos.tsx logo depois de publicar um aviso no
 // Dashboard — best-effort: se falhar, o aviso já foi publicado normal
 // (o envio de push é um "a mais", nunca bloqueia a publicação em si).
+//
+// Retorna também um "motivo" quando não envia nada, para dar visibilidade
+// de diagnóstico (ver DiagnosticoNotificacoes.tsx, no Dashboard).
 
 type Publico = "todos" | "membros" | "novos_membros" | "visitante";
 
 const JANELA_NOVO_MEMBRO_DIAS = 7;
 
+type MotivoFalha =
+  | "chaves_nao_configuradas"
+  | "falha_ao_buscar_perfis"
+  | "nenhum_perfil_elegivel"
+  | "falha_ao_buscar_inscricoes"
+  | "nenhuma_inscricao_encontrada"
+  | "falha_ao_enviar";
+
 export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
   .validator((data: { titulo: string; mensagem: string; publico: Publico }) => data)
-  .handler(async ({ data }): Promise<{ enviados: number }> => {
+  .handler(async ({ data }): Promise<{ enviados: number; motivo?: MotivoFalha }> => {
     const chavePrivada = process.env["VAPID_PRIVATE_KEY"];
     const chavePublica = process.env["VAPID_PUBLIC_KEY"];
 
     if (!chavePrivada || !chavePublica) {
       console.error("[enviarNotificacaoAviso] Chaves VAPID não configuradas — envio ignorado.");
-      return { enviados: 0 };
+      return { enviados: 0, motivo: "chaves_nao_configuradas" };
     }
 
     // Imports dinâmicos: tanto o cliente com service role quanto a
@@ -38,7 +49,7 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
 
     if (erroPerfis) {
       console.error("[enviarNotificacaoAviso] Falha ao buscar perfis:", erroPerfis);
-      return { enviados: 0 };
+      return { enviados: 0, motivo: "falha_ao_buscar_perfis" };
     }
 
     const agora = Date.now();
@@ -55,7 +66,7 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
     });
 
     const idsElegiveis = elegiveis.map((p) => p.user_id);
-    if (idsElegiveis.length === 0) return { enviados: 0 };
+    if (idsElegiveis.length === 0) return { enviados: 0, motivo: "nenhum_perfil_elegivel" };
 
     const { data: inscricoes, error: erroInscricoes } = await supabaseAdmin
       .from("push_subscriptions")
@@ -64,13 +75,18 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
 
     if (erroInscricoes) {
       console.error("[enviarNotificacaoAviso] Falha ao buscar inscrições:", erroInscricoes);
-      return { enviados: 0 };
+      return { enviados: 0, motivo: "falha_ao_buscar_inscricoes" };
+    }
+
+    if (!inscricoes || inscricoes.length === 0) {
+      return { enviados: 0, motivo: "nenhuma_inscricao_encontrada" };
     }
 
     const payload = JSON.stringify({ titulo: data.titulo, corpo: data.mensagem, url: "/jornada" });
     let enviados = 0;
+    let ultimoErro: string | undefined;
 
-    for (const inscricao of inscricoes ?? []) {
+    for (const inscricao of inscricoes) {
       try {
         await webpush.sendNotification(
           {
@@ -87,9 +103,14 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
           // não tentar de novo nas próximas vezes.
           await supabaseAdmin.from("push_subscriptions").delete().eq("id", inscricao.id);
         } else {
+          ultimoErro = erro instanceof Error ? erro.message : String(erro);
           console.error("[enviarNotificacaoAviso] Falha ao enviar para uma inscrição:", erro);
         }
       }
+    }
+
+    if (enviados === 0 && ultimoErro) {
+      return { enviados: 0, motivo: "falha_ao_enviar" };
     }
 
     return { enviados };
