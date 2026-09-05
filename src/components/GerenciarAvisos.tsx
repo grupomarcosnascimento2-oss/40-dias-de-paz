@@ -71,6 +71,8 @@ export function GerenciarAvisos() {
       });
       if (resultado.enviados > 0) {
         toast.success(`Notificação push enviada para ${resultado.enviados} pessoa(s).`);
+      } else if (resultado.motivo === "falha_ao_enviar" && resultado.erro) {
+        toast.message(`Aviso publicado. Push falhou: ${resultado.erro}`, { duration: 15000 });
       } else {
         toast.message(
           `Aviso publicado. Push não enviado (${MOTIVOS[resultado.motivo ?? "outro"]}).`,

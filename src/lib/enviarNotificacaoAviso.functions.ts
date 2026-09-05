@@ -25,7 +25,7 @@ type MotivoFalha =
 
 export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
   .validator((data: { titulo: string; mensagem: string; publico: Publico }) => data)
-  .handler(async ({ data }): Promise<{ enviados: number; motivo?: MotivoFalha }> => {
+  .handler(async ({ data }): Promise<{ enviados: number; motivo?: MotivoFalha; erro?: string }> => {
     const chavePrivada = process.env["VAPID_PRIVATE_KEY"];
     const chavePublica = process.env["VAPID_PUBLIC_KEY"];
 
@@ -110,7 +110,7 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
     }
 
     if (enviados === 0 && ultimoErro) {
-      return { enviados: 0, motivo: "falha_ao_enviar" };
+      return { enviados: 0, motivo: "falha_ao_enviar", erro: ultimoErro };
     }
 
     return { enviados };
