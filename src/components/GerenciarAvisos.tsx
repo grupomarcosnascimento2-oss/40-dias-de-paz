@@ -17,6 +17,7 @@ const OPCOES_TIPO: { valor: TipoAviso; rotulo: string }[] = [
   { valor: "noticia", rotulo: "Notícia" },
   { valor: "aviso", rotulo: "Aviso" },
   { valor: "alerta", rotulo: "Alerta" },
+  { valor: "evento", rotulo: "Evento (com contagem regressiva)" },
 ];
 
 const OPCOES_PUBLICO: { valor: PublicoAviso; rotulo: string }[] = [
@@ -49,12 +50,22 @@ export function GerenciarAvisos() {
   const [publico, setPublico] = useState<PublicoAviso>("todos");
   const [titulo, setTitulo] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [dataEvento, setDataEvento] = useState("");
   const [publicando, setPublicando] = useState(false);
+
+  const ehEvento = tipo === "evento";
 
   const publicar = async () => {
     if (!titulo.trim() || !mensagem.trim()) return;
+    if (ehEvento && !dataEvento) return;
     setPublicando(true);
-    const resultado = await criarAviso(tipo, titulo.trim(), mensagem.trim(), publico);
+    const resultado = await criarAviso(
+      tipo,
+      titulo.trim(),
+      mensagem.trim(),
+      publico,
+      ehEvento ? new Date(dataEvento).toISOString() : undefined,
+    );
     setPublicando(false);
     if (resultado.erro) {
       toast.error("Não conseguimos publicar o aviso agora. Tente novamente.");
@@ -62,6 +73,7 @@ export function GerenciarAvisos() {
     }
     setTitulo("");
     setMensagem("");
+    setDataEvento("");
 
     // Best-effort: o aviso já foi publicado normalmente mesmo que o
     // envio de push falhe (ex: chaves VAPID ainda não configuradas).
@@ -134,10 +146,23 @@ export function GerenciarAvisos() {
           rows={2}
           className="w-full resize-none rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
         />
+        {ehEvento && (
+          <div>
+            <label className="mb-1 block text-xs text-muted-foreground">
+              Data e hora do evento (a contagem regressiva é calculada a partir disso)
+            </label>
+            <input
+              type="datetime-local"
+              value={dataEvento}
+              onChange={(e) => setDataEvento(e.target.value)}
+              className="w-full rounded-lg border border-border/60 bg-background/60 p-2 text-sm text-foreground outline-none focus:border-accent/50"
+            />
+          </div>
+        )}
         <div className="flex justify-end">
           <button
             type="button"
-            disabled={publicando || !titulo.trim() || !mensagem.trim()}
+            disabled={publicando || !titulo.trim() || !mensagem.trim() || (ehEvento && !dataEvento)}
             onClick={publicar}
             className="rounded-full bg-primary px-5 py-2 text-sm text-primary-foreground ring-1 ring-accent/50 transition-colors hover:bg-navy-soft disabled:opacity-50"
           >
@@ -161,6 +186,8 @@ export function GerenciarAvisos() {
                 {OPCOES_TIPO.find((o) => o.valor === aviso.tipo)?.rotulo}
                 {" · "}
                 {OPCOES_PUBLICO.find((o) => o.valor === aviso.publico)?.rotulo}
+                {aviso.data_evento &&
+                  ` · evento em ${new Date(aviso.data_evento).toLocaleString("pt-BR")}`}
                 {!aviso.ativo && " · desativado"}
               </p>
               <p className="truncate text-sm font-medium text-primary">{aviso.titulo}</p>

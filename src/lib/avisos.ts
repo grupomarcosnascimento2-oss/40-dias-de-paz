@@ -3,7 +3,7 @@
 // gerenciados pelo administrador direto no Dashboard — ver useAvisos.ts.
 // Este arquivo guarda só os tipos, reaproveitados nos dois lugares.
 
-export type TipoAviso = "noticia" | "aviso" | "alerta" | "comunicado";
+export type TipoAviso = "noticia" | "aviso" | "alerta" | "comunicado" | "evento";
 
 export type Aviso = {
   id: string;

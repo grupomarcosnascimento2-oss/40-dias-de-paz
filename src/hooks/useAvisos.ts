@@ -12,6 +12,7 @@ export type AvisoDb = {
   mensagem: string;
   ativo: boolean;
   publico: PublicoAviso;
+  data_evento: string | null;
   created_at: string;
 };
 
@@ -20,7 +21,7 @@ const CHAVE = ["avisos"] as const;
 async function buscarAvisos(): Promise<AvisoDb[]> {
   const { data, error } = await supabase
     .from("avisos")
-    .select("id, tipo, titulo, mensagem, ativo, publico, created_at")
+    .select("id, tipo, titulo, mensagem, ativo, publico, data_evento, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -60,8 +61,16 @@ export function useAvisos() {
 export function useCriarAviso() {
   const queryClient = useQueryClient();
 
-  return async (tipo: TipoAviso, titulo: string, mensagem: string, publico: PublicoAviso) => {
-    const { error } = await supabase.from("avisos").insert({ tipo, titulo, mensagem, publico });
+  return async (
+    tipo: TipoAviso,
+    titulo: string,
+    mensagem: string,
+    publico: PublicoAviso,
+    dataEvento?: string,
+  ) => {
+    const { error } = await supabase
+      .from("avisos")
+      .insert({ tipo, titulo, mensagem, publico, data_evento: dataEvento ?? null });
     if (error) {
       console.error("[useCriarAviso] Falha ao criar aviso:", error);
       return { erro: "falha_ao_criar" as const };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Megaphone, Info, TriangleAlert, BellRing, X } from "lucide-react";
+import { Megaphone, Info, TriangleAlert, BellRing, Hourglass, X } from "lucide-react";
 import { type TipoAviso } from "@/lib/avisos";
 import { useAvisos, type AvisoDb } from "@/hooks/useAvisos";
 import type { Papel } from "@/lib/perfis";
@@ -54,6 +54,14 @@ const estiloPorTipo: Record<
     corFundo: "bg-destructive/[0.08]",
     corChip: "bg-destructive",
     pulsar: true,
+  },
+  evento: {
+    icone: Hourglass,
+    rotulo: "Evento",
+    corTexto: "text-primary",
+    corBorda: "border-primary/40",
+    corFundo: "bg-primary/[0.08]",
+    corChip: "bg-primary",
   },
 };
 
@@ -150,6 +158,9 @@ function ItemAviso({ aviso, onFechar }: { aviso: AvisoDb; onFechar: () => void }
         </p>
         <p className="mt-1 text-base font-semibold leading-snug text-foreground">{aviso.titulo}</p>
         <p className="mt-1 text-sm leading-snug text-foreground/75">{aviso.mensagem}</p>
+        {aviso.tipo === "evento" && aviso.data_evento && (
+          <ContagemRegressiva dataAlvo={aviso.data_evento} />
+        )}
       </div>
       <button
         type="button"
@@ -161,4 +172,33 @@ function ItemAviso({ aviso, onFechar }: { aviso: AvisoDb; onFechar: () => void }
       </button>
     </div>
   );
+}
+
+// Calcula e mostra "Faltam X dias, Y horas e Z minutos" até a data-alvo,
+// atualizando sozinho a cada 30 segundos. Depois que a data passa,
+// mostra que o evento já começou, em vez de números negativos.
+function ContagemRegressiva({ dataAlvo }: { dataAlvo: string }) {
+  const [agora, setAgora] = useState(() => Date.now());
+
+  useEffect(() => {
+    const id = setInterval(() => setAgora(Date.now()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const diferenca = new Date(dataAlvo).getTime() - agora;
+
+  if (diferenca <= 0) {
+    return <p className="mt-2 text-sm font-semibold text-primary">🎉 O evento já começou!</p>;
+  }
+
+  const dias = Math.floor(diferenca / (24 * 60 * 60 * 1000));
+  const horas = Math.floor((diferenca / (60 * 60 * 1000)) % 24);
+  const minutos = Math.floor((diferenca / (60 * 1000)) % 60);
+
+  const partes: string[] = [];
+  if (dias > 0) partes.push(`${dias} dia${dias === 1 ? "" : "s"}`);
+  if (horas > 0 || dias > 0) partes.push(`${horas} hora${horas === 1 ? "" : "s"}`);
+  partes.push(`${minutos} minuto${minutos === 1 ? "" : "s"}`);
+
+  return <p className="mt-2 text-sm font-semibold text-primary">⏳ Faltam {partes.join(", ")}</p>;
 }
