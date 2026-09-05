@@ -4,14 +4,12 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 import { usePerfil } from "@/hooks/usePerfil";
 import { useContagemPorPapel, useAberturasHoje } from "@/hooks/useMetricasAdmin";
-import {
-  useContagemPresencaAoVivo,
-  useContagemPresencaTotal,
-} from "@/hooks/usePresencaGlobal";
+import { useContagemPresencaAoVivo, useContagemPresencaTotal } from "@/hooks/usePresencaGlobal";
 import { Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { GerenciarAvisos } from "@/components/GerenciarAvisos";
 import { PedidosPendentes } from "@/components/PedidosPendentes";
+import { PessoasConectadas } from "@/components/PessoasConectadas";
 import { Cruz } from "@/components/Ornamento";
 import { sombra3d } from "@/lib/estilo3d";
 import {
@@ -96,6 +94,7 @@ function Admin() {
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]">
           {/* Conteúdo principal — ferramentas de gestão */}
           <section className="space-y-6">
+            <PessoasConectadas />
             <PedidosPendentes />
             <GerenciarAvisos />
           </section>
@@ -122,9 +121,7 @@ function Admin() {
                   Pessoas conectadas agora
                 </p>
               </div>
-              <p className="mt-1 text-3xl font-semibold text-primary">
-                {pessoasConectadas ?? "…"}
-              </p>
+              <p className="mt-1 text-3xl font-semibold text-primary">{pessoasConectadas ?? "…"}</p>
             </div>
 
             <div className="rounded-2xl border border-accent/30 bg-card p-5" style={sombra3d}>

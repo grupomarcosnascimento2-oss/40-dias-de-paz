@@ -17,7 +17,7 @@ import type { Papel } from "@/lib/perfis";
 
 const NOME_CANAL = "presenca_global";
 
-type PresencaPessoa = { user_id: string; papel: Papel };
+type PresencaPessoa = { user_id: string; papel: Papel; nome?: string };
 type OuvinteSync = (estado: Record<string, PresencaPessoa[]>) => void;
 
 let canalCompartilhado: RealtimeChannel | null = null;
@@ -70,7 +70,11 @@ function assinarSync(ouvinte: OuvinteSync): () => void {
 //
 // Também registra ultimo_acesso e uma linha em logs_acesso (uma vez
 // por sessão), usados no Dashboard para contar acessos de hoje.
-export function useRastrearPresenca(userId: string | undefined, papel: Papel | undefined) {
+export function useRastrearPresenca(
+  userId: string | undefined,
+  papel: Papel | undefined,
+  nome: string | undefined,
+) {
   useEffect(() => {
     if (!userId || !papel) return;
 
@@ -80,8 +84,8 @@ export function useRastrearPresenca(userId: string | undefined, papel: Papel | u
       .eq("user_id", userId);
     void supabase.from("logs_acesso").insert({ user_id: userId, papel });
 
-    rastrearPresenca({ user_id: userId, papel });
-  }, [userId, papel]);
+    rastrearPresenca({ user_id: userId, papel, ...(nome ? { nome } : {}) });
+  }, [userId, papel, nome]);
 }
 
 // Anuncia a presença de quem abre a landing page (a tela de entrada),
@@ -128,4 +132,22 @@ export function useContagemPresencaTotal(habilitado: boolean) {
   }, [habilitado]);
 
   return quantidade;
+}
+
+// Lista completa de quem está conectado agora, com nome (quando
+// disponível) e papel — usada no Dashboard para mostrar "quem" está
+// online, não só "quantos". Visitantes anônimos (que ainda nem
+// logaram) aparecem sem nome.
+export function useListaPresenca(habilitado: boolean) {
+  const [lista, setLista] = useState<PresencaPessoa[]>([]);
+
+  useEffect(() => {
+    if (!habilitado) return;
+
+    return assinarSync((estado) => {
+      setLista(Object.values(estado).flat());
+    });
+  }, [habilitado]);
+
+  return lista;
 }

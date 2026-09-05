@@ -149,7 +149,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const { data: perfil } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
   const papel: Papel | undefined = CONTROLE_DE_PERFIL_HABILITADO ? perfil?.papel : undefined;
-  useRastrearPresenca(user?.id, papel);
+  useRastrearPresenca(
+    user?.id,
+    papel,
+    (user?.user_metadata?.["full_name"] as string | undefined) ?? undefined,
+  );
 
   const menuVisivel = menu.filter((item) => !item.papeis || (papel && item.papeis.includes(papel)));
 
