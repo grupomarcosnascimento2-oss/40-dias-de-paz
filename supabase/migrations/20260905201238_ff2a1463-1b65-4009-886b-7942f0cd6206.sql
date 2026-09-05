@@ -1,0 +1,1 @@
+ALTER TABLE public.avisos ALTER COLUMN titulo DROP NOT NULL;

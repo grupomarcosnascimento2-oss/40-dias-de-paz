@@ -23,7 +23,7 @@ export type Database = {
           mensagem: string
           publico: string
           tipo: string
-          titulo: string
+          titulo: string | null
         }
         Insert: {
           ativo?: boolean
@@ -33,7 +33,7 @@ export type Database = {
           mensagem: string
           publico?: string
           tipo: string
-          titulo: string
+          titulo?: string | null
         }
         Update: {
           ativo?: boolean
@@ -43,7 +43,7 @@ export type Database = {
           mensagem?: string
           publico?: string
           tipo?: string
-          titulo?: string
+          titulo?: string | null
         }
         Relationships: []
       }
