@@ -16,7 +16,10 @@ type ItemMenu = {
   numero: string;
   titulo: string;
   subtitulo?: string;
-  to: string;
+  to?: string;
+  // Quando presente, o item executa uma ação ao ser clicado (ex: sair da
+  // conta) em vez de navegar para "to". Um item nunca tem os dois.
+  aoClicar?: () => void;
   filhos?: ItemMenu[];
   // Quando ausente, o item é visível para qualquer perfil. Só passa a
   // valer de fato quando CONTROLE_DE_PERFIL_HABILITADO for true — até lá,
@@ -28,9 +31,15 @@ type ItemMenu = {
 const menu: ItemMenu[] = [
   {
     numero: "1",
-    titulo: "Dashboard",
-    to: "/admin",
+    titulo: "Administração",
     papeis: ["administrador"],
+    filhos: [
+      { numero: "1.1", titulo: "Dashboard", to: "/admin" },
+      { numero: "1.2", titulo: "Cadastros", to: "/admin/cadastros" },
+      { numero: "1.3", titulo: "Controle", to: "/admin/controle" },
+      { numero: "1.4", titulo: "Regras de Negócio", to: "/admin/regras-negocio" },
+      { numero: "1.5", titulo: "Usuários/Permissionamento", to: "/admin/usuarios" },
+    ],
   },
   {
     numero: "2",
@@ -90,28 +99,24 @@ function ItemLink({
   item,
   expandido,
   pathname,
-  sub,
+  nivel = 0,
   onNavigate,
 }: {
   item: ItemMenu;
   expandido: boolean;
   pathname: string;
-  sub?: boolean;
+  nivel?: number;
   onNavigate: () => void;
 }) {
-  const estaAtivo = pathname === item.to || pathname.startsWith(`${item.to}/`);
+  const estaAtivo =
+    Boolean(item.to) && (pathname === item.to || pathname.startsWith(`${item.to}/`));
 
-  return (
-    <Link
-      to={item.to}
-      onClick={onNavigate}
-      title={!expandido ? item.titulo : undefined}
-      className={`flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors ${
-        estaAtivo
-          ? "bg-primary text-primary-foreground"
-          : "text-foreground/85 hover:bg-secondary/70"
-      } ${sub ? "text-[13px]" : "text-sm"} ${expandido ? "" : "justify-center"}`}
-    >
+  const classeComum = `flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+    estaAtivo ? "bg-primary text-primary-foreground" : "text-foreground/85 hover:bg-secondary/70"
+  } ${nivel > 0 ? "text-[13px]" : "text-sm"} ${expandido ? "" : "justify-center"}`;
+
+  const conteudo = (
+    <>
       <span
         className={`shrink-0 pt-0.5 text-xs font-semibold ${
           estaAtivo ? "text-accent-foreground/90" : "text-accent"
@@ -133,7 +138,78 @@ function ItemLink({
           )}
         </span>
       )}
+    </>
+  );
+
+  // Itens com ação (ex: "Sair da conta") executam a ação e não navegam;
+  // itens normais são links de verdade.
+  if (item.aoClicar) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          onNavigate();
+          item.aoClicar!();
+        }}
+        title={!expandido ? item.titulo : undefined}
+        className={classeComum}
+      >
+        {conteudo}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      to={item.to ?? "#"}
+      onClick={onNavigate}
+      title={!expandido ? item.titulo : undefined}
+      className={classeComum}
+    >
+      {conteudo}
     </Link>
+  );
+}
+
+// Renderiza um item do menu e, recursivamente, seus filhos (a
+// hierarquia pode ter mais de um nível — ex: 2 → 2.2 → 2.2.1).
+function NoMenu({
+  item,
+  expandido,
+  pathname,
+  nivel,
+  onNavigate,
+}: {
+  item: ItemMenu;
+  expandido: boolean;
+  pathname: string;
+  nivel: number;
+  onNavigate: () => void;
+}) {
+  return (
+    <div>
+      <ItemLink
+        item={item}
+        expandido={expandido}
+        pathname={pathname}
+        nivel={nivel}
+        onNavigate={onNavigate}
+      />
+      {item.filhos && expandido && (
+        <div className="ml-4 mt-1 space-y-1 border-l border-accent/20 pl-3">
+          {item.filhos.map((filho) => (
+            <NoMenu
+              key={filho.numero}
+              item={filho}
+              expandido={expandido}
+              pathname={pathname}
+              nivel={nivel + 1}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -155,6 +231,13 @@ export function AppShell({ children }: { children: ReactNode }) {
     (user?.user_metadata?.["full_name"] as string | undefined) ?? undefined,
   );
 
+  const navigate = useNavigate();
+
+  const sairDaConta = async () => {
+    await sair();
+    navigate({ to: "/entrar" });
+  };
+
   const menuVisivel = menu.filter((item) => !item.papeis || (papel && item.papeis.includes(papel)));
 
   useEffect(() => {
@@ -171,12 +254,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   const fecharMobile = () => setAbertoMobile(false);
-  const navigate = useNavigate();
-
-  const sairDaConta = async () => {
-    await sair();
-    navigate({ to: "/entrar" });
-  };
 
   return (
     <div className="min-h-screen">
@@ -239,28 +316,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <nav className="flex-1 space-y-1 px-2 pb-6">
           {menuVisivel.map((item) => (
-            <div key={item.numero}>
-              <ItemLink
-                item={item}
-                expandido={expandido}
-                pathname={pathname}
-                onNavigate={fecharMobile}
-              />
-              {item.filhos && expandido && (
-                <div className="ml-4 mt-1 space-y-1 border-l border-accent/20 pl-3">
-                  {item.filhos.map((filho) => (
-                    <ItemLink
-                      key={filho.numero}
-                      item={filho}
-                      expandido={expandido}
-                      pathname={pathname}
-                      sub
-                      onNavigate={fecharMobile}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <NoMenu
+              key={item.numero}
+              item={item}
+              expandido={expandido}
+              pathname={pathname}
+              nivel={0}
+              onNavigate={fecharMobile}
+            />
           ))}
         </nav>
 

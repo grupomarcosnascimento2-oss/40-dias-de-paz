@@ -19,6 +19,10 @@ import { Route as JornadaRouteImport } from './routes/jornada'
 import { Route as OracaoUrgenteRouteImport } from './routes/oracao-urgente'
 import { Route as PalavraAoLeitorRouteImport } from './routes/palavra-ao-leitor'
 import { Route as PorQue40DiasRouteImport } from './routes/por-que-40-dias'
+import { Route as AdminCadastrosRouteImport } from './routes/admin.cadastros'
+import { Route as AdminControleRouteImport } from './routes/admin.controle'
+import { Route as AdminRegrasNegocioRouteImport } from './routes/admin.regras-negocio'
+import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as ApresentacaoIndexRouteImport } from './routes/apresentacao.index'
 import { Route as ApresentacaoCaminhadaRouteImport } from './routes/apresentacao.caminhada'
 import { Route as ApresentacaoFamiliaRouteImport } from './routes/apresentacao.familia'
@@ -74,6 +78,26 @@ const PorQue40DiasRoute = PorQue40DiasRouteImport.update({
   path: '/por-que-40-dias',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCadastrosRoute = AdminCadastrosRouteImport.update({
+  id: '/cadastros',
+  path: '/cadastros',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminControleRoute = AdminControleRouteImport.update({
+  id: '/controle',
+  path: '/controle',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRegrasNegocioRoute = AdminRegrasNegocioRouteImport.update({
+  id: '/regras-negocio',
+  path: '/regras-negocio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApresentacaoIndexRoute = ApresentacaoIndexRouteImport.update({
   id: '/apresentacao/',
   path: '/apresentacao/',
@@ -97,7 +121,7 @@ const DiaNumeroRoute = DiaNumeroRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -106,6 +130,10 @@ export interface FileRoutesByFullPath {
   '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/admin/cadastros': typeof AdminCadastrosRoute
+  '/admin/controle': typeof AdminControleRoute
+  '/admin/regras-negocio': typeof AdminRegrasNegocioRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
   '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
@@ -113,7 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -122,6 +150,10 @@ export interface FileRoutesByTo {
   '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/admin/cadastros': typeof AdminCadastrosRoute
+  '/admin/controle': typeof AdminControleRoute
+  '/admin/regras-negocio': typeof AdminRegrasNegocioRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
   '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
@@ -130,7 +162,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/como-viver': typeof ComoViverRoute
   '/entrar': typeof EntrarRoute
   '/forca-da-oracao': typeof ForcaDaOracaoRoute
@@ -139,6 +171,10 @@ export interface FileRoutesById {
   '/oracao-urgente': typeof OracaoUrgenteRoute
   '/palavra-ao-leitor': typeof PalavraAoLeitorRoute
   '/por-que-40-dias': typeof PorQue40DiasRoute
+  '/admin/cadastros': typeof AdminCadastrosRoute
+  '/admin/controle': typeof AdminControleRoute
+  '/admin/regras-negocio': typeof AdminRegrasNegocioRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/apresentacao/caminhada': typeof ApresentacaoCaminhadaRoute
   '/apresentacao/familia': typeof ApresentacaoFamiliaRoute
   '/dia/$numero': typeof DiaNumeroRoute
@@ -157,6 +193,10 @@ export interface FileRouteTypes {
     | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
+    | '/admin/cadastros'
+    | '/admin/controle'
+    | '/admin/regras-negocio'
+    | '/admin/usuarios'
     | '/apresentacao/caminhada'
     | '/apresentacao/familia'
     | '/dia/$numero'
@@ -173,6 +213,10 @@ export interface FileRouteTypes {
     | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
+    | '/admin/cadastros'
+    | '/admin/controle'
+    | '/admin/regras-negocio'
+    | '/admin/usuarios'
     | '/apresentacao/caminhada'
     | '/apresentacao/familia'
     | '/dia/$numero'
@@ -189,6 +233,10 @@ export interface FileRouteTypes {
     | '/oracao-urgente'
     | '/palavra-ao-leitor'
     | '/por-que-40-dias'
+    | '/admin/cadastros'
+    | '/admin/controle'
+    | '/admin/regras-negocio'
+    | '/admin/usuarios'
     | '/apresentacao/caminhada'
     | '/apresentacao/familia'
     | '/dia/$numero'
@@ -197,7 +245,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ComoViverRoute: typeof ComoViverRoute
   EntrarRoute: typeof EntrarRoute
   ForcaDaOracaoRoute: typeof ForcaDaOracaoRoute
@@ -284,6 +332,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PorQue40DiasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/cadastros': {
+      id: '/admin/cadastros'
+      path: '/cadastros'
+      fullPath: '/admin/cadastros'
+      preLoaderRoute: typeof AdminCadastrosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/controle': {
+      id: '/admin/controle'
+      path: '/controle'
+      fullPath: '/admin/controle'
+      preLoaderRoute: typeof AdminControleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/regras-negocio': {
+      id: '/admin/regras-negocio'
+      path: '/regras-negocio'
+      fullPath: '/admin/regras-negocio'
+      preLoaderRoute: typeof AdminRegrasNegocioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/apresentacao/': {
       id: '/apresentacao/'
       path: '/apresentacao'
@@ -315,9 +391,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminCadastrosRoute: typeof AdminCadastrosRoute
+  AdminControleRoute: typeof AdminControleRoute
+  AdminRegrasNegocioRoute: typeof AdminRegrasNegocioRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCadastrosRoute: AdminCadastrosRoute,
+  AdminControleRoute: AdminControleRoute,
+  AdminRegrasNegocioRoute: AdminRegrasNegocioRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   ComoViverRoute: ComoViverRoute,
   EntrarRoute: EntrarRoute,
   ForcaDaOracaoRoute: ForcaDaOracaoRoute,
