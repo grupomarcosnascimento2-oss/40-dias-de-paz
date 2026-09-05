@@ -38,7 +38,17 @@ export const enviarNotificacaoAviso = createServerFn({ method: "POST" })
     // biblioteca de push só devem ser carregados dentro do handler de
     // servidor, nunca no topo de um arquivo .functions.ts (que também é
     // empacotado para o cliente).
-    const webpush = (await import("web-push")).default;
+    //
+    // web-push é uma biblioteca CommonJS; dependendo de como o bundler
+    // do Cloudflare Workers interpreta isso, os métodos às vezes ficam
+    // em ".default" e às vezes direto no módulo — por isso a checagem
+    // abaixo, em vez de só assumir ".default".
+    const moduloWebPush = (await import("web-push")) as unknown as Record<string, unknown>;
+    const webpush = (
+      typeof moduloWebPush["setVapidDetails"] === "function"
+        ? moduloWebPush
+        : (moduloWebPush["default"] as Record<string, unknown>)
+    ) as typeof import("web-push");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     webpush.setVapidDetails("mailto:grupomarcosnascimento@gmail.com", chavePublica, chavePrivada);
