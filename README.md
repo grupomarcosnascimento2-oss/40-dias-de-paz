@@ -86,7 +86,8 @@ Existe uma chave central, `CONTROLE_DE_PERFIL_HABILITADO` em `src/lib/perfis.ts`
   - Cai direto na aba "Jornada de Oração" ao entrar (não em "Devocional")
   - Pode navegar até "Devocional", mas só o **Dia 1** fica desbloqueado (degustação) — vale tanto na listagem quanto na rota `/dia/$numero` direto
   - **A partir da 2ª visita** à aba "Devocional" (contador `acessos_devocional` na conta, não no navegador — sobrevive a limpar cookies), a aba inteira (TV Oracional + as 4 sub-abas) é substituída por uma tela única "Quero ser membro"
-  - No mural "Pedidos de Oração" (dentro de "Jornada de Oração"), vê a lista completa de pedidos reais e pode **publicar até 3 pedidos próprios** — depois disso, a caixa de publicar é substituída pelo convite pra virar membro (continua vendo tudo)
+  - Na aba "Jornada de Oração" (destino padrão do visitante), tem acesso **igual ao dos membros** ao mural de Pedidos de Oração — publica e vê pedidos livremente, sem limite de quantidade nem de tempo (mudança de 02/09/2026, motivada por um caso real de urgência: alguém pedindo oração por um familiar em estado grave)
+  - Só a versão de "Pedidos de Oração" **dentro da aba Devocional** (com reações/fixar/responder) continua bloqueada para visitante — a de "Jornada de Oração" é a mesma dos membros, sem essa restrição
   - "Pedidos de Oração" dentro de "Devocional" (a versão dos membros, com reações/respostas/fixar) continua bloqueada — o visitante usa a versão dele, dentro de "Jornada de Oração"
 
 ### Ainda pendente
@@ -109,11 +110,14 @@ Este ambiente de trabalho (onde o código é editado) não tem acesso de rede ao
 | Tabela | Propósito |
 |---|---|
 | `jornadas` | Progresso do usuário nos 40 dias (dias concluídos, acesso liberado) |
-| `perfis` | Papel do usuário, contador de acessos ao Devocional (visitante) e data em que virou membro |
+| `perfis` | Papel do usuário, contador de acessos ao Devocional (visitante), data em que virou membro, data do último acesso |
 | `pedidos_oracao` | Pedidos de oração (papel de quem postou, se está fixado, Realtime habilitado) |
 | `respostas_pedidos_oracao` | Respostas de administrador/intercessor a um pedido específico |
 | `reacoes_pedidos_oracao` | Reações em emoji aos pedidos (uma por pessoa por pedido) |
-| `avisos` | Avisos do painel do topo, com tipo e público-alvo (todos/membros/novos membros) |
+| `avisos` | Avisos do painel do topo — tipo (incl. "evento", com `data_evento` para contagem regressiva), público-alvo, título opcional |
+| `logs_acesso` | Uma linha por abertura do app (não por pessoa) — usada para contar "vezes que o app foi aberto hoje", excluindo o administrador |
+| `leads_captacao` | Contatos (nome/e-mail/WhatsApp) captados na página `/oracao-urgente`, antes da pessoa logar de verdade |
+| `push_subscriptions` | Inscrições de notificação push de cada pessoa (endpoint + chaves do navegador) |
 
 Todas com RLS habilitada. Funções `SECURITY DEFINER` (`eh_administrador()`, `pode_responder_pedidos()`) usadas nas policies para evitar recursão — sempre com `EXECUTE` revogado de `anon`/`PUBLIC` e `SET search_path = public` (ver `AGENTS.md` para a convenção completa).
 
@@ -126,19 +130,22 @@ Configuradas nas configurações do projeto no Lovable (Cloud tab), nunca commit
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Cliente Supabase (browser e server) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Cliente admin server-side (`client.server.ts`), usado por `sincronizarPerfilAposLogin` |
 | `APPS_SCRIPT_URL`, `APPS_SCRIPT_CHAVE` | Consulta ao Apps Script (planilha de pagamentos) — ver `appsScriptPagamento.server.ts` |
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | Notificações push — assinatura das mensagens enviadas (ver seção 15). `VAPID_PRIVATE_KEY` é um JSON (formato JWK, não uma string simples) |
 | `MP_ACCESS_TOKEN` | Usado pela landing page separada (não este repositório), para gerar Pix dinâmico via Mercado Pago |
 
 ## 9. Funcionalidades já construídas na tela principal (`jornada.tsx`)
 
 - **Menu lateral** (`AppShell.tsx`): recolhível, com hierarquia numerada 1 a 8: 1. Administração (restrito a administrador, com 5 subitens — 1.1 Dashboard, 1.2 Cadastros, 1.3 Controle, 1.4 Regras de Negócio, 1.5 Usuários/Permissionamento, as 4 últimas ainda placeholder), 2. Introdução, 3. Apresentação (com 2 subitens), 4. Força da oração, 5. Palavra ao leitor, 6. Por que 40 dias, 7. Como viver, 8. Os 40 Dias de Oração. Botão "Sair da conta" no rodapé. Suporta níveis de profundidade variáveis (ex: 3.1, 3.2) via renderização recursiva.
 - **Mural do topo** (`MuralTopo.tsx`): faixa fina com frases curtas em letreiro animado (direita → esquerda), alterna entre frases automaticamente
-- **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado) com selo colorido, animação de entrada e pulso no tipo alerta. Cada aviso tem um **público-alvo** (todos / todos os membros / só novos membros — até 7 dias desde que virou membro). Gerenciados pelo administrador direto no Dashboard (`GerenciarAvisos.tsx`), sem precisar editar código.
+- **Painel de avisos** (`PainelAvisos.tsx`): notícias/avisos dispensáveis, tipados (notícia/aviso/alerta/comunicado/evento) com selo colorido, animação de entrada e pulso no tipo alerta. O tipo **evento** mostra uma **contagem regressiva ao vivo** ("Faltam X dias, Y horas, Z minutos e W segundos", atualizando a cada segundo) até uma data/hora definida pelo administrador. Título é **opcional** — sem ele, o painel mostra só a mensagem. Cada aviso tem um **público-alvo** (todos / visitante / todos os membros / só novos membros — até 7 dias desde que virou membro). Gerenciados pelo administrador direto no Dashboard (`GerenciarAvisos.tsx`), sem precisar editar código.
 - **TV Oracional** (`TVOracional.tsx`): vídeo do YouTube embutido (API oficial `window.YT.Player`, não postMessage cru — isso corrigiu um bug real de instabilidade), sem controles do YouTube visíveis. **Rodízio automático entre dois vídeos** (vídeo principal por 10 min, depois o secundário por 1 min, contínuo). Som controlado pelo mesmo interruptor global (`useSom`).
 - **Duas camadas de abas**: externa ("Devocional" / "Jornada de Oração") e interna, dentro de "Devocional" ("40 Dias de Oração" / "Pedidos de Oração" / "Acompanhamento espiritual" / "Agenda de eventos" — as duas últimas ainda são placeholder "em breve"). Para o Visitante, a aba externa "Devocional" fica bloqueada a partir da 2ª visita (ver seção 6).
-- **Pedidos de Oração** (`MuralPedidosOracao.tsx`, dentro de "Devocional", para membro/administrador/intercessor): publicar pedido, reagir com emoji (🙏 ❤️ 🕊️ 🙌), responder publicamente (administrador/intercessor, com destaque visual vermelho), fixar um pedido no topo (administrador), remover pedido (autor ou administrador) ou resposta (autor da resposta ou administrador). Tudo em tempo real via Supabase Realtime. Lista com rolagem própria (não a página inteira), com auto-rolagem para o mais novo e aviso discreto quando a pessoa está lendo pedidos antigos.
-- **Mural do visitante** (`MuralVisitanteOracao.tsx`, dentro de "Jornada de Oração"): vê a lista completa de pedidos reais da comunidade (mesmos dados dos membros) e pode publicar **até 3 pedidos próprios** — depois disso, a caixa de publicar é substituída pelo convite para virar membro.
-- **Jornada de Oração** (hub do evento, aba padrão do Visitante): título e texto de convite para a "Semana da Jornada de Oração", área reservada para transmissão ao vivo (placeholder, aguardando vídeo/link real) + o mural do visitante acima.
-- **Dashboard administrativo** (`admin.tsx`, só administrador): métricas em tempo real — quantidade de membros, gráfico comparando os 4 papéis, membros simultaneamente conectados (via Supabase Realtime Presence) — e o gerenciamento de avisos.
+- **Pedidos de Oração** (`MuralPedidosOracao.tsx`, dentro de "Devocional", para membro/administrador/intercessor): publicar pedido, reagir com emoji (🙏 ❤️ 🕊️ 🙌), responder publicamente (administrador/intercessor, com destaque visual vermelho), fixar um pedido no topo (administrador), remover pedido (autor ou administrador) ou resposta (autor da resposta ou administrador). Tudo em tempo real via Supabase Realtime. Lista com rolagem própria (não a página inteira), com auto-rolagem para o mais novo e aviso discreto quando a pessoa está lendo pedidos antigos. **Selo vermelho de não vistos** (estilo WhatsApp) no rótulo da aba, contando pedidos chegados desde a última visita — some ao abrir a aba.
+- **Jornada de Oração** (aba padrão do Visitante, mas acessível a todos): reformulada em 02/09/2026 para **acolhimento imediato, sem framing comercial** — motivado por um caso real de urgência (visitante pedindo oração por familiar em estado grave). Texto: "um movimento de intercessão pelas pessoas". Tem a **TV Oracional** (a mesma da aba Devocional) e o **mural completo de Pedidos de Oração** (`MuralPedidosOracao`, igual ao dos membros — reações, tempo real) logo abaixo — qualquer pessoa logada publica e vê pedidos livremente, sem espera nem venda. *`MuralVisitanteOracao.tsx` ficou órfão nessa mudança (não é mais importado em lugar nenhum) — mantido no repositório só como referência histórica, não apagado.*
+- **Dashboard administrativo** (`admin.tsx`, só administrador): métricas em tempo real — quantidade de membros, gráfico comparando os 4 papéis, "Pessoas conectadas agora" (total) e "Membros simultâneos agora" (via Supabase Realtime Presence, canal único compartilhado — ver `AGENTS.md`), "Vezes que o app foi aberto hoje" (via `logs_acesso`, excluindo o administrador), painel "Quem está conectado agora" (nome + papel de cada pessoa), painel "Pedidos de oração sem resposta" (responde direto ali), e o gerenciamento de avisos.
+- **Página de acolhimento urgente** (`/oracao-urgente`): fora do fluxo comercial da landing page — pensada para quem chega precisando de oração, não de uma oferta. Formulário leve (nome, e-mail, WhatsApp opcional) salvo em `leads_captacao`, seguido do convite para entrar com Google/Apple e já escrever o pedido na Jornada de Oração.
+- **Instalação como app (PWA)**: manifesto + ícone próprio (cruz dourada sobre navy) + service worker mínimo (`public/sw.js`, sem cache — o conteúdo é dinâmico demais). Banner de sugestão (`SugestaoInstalarApp.tsx`): no Android, botão que dispara o diálogo nativo; no iOS, passo a passo manual (só caminho que a Apple permite).
+- **Notificações push** (`useNotificacoesPush.ts`, `enviarNotificacaoAviso.functions.ts`): banner de sugestão (`SugestaoNotificacoes.tsx`), inscrição salva em `push_subscriptions`, envio disparado automaticamente ao publicar um aviso no Dashboard, respeitando o público-alvo do aviso. Ver seção 15 para detalhes técnicos importantes (a biblioteca usada não é a mais óbvia).
 - **Player de oração** (`PlayerOracao.tsx`): áudio com destaque de texto sincronizado por parágrafo
 
 ## 10. Decisões de UX deliberadas (não mexer sem entender o porquê)
@@ -181,6 +188,38 @@ Recomendação registrada: começar pelo caminho 1 para validar a demanda antes 
 
 Independente do caminho escolhido, vai precisar de: agenda de disponibilidade do Marcos, um produto/preço separado da assinatura do devocional, lembretes antes do horário marcado, e um marcador no perfil do usuário indicando que ele contratou esse serviço.
 
-## 14. Histórias de Usuário (documento vivo)
+## 14. Notificações push — detalhes técnicos importantes
+
+Implementado em 03-05/09/2026, com uma descoberta importante no meio do caminho.
+
+- **Fluxo**: `useNotificacoesPush.ts` pede permissão ao navegador, inscreve via Push API (`pushManager.subscribe`), salva `endpoint`/`p256dh`/`auth` em `push_subscriptions`. `enviarNotificacaoAviso.functions.ts` (server function) busca quem se encaixa no público-alvo do aviso publicado, e envia para cada inscrição correspondente.
+- **⚠️ NUNCA usar a biblioteca `web-push` (npm)** — ela é **oficialmente incompatível com Cloudflare Workers** (confirmado pelos próprios mantenedores, issue aberta desde 2022: depende de `Buffer` e do módulo `crypto` do Node, que o Workers não tem de verdade, só polyfills parciais que causam comportamento inconsistente — erros vistos: `webpush.setVapidDetails is not a function`, `buffer.hasOwnProperty is not a function`). Usar **`@pushforge/builder`** no lugar: só Web Crypto API + `fetch`, nativo no Workers.
+- **Formato da chave privada mudou**: `@pushforge/builder` usa uma chave privada em formato **JWK** (um objeto JSON), não a string base64url simples que `web-push` usava. Gerar com `npx @pushforge/builder vapid`.
+- **Rotação de chave = gente precisa ativar de novo**: se as chaves VAPID forem trocadas, inscrições antigas (feitas com a chave pública anterior) passam a falhar com `HTTP 403`. `useNotificacoesPush.ts` já trata isso automaticamente para inscrições *novas* (desfaz qualquer inscrição existente antes de criar uma nova), mas quem já tinha uma inscrição de antes da troca pode precisar resetar manualmente a permissão de notificação do site (nas configurações do navegador) para o banner de "Ativar" voltar a aparecer.
+- **Urgência alta**: `urgency: "high"` no envio (necessário mas não suficiente para o Android tratar como notificação "heads-up" — isso também depende de uma configuração de importância de canal que só o próprio Android expõe, por pessoa/aparelho, fora do nosso controle).
+- **Diagnóstico embutido**: se o envio falhar, o motivo aparece direto na tela do Dashboard (toast), incluindo o texto do erro real quando disponível — o erro acontece no servidor, então o Console do navegador de quem está testando não ajuda nesse caso específico.
+
+## 15. Instalação como app (PWA)
+
+Implementado em 05/09/2026.
+
+- `public/manifest.json`, `public/icon-*.png` (ícone próprio: cruz dourada sobre navy — o favicon anterior era um placeholder genérico, sem relação com a identidade do devocional), `public/sw.js` (service worker mínimo, sem cache).
+- `useInstalarApp.ts`: detecta `beforeinstallprompt` (Android/Chrome) e sistema iOS separadamente; nunca sugere nada se o app já estiver rodando instalado (modo standalone).
+- Pré-requisito indireto para notificações push funcionarem bem no iOS (Safari só permite push para PWAs instalados na tela inicial).
+
+## 16. Plano de arquitetura futura (registrado, não iniciado)
+
+Discutido em 05/09/2026, motivado por instabilidades reais e recorrentes do **editor** do Lovable ao longo do desenvolvimento (nunca do site publicado — só da capacidade de publicar/editar em determinados momentos). Registrado como direção para um **próximo projeto**, não uma migração deste.
+
+**Recomendação para um projeto novo:**
+
+1. **Supabase próprio**, fora do Lovable Cloud — migrations aplicadas diretamente (por mim ou pelo usuário), sem depender do chat do Lovable estar disponível
+2. **Deploy automático via GitHub** (Cloudflare Pages ou Vercel) — o próprio serviço de hospedagem observa o repositório e publica sozinho a cada mudança, em 1-2 minutos, sem "botão de publicar" de terceiro que possa ficar instável
+3. **Ambiente de homologação de graça**: esses mesmos serviços geram automaticamente um link de teste separado para cada branch/mudança ("preview deployment") — dá pra testar antes de ir para o código oficial, sem precisar construir nada a mais para isso
+4. Construção do código continua como já funciona: neste chat (ou via Claude Code, se o usuário quiser trabalhar diretamente no próprio computador)
+
+**Trade-off reconhecido**: perde-se a experiência de editor visual do Lovable (ver a IA dele mexendo na tela). Avaliação registrada: nesse projeto específico, quase todo trabalho de peso já passa por este chat, não pelo editor do Lovable digitado diretamente — a perda seria pequena frente ao ganho de estabilidade.
+
+## 17. Histórias de Usuário (documento vivo)
 
 Documento Word separado, cobrindo **todas** as funcionalidades do devocional em formato de histórias de usuário, numeradas por área (10 áreas, ~70 histórias). Gerado a partir de `docs/historias-usuario/gerar.js` — ver o README dentro dessa pasta para saber como atualizar quando uma funcionalidade nova for construída ou mudar de status.

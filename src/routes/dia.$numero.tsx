@@ -9,6 +9,7 @@ import { getDia, getAreaDoDia, TOTAL_DIAS } from "@/lib/devocional";
 import { PlayerOracao } from "@/components/PlayerOracao";
 import { AppShell } from "@/components/AppShell";
 import { Ornamento, Cruz } from "@/components/Ornamento";
+import { ModalConviteAposDia } from "@/components/ModalConviteAposDia";
 
 export const Route = createFileRoute("/dia/$numero")({
   head: ({ params }) => {
@@ -46,6 +47,7 @@ function DiaOracional() {
   } = usePerfil(CONTROLE_DE_PERFIL_HABILITADO ? user?.id : undefined);
   const concluirDiaMutation = useConcluirDia(user?.id);
   const [concluindo, setConcluindo] = useState(false);
+  const [mostrarConvite, setMostrarConvite] = useState(false);
 
   useEffect(() => {
     if (!carregandoAuth && !user) navigate({ to: "/entrar", replace: true });
@@ -121,15 +123,20 @@ function DiaOracional() {
     try {
       await concluirDiaMutation.mutateAsync(numeroDoDia);
       toast.success("Que a paz de Deus fique com você hoje.");
-      if (numeroDoDia < TOTAL_DIAS) {
-        navigate({ to: "/dia/$numero", params: { numero: String(proximoNumero) } });
-      } else {
-        navigate({ to: "/jornada" });
-      }
+      setMostrarConvite(true);
     } catch {
       toast.error("Não conseguimos salvar seu progresso agora. Tente novamente.");
     } finally {
       setConcluindo(false);
+    }
+  };
+
+  const continuarJornada = () => {
+    setMostrarConvite(false);
+    if (numeroDoDia < TOTAL_DIAS) {
+      navigate({ to: "/dia/$numero", params: { numero: String(proximoNumero) } });
+    } else {
+      navigate({ to: "/jornada" });
     }
   };
 
@@ -230,6 +237,7 @@ function DiaOracional() {
           </div>
         </main>
       </div>
+      {mostrarConvite && <ModalConviteAposDia onContinuar={continuarJornada} />}
     </AppShell>
   );
 }

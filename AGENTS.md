@@ -20,7 +20,7 @@ Leia o `README.md` primeiro — ele tem o contexto completo do produto, do model
 1. `npx vite build` — precisa passar sem erro (também regenera `src/routeTree.gen.ts` se rotas mudaram)
 2. `npx tsc --noEmit` — zero erros de tipo
 3. `npx eslint --fix <arquivos alterados>` seguido de `npx eslint <arquivos alterados>` — zero avisos/erros
-4. `rm -f package-lock.json` antes de `git add -A` (o projeto usa `bun.lock`; não deixar os dois lockfiles coexistindo)
+4. `rm -f package-lock.json bun.lock` antes de `git add -A` (o projeto usa `bun.lock`, mas o Lovable às vezes gera os dois; nunca deixar mais de um lockfile coexistindo)
 5. Commit descritivo (pode ser em português) + push direto para `main`
 
 ### Convenções do código
@@ -44,10 +44,11 @@ Leia o `README.md` primeiro — ele tem o contexto completo do produto, do model
 - **Chamar `useSom()` (ou qualquer hook com estado local) em dois componentes que precisam compartilhar o mesmo valor ao vivo**: cada chamada cria uma instância de estado independente (só o valor inicial vem do `localStorage`; mudanças não se propagam entre instâncias). Quando dois componentes precisam do mesmo estado reativo (ex: `TVOracional` e o `InterruptorSom` no rodapé dela), o padrão é o componente pai chamar o hook uma vez e passar `ativo`/`alternar` como props para o filho (ver como `InterruptorSom.tsx` aceita esses props opcionais, com fallback para o próprio hook quando usado isoladamente).
 - **`redirect_uri` do login social apontando para a raiz do site (`/`)**: causou um bug real onde `sincronizarPerfilAposLogin` nunca era chamada, porque a página raiz só verifica se há sessão e redireciona — não roda a sincronização de perfil/pagamento. Corrigido apontando o `redirect_uri` para `/entrar` (`entrar.tsx`), onde essa checagem de fato acontece. Se mexer no fluxo de login, sempre confirmar que o OAuth volta para `/entrar`.
 - **Deixar uma tela de carregamento sem tratamento de erro**: se uma consulta (ex: `usePerfil`) falhar (por exemplo, uma coluna nova que a migration ainda não aplicou no banco real), a tela pode ficar presa numa mensagem de "carregando" para sempre, sem explicação — isso já aconteceu de verdade e afetou vários usuários ao mesmo tempo. Qualquer tela que dependa de uma consulta assim (`jornada.tsx`, `dia.$numero.tsx`) precisa checar o estado `isError` da query e mostrar uma tela de erro com botão de tentar de novo, nunca só a tela de carregamento condicionada a `isLoading`.
+- **Usar a biblioteca `web-push` (npm) em qualquer server function**: ela é **oficialmente incompatível com Cloudflare Workers** (issue aberta pelos próprios mantenedores desde 2022) — depende de `Buffer` e do módulo `crypto` do Node, que o Workers só tem via polyfills parciais e inconsistentes. Os erros nem aparecem no build/typecheck, só em produção, e de forma inconsistente (`webpush.setVapidDetails is not a function` numa tentativa, `buffer.hasOwnProperty is not a function` na seguinte). Usar **`@pushforge/builder`** no lugar (só Web Crypto API + `fetch`, nativo no Workers) — ver `enviarNotificacaoAviso.functions.ts` e a seção 14 do README para o formato de chave (JWK, não string simples).
 
 ### Decisões deliberadamente pausadas — não resolver sozinho
 
 - Gate de pagamento (`jornadas.tem_acesso`) — campo existe na tabela, mas nenhuma tela ainda verifica antes de liberar conteúdo
-- Conteúdo definitivo da aba "Jornada de Oração" (vídeo/link real da "Semana da Jornada de Oração", texto da campanha) — hoje só placeholder, aguardando o autor
-- As ideias registradas no README (seção 13, acompanhamento espiritual em vídeochamada; e outras trilhas temáticas de 40 dias discutidas em conversa) — registradas, não implementar sem pedido explícito
+- Conteúdo real das 4 páginas administrativas placeholder (Cadastros, Controle, Regras de Negócio, Usuários/Permissionamento) — aguardando definição do que cada uma deve fazer
+- As ideias registradas no README (seção 13, acompanhamento espiritual em vídeochamada; seção 16, plano de arquitetura futura; e outras trilhas temáticas de 40 dias discutidas em conversa) — registradas, não implementar sem pedido explícito
 
